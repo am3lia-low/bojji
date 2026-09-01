@@ -1,0 +1,149 @@
+# SOP-PAY-001 — Handling GIRO enquiries
+#
+# Class: payment (auto_answerable). Worked example in sop_design.md S4.1.
+# Facts re-verified against the live page on 2026-09-01; the design draft's
+# channel timings and deduction rules were confirmed unchanged.
+
+sop_id: SOP-PAY-001
+title: Handling GIRO enquiries
+version: "1.0"
+effective_date: 2026-01-01
+supersedes: null
+applies_to_ya: [2025, 2026]
+intents: [payment]
+indexed: true
+owner_queue: IIT-Payments         # INVENTED — not a real IRAS queue
+handling_target: same_day         # ILLUSTRATIVE — not a real IRAS SLA
+auto_reply_permitted: true
+escalate_if:
+  - account_specific
+  - hardship_or_waiver_request
+  - amount_computation_requested
+
+references:
+  - id: giro
+    url: https://www.iras.gov.sg/quick-links/payments/giro-individual-income-tax
+    fetched: 2026-09-01
+
+scope: >
+  Taxpayer asks how GIRO works, how to apply, when deductions occur, what happens
+  when a deduction fails, how the provisional instalment plan works, or how to
+  edit, cancel or re-activate an arrangement.
+
+not_in_scope:
+  - text: The status of a specific taxpayer's GIRO plan, or why their deduction failed.
+    route_to: account_specific
+  - text: Restructuring instalments because the taxpayer cannot afford them.
+    route_to: hardship_or_waiver_request
+  - text: Computing an instalment amount for a specific taxpayer.
+    route_to: amount_computation_requested
+
+facts:
+  - text: >
+      Tax may be paid by GIRO either in monthly instalments of up to 12 months,
+      or as a one-time yearly payment.
+    source: giro
+  - text: Monthly GIRO deductions are made on the 6th of each month.
+    source: giro
+  - text: >
+      If the deduction date falls on a weekend or public holiday, the deduction
+      is made on the next working day.
+    source: giro
+  - text: >
+      If a GIRO deduction is unsuccessful, a second deduction is attempted on the
+      20th of the month.
+    source: giro
+  - text: >
+      A GIRO arrangement is cancelled after 2 consecutive months of failed
+      deductions, that is, 4 failed deductions in a row.
+    source: giro
+  - text: >
+      The Provisional Instalment Plan (PIP) commences yearly from May, based on
+      the previous year's tax or the current year's estimated tax payable.
+    source: giro
+  - text: >
+      Once the assessment is finalised, the monthly GIRO arrangement is revised
+      based on the actual tax payable.
+    source: giro
+  - text: >
+      Where a taxpayer joins GIRO after May, instalment deductions commence in
+      the month after the application is approved and end in April of the
+      following year.
+    source: giro
+  - text: >
+      eGIRO applications may be made through myTax Portal (set up within
+      minutes), through the DBS/POSB, OCBC or UOB bank portals (within 3 working
+      days), or at AXS stations (within 3 working days).
+    source: giro
+  - text: >
+      Hard copy GIRO applications require up to 21 working days to process, and
+      the exact timeline is subject to the respective bank's processing.
+    source: giro
+  - text: >
+      GIRO must be applied for using an SGD savings or current account with a
+      participating bank.
+    source: giro
+  - text: >
+      For a successful deduction the account must hold sufficient funds on the
+      deduction date and have a suitable payment limit set. Some banks may impose
+      charges for unsuccessful GIRO deductions.
+    source: giro
+  - text: >
+      A cancelled GIRO arrangement may be re-activated through the
+      'Apply/Manage GIRO Plan' digital service at myTax Portal.
+    source: giro
+  - text: >
+      To terminate a GIRO arrangement entirely, the taxpayer must contact their
+      bank directly; a cancelled arrangement can still be re-activated with IRAS.
+    source: giro
+
+decision_steps:
+  - condition: Asking about their own plan, a specific failed deduction, or their own instalment amount
+    action: Escalate
+    reason: account_specific
+  - condition: Requesting penalty waiver, or restructuring because they cannot afford the instalments
+    action: Escalate
+    reason: hardship_or_waiver_request
+  - condition: Asking IRAS to calculate an instalment amount or a balance
+    action: Escalate
+    reason: amount_computation_requested
+  - condition: Otherwise
+    action: Answer from the key facts and direct to the application channels
+
+approved_phrasing:
+  - id: giro_dates
+    text: >
+      Payments by GIRO are deducted on the 6th of each month. If the 6th falls on
+      a weekend or public holiday, the deduction is made on the next working day.
+      Where a deduction is unsuccessful, a second attempt is made on the 20th of
+      the month.
+  - id: giro_failure
+    text: >
+      A GIRO arrangement is cancelled after two consecutive months of failed
+      deductions, that is, four failed deductions in a row. Please ensure that
+      your account holds sufficient funds on the deduction date and that a
+      suitable payment limit is set. If your arrangement has been cancelled, you
+      may re-activate it through the 'Apply/Manage GIRO Plan' digital service at
+      myTax Portal.
+  - id: giro_apply
+    text: >
+      You can apply for eGIRO through myTax Portal, which is set up within
+      minutes, or through the DBS/POSB, OCBC and UOB bank portals and AXS
+      stations, which take up to 3 working days. GIRO must be set up using an SGD
+      savings or current account with a participating bank.
+  - id: pip
+    text: >
+      The Provisional Instalment Plan begins in May each year and is based on the
+      previous year's tax or the current year's estimated tax payable. Once your
+      assessment is finalised, your monthly instalments are revised to reflect the
+      actual tax payable.
+
+do_not:
+  - Do not confirm whether a specific deduction succeeded or failed.
+  - Do not advise on bank charges — refer the taxpayer to their bank.
+  - Do not compute instalment amounts or outstanding balances.
+  - Do not state when a specific taxpayer's plan will be revised.
+
+related:
+  - SOP-PAY-002   # payment channels and late-payment penalties
+  - SOP-ESC-002   # difficulty paying — always escalates

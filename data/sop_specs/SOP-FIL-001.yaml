@@ -1,0 +1,177 @@
+# SOP-FIL-001 — Handling filing enquiries
+#
+# Class: filing (auto_answerable). See sop_design.md S2.1.
+# Every fact below carries a `source:` handle resolving to `references[]`.
+
+sop_id: SOP-FIL-001
+title: Handling filing enquiries
+version: "1.0"
+effective_date: 2026-01-01
+supersedes: null
+applies_to_ya: [2025, 2026]
+intents: [filing]
+indexed: true
+owner_queue: IIT-General          # INVENTED — not a real IRAS queue
+handling_target: 3_working_days   # ILLUSTRATIVE — not a real IRAS SLA
+auto_reply_permitted: true
+escalate_if:
+  - account_specific
+  - amount_computation_requested
+  - hardship_or_waiver_request
+
+references:
+  - id: who_must_file
+    url: https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/understanding-my-income-tax-filing/individuals-required-to-file-tax
+    fetched: 2026-09-01
+  - id: efiling
+    url: https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/understanding-my-income-tax-filing/e-filing-your-income-tax-return
+    fetched: 2026-09-01
+  - id: paper_filing
+    url: https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/understanding-my-income-tax-filing/filing-a-paper-income-tax-return
+    fetched: 2026-09-01
+  - id: late_filing
+    url: https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/understanding-my-income-tax-filing/late-filing-or-non-filing-of-individual-income-tax-returns-form-b1-b-p-m
+    fetched: 2026-09-01
+
+scope: >
+  Taxpayer asks whether they must file, how to file, when filing is due, what the
+  No-Filing Service means, how to obtain an extension, or what happens if they
+  file late. Covers both e-filing and paper filing.
+
+not_in_scope:
+  - text: Whether this particular taxpayer has been selected for NFS, or whether their own return has been received.
+    route_to: account_specific
+  - text: Disputing the figures in a Notice of Assessment, including an estimated NOA.
+    route_to: assessment_and_amendment      # TIE-BREAK: objections belong to ASM-001
+  - text: Requesting waiver of a composition amount or late-filing penalty.
+    route_to: hardship_or_waiver_request
+  - text: Filing obligations for a sole proprietorship, partnership or company.
+    route_to: oos_business_tax
+
+facts:
+  - text: >
+      A taxpayer is generally required to file an Income Tax Return if, in the
+      preceding calendar year, total income exceeded $22,000; or self-employment
+      income produced a net profit exceeding $6,000; or they are a non-resident
+      who derived income from Singapore.
+    source: who_must_file
+  - text: >
+      A taxpayer who receives a letter, form or SMS from IRAS informing them to
+      file must file, regardless of how much they earned and regardless of
+      whether their employer participates in the Auto-Inclusion Scheme (AIS).
+    source: who_must_file
+  - text: >
+      Non-residents who derived income from Singapore in the preceding year must
+      file regardless of the amount earned.
+    source: who_must_file
+  - text: The e-filing due date is 18 April each year.
+    source: who_must_file
+  - text: The paper filing due date is 15 April each year.
+    source: paper_filing
+  - text: >
+      An extension of up to 14 days may be granted, requested through the
+      'Apply for Extension of Time to File' digital service at myTax Portal.
+    source: who_must_file
+  - text: >
+      Under the No-Filing Service (NFS), a taxpayer who receives a letter or SMS
+      informing them of selection is not required to file a return. They may log
+      in to myTax Portal to verify the auto-included information, and may preview
+      the tax bill from 1 March to 18 April.
+    source: who_must_file
+  - text: >
+      A taxpayer on NFS whose pre-filled information is inaccurate must file a
+      return to correct it. No filing extension is available under NFS.
+    source: who_must_file
+  - text: >
+      Where a return was e-filed, it may be re-filed once, and re-filing must be
+      done by 18 April. After that date, changes are made by amending the tax
+      bill instead.
+    source: who_must_file
+  - text: >
+      Under Direct Notice of Assessment (D-NOA), some taxpayers receive a tax
+      bill directly without being required to file.
+    source: who_must_file
+  - text: Failure to file an Income Tax Return by the due date is an offence.
+    source: late_filing
+  - text: >
+      Where a return is not filed on time, IRAS may issue an estimated Notice of
+      Assessment, offer to compound the offence, or issue a Notice to Attend
+      Court / Summons.
+    source: late_filing
+  - text: >
+      Tax under an estimated Notice of Assessment must be paid within 1 month of
+      the date of the Notice, even if the taxpayer intends to object or is
+      awaiting the outcome of an objection.
+    source: late_filing
+  - text: >
+      A composition amount of up to $5,000 per offence may be offered instead of
+      prosecution, depending on past compliance records.
+    source: late_filing
+  - text: >
+      Where an estimated assessment has been raised, the taxpayer should file the
+      outstanding return immediately for review; any excess tax paid is refunded.
+    source: late_filing
+
+decision_steps:
+  - condition: Asking whether IRAS has received *their* return, or whether *they* were selected for NFS
+    action: Escalate
+    reason: account_specific
+  - condition: Asking IRAS to compute their tax, or to confirm an amount payable
+    action: Escalate
+    reason: amount_computation_requested
+  - condition: Asking for a composition amount or late-filing penalty to be waived or reduced
+    action: Escalate
+    reason: hardship_or_waiver_request
+  - condition: Disputing figures in a Notice of Assessment rather than asking how to file
+    action: Route to SOP-ASM-001
+    reason: tie_break_objection_belongs_to_assessment
+  - condition: Filing obligations of a business, partnership or company
+    action: Redirect
+    reason: oos_business_tax
+  - condition: Otherwise
+    action: Answer from the key facts and direct to myTax Portal
+
+approved_phrasing:
+  - id: who_must_file
+    text: >
+      You are generally required to file an Income Tax Return if your total
+      income for the preceding calendar year was more than $22,000, or if your
+      self-employment income produced a net profit of more than $6,000, or if you
+      are a non-resident who derived income from Singapore. If you have received
+      a letter, form or SMS from IRAS asking you to file, you must file
+      regardless of the amount you earned.
+  - id: due_dates
+    text: >
+      The filing deadline is 18 April each year for e-filing, and 15 April for
+      paper returns. You can file at myTax Portal using your Singpass.
+  - id: nfs
+    text: >
+      If you have been informed that you are on the No-Filing Service, you are
+      not required to file a return. You may log in to myTax Portal to check that
+      the auto-included information is correct, and you can preview your tax bill
+      between 1 March and 18 April. If any of the pre-filled information is
+      inaccurate, please file a return to correct it.
+  - id: extension
+    text: >
+      If you need more time, an extension of up to 14 days may be granted through
+      the 'Apply for Extension of Time to File' digital service at myTax Portal.
+  - id: late_filing
+    text: >
+      Filing after the due date is an offence. Where a return is outstanding,
+      IRAS may issue an estimated Notice of Assessment, offer to compound the
+      offence for up to $5,000, or issue a Notice to Attend Court. If you have
+      received an estimated Notice of Assessment, please file the outstanding
+      return as soon as possible so that the assessment can be reviewed; any
+      excess tax paid will be refunded.
+
+do_not:
+  - Do not confirm whether a specific return has been received or processed.
+  - Do not state whether a specific taxpayer is on NFS or has a D-NOA.
+  - Do not compute tax payable, or estimate what a composition amount will be.
+  - Do not advise that a deadline can be missed without consequence.
+  - Do not comment on the merits of an objection — that is SOP-ASM-001.
+
+related:
+  - SOP-ASM-001   # assessment and amendment; objections route there
+  - SOP-PAY-002   # payment channels and late-payment penalties
+  - SOP-RTE-001   # business and corporate filing obligations

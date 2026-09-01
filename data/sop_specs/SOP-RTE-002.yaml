@@ -1,0 +1,128 @@
+# SOP-RTE-002 — Redirect: other agencies and other tax types
+#
+# Class: oos_other_agency. Bucket: out_of_scope. Automated redirect counts toward
+# coverage (BUILD.md S5.6).
+#
+# This class absorbs two kinds of misdirection that look different to a citizen
+# but route identically:
+#   (a) another IRAS tax type — GST, property tax, stamp duty, tax clearance;
+#   (b) another agency entirely — CPF Board, MOM, ACRA.
+#
+# `oos_tax_clearance` was folded in here from an earlier draft (sop_design.md S9):
+# same redirect behaviour, and a separate class was not earning its keep.
+#
+# The CPF boundary is the sharp one and the most common real confusion. IRAS
+# handles CPF *relief* (a tax question, SOP-REL-003). The CPF Board handles
+# contribution rates, account balances and withdrawals. The citizen cannot be
+# expected to know which is which, so the redirect must name the distinction
+# rather than simply decline.
+
+sop_id: SOP-RTE-002
+title: "Redirect: other agencies and other tax types"
+version: "1.0"
+effective_date: 2026-01-01
+supersedes: null
+applies_to_ya: [2025, 2026]
+intents: [oos_other_agency]
+indexed: true
+owner_queue: IIT-General          # INVENTED — not a real IRAS queue
+handling_target: same_day         # ILLUSTRATIVE — not a real IRAS SLA
+auto_reply_permitted: true
+escalate_if:
+  - account_specific
+  - scam_report
+
+references:
+  - id: tax_clearance
+    url: https://www.iras.gov.sg/taxes/individual-income-tax/employers/tax-clearance-for-foreign-spr-employees-(ir21)
+    fetched: 2026-09-01
+  - id: contact
+    url: https://www.iras.gov.sg/contact-us/individual-income-tax
+    fetched: 2026-09-01
+
+scope: >
+  Enquiry belongs to another IRAS tax type — GST, property tax, stamp duty,
+  withholding tax, or tax clearance for a departing foreign employee — or to
+  another agency entirely, such as the CPF Board, the Ministry of Manpower, or
+  ACRA.
+
+not_in_scope:
+  - text: Tax relief on CPF or SRS contributions, which is an individual income tax matter.
+    route_to: tax_reliefs                     # -> SOP-REL-003
+  - text: Business or corporate income tax.
+    route_to: oos_business_tax                # -> SOP-RTE-001
+  - text: Reporting a suspected IRAS impersonation scam.
+    route_to: scam_report                     # -> SOP-ESC-003
+
+facts:
+  - text: >
+      Tax clearance for foreign and Singapore Permanent Resident employees who are
+      ceasing employment or leaving Singapore is handled through the Form IR21
+      process, which is an employer obligation.
+    source: tax_clearance
+  - text: >
+      IRAS administers several distinct tax types — individual income tax,
+      corporate income tax, GST, property tax and stamp duty — each with its own
+      guidance and contact channels.
+    source: contact
+  - text: >
+      Enquiries about CPF contribution rates, account balances and withdrawals are
+      matters for the CPF Board rather than IRAS. IRAS administers only the tax
+      relief arising from qualifying CPF contributions.
+    source: contact
+
+decision_steps:
+  - condition: The enquiry concerns tax clearance or Form IR21
+    action: Redirect to the tax clearance guidance and note it is an employer obligation
+  - condition: The enquiry concerns CPF contributions, balances or withdrawals
+    action: Redirect to the CPF Board
+  - condition: The enquiry concerns GST, property tax, stamp duty or withholding tax
+    action: Redirect to the guidance for that tax type
+  - condition: The enquiry concerns employment disputes, work passes or company registration
+    action: Redirect to MOM or ACRA as applicable
+  - condition: The enquiry reports an IRAS impersonation
+    action: Escalate
+    reason: scam_report
+  - condition: The enquiry concerns a specific taxpayer's own record in another tax type
+    action: Escalate
+    reason: account_specific
+  - condition: Never
+    action: Do not answer another agency's or another tax type's question from IIT knowledge
+
+approved_phrasing:
+  - id: cpf_redirect
+    text: >
+      Your enquiry relates to CPF contributions, which are administered by the CPF
+      Board rather than IRAS. IRAS handles only the income tax relief arising from
+      qualifying CPF contributions. For questions about contribution rates, your
+      account balance or withdrawals, please contact the CPF Board at cpf.gov.sg.
+  - id: tax_clearance_redirect
+    text: >
+      Your enquiry relates to tax clearance for an employee who is ceasing
+      employment or leaving Singapore. This is handled through the Form IR21
+      process, which is an obligation on the employer. Guidance is available at
+      iras.gov.sg under tax clearance for foreign and Singapore Permanent Resident
+      employees.
+  - id: other_tax_type_redirect
+    text: >
+      Your enquiry relates to a tax type other than individual income tax. IRAS
+      administers each tax type separately, with its own guidance and contact
+      channels, which you can find at iras.gov.sg.
+  - id: other_agency_redirect
+    text: >
+      Your enquiry is handled by another agency rather than IRAS. Employment
+      matters and work passes are handled by the Ministry of Manpower at mom.gov.sg,
+      and company registration by ACRA at acra.gov.sg.
+
+do_not:
+  - Do not answer another tax type's or another agency's question from individual
+    income tax knowledge.
+  - Do not state GST rates, property tax rates or stamp duty rates from this
+    procedure.
+  - Do not conflate CPF relief (IRAS) with CPF contributions (CPF Board).
+  - Do not leave the citizen without a destination — always name where to go.
+
+related:
+  - SOP-RTE-001   # business and corporate income tax
+  - SOP-REL-003   # CPF and SRS relief — the IRAS side of the CPF boundary
+  - SOP-ESC-003   # scam and impersonation reports

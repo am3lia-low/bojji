@@ -1,0 +1,119 @@
+# SOP-REL-005 — Personal income tax relief cap
+#
+# Class: tax_reliefs. ***HELD OUT — indexed: false*** (sop_design.md S5).
+#
+# This is the PARTIAL-ANSWER holdout, and it is a different kind from INC-001 and
+# INC-002. Those hold out a whole class, so the email is unanswerable and the
+# router escalates on `no_supporting_sop`. REL-005 holds out ONE SOP from an
+# otherwise-indexed class: `tax_reliefs` still resolves to REL-001..004, so the
+# router sees a populated SOP list and does NOT fire `no_supporting_sop`.
+#
+# The correct behaviour is therefore subtler than "escalate": the agent can state
+# relief eligibility from the indexed SOPs, but cannot reason about the $80,000
+# cap. What it must not do is produce a confident total. Every indexed relief SOP
+# carries a matching `do_not` forbidding it from stating the cap, and routes the
+# question to escalation instead.
+#
+# The SOP is authored in full so that (a) the holdout is a matter of excluding a
+# file from the index rather than an arbitrary cut, and (b) re-indexing it later
+# requires no code change — flip `indexed` to true.
+
+sop_id: SOP-REL-005
+title: Personal income tax relief cap
+version: "1.0"
+effective_date: 2026-01-01
+supersedes: null
+applies_to_ya: [2025, 2026]
+intents: [tax_reliefs]
+indexed: false                    # HELD OUT — excluded from the index
+owner_queue: IIT-General          # INVENTED — not a real IRAS queue
+handling_target: 5_working_days   # ILLUSTRATIVE — not a real IRAS SLA
+auto_reply_permitted: true
+escalate_if:
+  - account_specific
+  - amount_computation_requested
+
+references:
+  - id: relief_cap
+    url: https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs
+    fetched: 2026-09-01
+  - id: wmcr
+    url: https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs/working-mother's-child-relief-(wmcr)
+    fetched: 2026-09-01
+
+scope: >
+  Taxpayer asks whether there is a limit on the total amount of personal reliefs
+  they may claim, how the cap applies across different reliefs, or what happens
+  when their claims exceed it.
+
+not_in_scope:
+  - text: Whether this taxpayer's own reliefs exceed the cap, and by how much.
+    route_to: account_specific
+  - text: Computing the taxpayer's total reliefs or resulting tax.
+    route_to: amount_computation_requested
+
+facts:
+  - text: >
+      A personal income tax relief cap of $80,000 applies to the total amount of
+      all tax reliefs claimed for each Year of Assessment.
+    source: relief_cap
+  - text: >
+      A taxpayer is affected by the cap if the total amount of personal reliefs
+      they claim exceeds $80,000.
+    source: relief_cap
+  - text: >
+      Where the cap applies, the reliefs allowed are limited to $80,000, and this
+      is reflected in the Notice of Assessment.
+    source: relief_cap
+  - text: >
+      The cap applies to the total of all reliefs, including relief on compulsory
+      and voluntary CPF contributions.
+    source: relief_cap
+  - text: >
+      The $80,000 cap operates on top of the individual caps within specific
+      reliefs, such as the $50,000 per-child cap on QCR or Child Relief
+      (Disability) combined with WMCR.
+    source: wmcr
+  - text: >
+      There is no refund of accepted voluntary CPF or SRS contributions where the
+      relief cap means they attract no tax relief.
+    source: relief_cap
+
+decision_steps:
+  - condition: Asking whether their own reliefs exceed the cap
+    action: Escalate
+    reason: account_specific
+  - condition: Asking IRAS to total their reliefs or compute the effect of the cap
+    action: Escalate
+    reason: amount_computation_requested
+  - condition: Otherwise
+    action: State the cap and how it applies from the key facts
+
+approved_phrasing:
+  - id: cap
+    text: >
+      A personal income tax relief cap of $80,000 applies to the total amount of
+      all tax reliefs you claim in each Year of Assessment. If the total of your
+      personal reliefs exceeds $80,000, the reliefs allowed to you are limited to
+      $80,000, and this is reflected in your Notice of Assessment.
+  - id: interaction
+    text: >
+      The $80,000 cap applies on top of the caps within individual reliefs, such as
+      the $50,000 combined cap per child on Qualifying Child Relief and Working
+      Mother's Child Relief.
+  - id: no_refund
+    text: >
+      Please note that voluntary CPF and SRS contributions cannot be refunded if
+      the relief cap means they do not attract tax relief, so it is worth
+      considering the cap before making a voluntary contribution.
+
+do_not:
+  - Do not total a taxpayer's reliefs or compute the effect of the cap for them.
+  - Do not confirm whether a specific taxpayer is affected by the cap.
+  - Do not advise whether a voluntary contribution is financially worthwhile.
+
+related:
+  - SOP-REL-001   # QCR and Child Relief (Disability)
+  - SOP-REL-002   # Parent Relief
+  - SOP-REL-003   # CPF and SRS reliefs
+  - SOP-REL-004   # WMCR and PTR

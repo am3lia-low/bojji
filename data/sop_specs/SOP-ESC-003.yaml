@@ -1,0 +1,110 @@
+# SOP-ESC-003 — Scam and impersonation reports
+#
+# Class: scam_report. Bucket: high_consequence — ALWAYS ESCALATES.
+#
+# WHY THIS IS A CLASS AND NOT A FLAG. It was folded into a flag in an earlier
+# draft and restored on review: it is the clearest high-consequence case in the
+# taxonomy. A citizen reporting an IRAS impersonation scam may be mid-fraud, and
+# may already have disclosed credentials or made a payment. The reply must reach a
+# human quickly and must not read as routine correspondence.
+#
+# The one exception to "escalate silently": the acknowledgement carries the
+# publicly-stated verification facts, because a taxpayer who is still being
+# targeted benefits from knowing immediately what genuine IRAS contact looks like.
+# Those facts are public and general; they are not advice on their specific case.
+
+sop_id: SOP-ESC-003
+title: Scam and impersonation reports
+version: "1.0"
+effective_date: 2026-01-01
+supersedes: null
+applies_to_ya: [2025, 2026]
+intents: [scam_report]
+indexed: true
+owner_queue: IIT-Integrity        # INVENTED — not a real IRAS queue
+handling_target: same_day         # ILLUSTRATIVE — not a real IRAS SLA
+auto_reply_permitted: false       # -> bucket: high_consequence
+escalate_if:
+  - scam_report
+  - account_specific
+
+references:
+  - id: scam_advisory
+    url: https://www.iras.gov.sg/news-events/announcements/scam-advisory/phishing-email-scam
+    fetched: 2026-09-01
+  - id: scam_refund
+    url: https://www.iras.gov.sg/news-events/announcements/scam-advisory/tax-refund-scam
+    fetched: 2026-09-01
+
+scope: >
+  Taxpayer reports a suspicious email, SMS, WhatsApp message, call or website
+  purporting to be from IRAS; asks whether a message they received is genuine; or
+  reports that they have already responded to one, disclosed information or made
+  a payment.
+
+not_in_scope:
+  - text: Reporting suspected tax evasion by another person.
+    route_to: oos_other_agency
+  - text: A genuine IRAS notice the taxpayer disputes.
+    route_to: assessment_and_amendment
+
+facts:
+  - text: >
+      All IRAS correspondence on confidential tax matters is done through myTax
+      Portal, and all notices and letters are deposited at mytax.iras.gov.sg.
+    source: scam_advisory
+  - text: >
+      Taxpayers will never receive confidential tax information or tax documents
+      such as tax returns, notices of assessment or tax refund letters by email or
+      SMS.
+    source: scam_advisory
+  - text: >
+      myTax Portal is a secured, personalised portal that taxpayers access using
+      Singpass authentication.
+    source: scam_advisory
+  - text: >
+      Taxpayers who have updated their mobile number or email address are notified
+      by SMS or email to log in to myTax Portal to view notices or letters, rather
+      than receiving the documents themselves.
+    source: scam_advisory
+  - text: >
+      In tax refund and payout scams, unsolicited emails purporting to be from
+      IRAS state that the recipient is eligible for a refund, and link to a
+      phishing website imitating the IRAS website that asks them to select a refund
+      method using debit or credit card details.
+    source: scam_refund
+
+decision_steps:
+  - condition: The enquiry reports or asks about a suspected IRAS impersonation
+    action: Escalate
+    reason: high_consequence
+  - condition: The taxpayer indicates they have already disclosed details or paid
+    action: Escalate with priority
+    reason: high_consequence
+  - condition: Always
+    action: Escalate — this class never auto-replies
+
+approved_phrasing:
+  - id: acknowledgement
+    text: >
+      Thank you for alerting us. Your report has been passed to an officer who will
+      follow up with you directly. It may help to know that IRAS conducts all
+      correspondence on confidential tax matters through myTax Portal at
+      mytax.iras.gov.sg, which is accessed using Singpass. IRAS will never send you
+      confidential tax documents such as tax returns, notices of assessment or
+      refund letters by email or SMS, and will never ask for your card details in
+      order to pay you a refund. If you have already provided any information or
+      made a payment, please contact your bank immediately and report the matter to
+      the police.
+
+do_not:
+  - Do not confirm or deny that a specific message, sender address or website is
+    genuine — an officer must verify this.
+  - Do not ask the taxpayer to forward attachments or click any link to check it.
+  - Do not request Singpass credentials, card details or an NRIC by email.
+  - Do not auto-reply in a way that reads as routine correspondence — this is
+    time-sensitive.
+
+related:
+  - SOP-ESC-001   # account-specific enquiries
+  - SOP-PAY-002   # genuine refund process

@@ -1,0 +1,102 @@
+# SOP-ESC-002 — Hardship and waiver requests
+#
+# Class: hardship_or_waiver. Bucket: high_consequence — ALWAYS ESCALATES.
+#
+# WHY THIS NEVER AUTO-REPLIES. Two reasons, and both matter.
+#
+# First, consequence. A taxpayer writing that they cannot pay is in financial
+# distress; the outcome turns on their circumstances, and an automated "no" — or
+# an automated "yes" the agency cannot honour — is a citizen-harm failure that no
+# confidence score should be permitted to authorise.
+#
+# Second, discretion. Waiver and instalment decisions are discretionary and
+# account-specific by nature. There is no rule the agent could apply correctly
+# even with perfect classification.
+#
+# The SOP therefore states only what is publicly true about the process and the
+# consequences of inaction, and hands off. Note the tension the phrasing must
+# hold: the taxpayer must be told not to ignore the bill (a 5% penalty accrues
+# regardless) without being told their request will succeed.
+
+sop_id: SOP-ESC-002
+title: Hardship and waiver requests
+version: "1.0"
+effective_date: 2026-01-01
+supersedes: null
+applies_to_ya: [2025, 2026]
+intents: [hardship_or_waiver]
+indexed: true
+owner_queue: IIT-Recovery         # INVENTED — not a real IRAS queue
+handling_target: 5_working_days   # ILLUSTRATIVE — not a real IRAS SLA
+auto_reply_permitted: false       # -> bucket: high_consequence
+escalate_if:
+  - hardship_or_waiver_request
+  - account_specific
+  - amount_computation_requested
+
+references:
+  - id: difficulty_paying
+    url: https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/receive-tax-bill-pay-tax-check-refunds/experiencing-difficulties-in-paying-your-tax
+    fetched: 2026-09-01
+  - id: late_payment
+    url: https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/receive-tax-bill-pay-tax-check-refunds/late-payment-or-non-payment-of-individual-income-tax
+    fetched: 2026-09-01
+
+scope: >
+  Taxpayer states they cannot pay, asks for a longer or restructured instalment
+  plan, asks for a late-payment penalty or composition amount to be waived or
+  reduced, or describes financial hardship, retrenchment, illness or bereavement
+  in connection with a tax debt.
+
+not_in_scope:
+  - text: Generic questions about how GIRO instalments work, with no hardship stated.
+    route_to: payment
+  - text: Disputing that the tax is owed at all, rather than asking for time to pay.
+    route_to: assessment_and_amendment
+
+facts:
+  - text: >
+      IRAS states that taxpayers facing difficulties paying their tax may approach
+      IRAS for a payment arrangement that takes their circumstances into account.
+    source: difficulty_paying
+  - text: >
+      A taxpayer should not ignore a tax bill or a demand for payment; otherwise a
+      5% late payment penalty is imposed on the overdue tax.
+    source: difficulty_paying
+  - text: >
+      Longer payment plan arrangements and financial and other support services
+      are described on the IRAS page on difficulties in paying tax.
+    source: difficulty_paying
+  - text: >
+      Unless the taxpayer is on an approved instalment plan, a 5% late payment
+      penalty is imposed on tax not paid in full by the due date.
+    source: late_payment
+
+decision_steps:
+  - condition: The taxpayer states or implies they cannot pay, or requests a waiver or reduction
+    action: Escalate
+    reason: high_consequence
+  - condition: Always
+    action: Escalate — this class never auto-replies
+
+approved_phrasing:
+  - id: acknowledgement
+    text: >
+      Thank you for writing in. We understand that paying tax can be difficult, and
+      your enquiry has been passed to an officer who will review your circumstances
+      and reply to you directly. In the meantime, please do not disregard your tax
+      bill or any demand for payment, as a late payment penalty may otherwise be
+      imposed on the overdue amount while your request is being considered.
+
+do_not:
+  - Do not indicate, suggest or imply whether a waiver or instalment request will
+    be approved or refused.
+  - Do not quote a possible instalment amount or duration.
+  - Do not compute penalties, interest or an outstanding balance.
+  - Do not tell the taxpayer to stop paying while the request is considered.
+  - Do not request financial documents or personal circumstances by email.
+
+related:
+  - SOP-PAY-001   # GIRO instalment mechanics
+  - SOP-PAY-002   # late-payment penalties
+  - SOP-ESC-001   # account-specific enquiries

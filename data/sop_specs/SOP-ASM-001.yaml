@@ -1,0 +1,166 @@
+# SOP-ASM-001 — Handling assessment and amendment enquiries
+#
+# Class: assessment_and_amendment (auto_answerable).
+#
+# TIE-BREAK RULE (see sop_design.md S10.3): ASM-001 and FIL-001 both touch
+# objecting to a Notice of Assessment. Any enquiry that DISPUTES THE FIGURES in
+# an assessment — including an estimated NOA raised for late filing — is
+# `assessment_and_amendment`, not `filing`. `filing` covers only how and when to
+# submit a return. This rule is binding on the email generator so that the
+# overlap does not produce mislabelled ground truth.
+
+sop_id: SOP-ASM-001
+title: Handling assessment and amendment enquiries
+version: "1.0"
+effective_date: 2026-01-01
+supersedes: null
+applies_to_ya: [2025, 2026]
+intents: [assessment_and_amendment]
+indexed: true
+owner_queue: IIT-General          # INVENTED — not a real IRAS queue
+handling_target: 5_working_days   # ILLUSTRATIVE — not a real IRAS SLA
+auto_reply_permitted: true
+escalate_if:
+  - account_specific
+  - amount_computation_requested
+  - hardship_or_waiver_request
+
+references:
+  - id: understanding_assessment
+    url: https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/receive-tax-bill-pay-tax-check-refunds/understanding-my-tax-assessment
+    fetched: 2026-09-01
+  - id: amend_bill
+    url: https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/receive-tax-bill-pay-tax-check-refunds/making-changes-after-filing-receiving-tax-bill
+    fetched: 2026-09-01
+  - id: tax_bill
+    url: https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/receive-tax-bill-pay-tax-check-refunds/getting-my-tax-assessment
+    fetched: 2026-09-01
+
+scope: >
+  Taxpayer asks what a Notice of Assessment means, what the different NOA types
+  are, how to read the terms on a tax bill, how to amend an assessment, how to
+  object to one, or what happens while an objection is under review.
+
+not_in_scope:
+  - text: The figures in this taxpayer's own assessment, or the status of their own objection.
+    route_to: account_specific
+  - text: How or when to submit a return, and filing deadlines.
+    route_to: filing                        # TIE-BREAK: mechanics of filing belong to FIL-001
+  - text: Recomputing tax, reliefs or a revised balance for the taxpayer.
+    route_to: amount_computation_requested
+  - text: Asking for a penalty arising from the assessment to be waived.
+    route_to: hardship_or_waiver_request
+
+facts:
+  - text: >
+      A Notice of Assessment (Original) is the tax bill computed from the tax
+      form(s) submitted and information sent by organisations participating in
+      the Auto-Inclusion Scheme.
+    source: understanding_assessment
+  - text: >
+      A Notice of Assessment (Amended) is issued when an assessment is amended
+      downwards, resulting in a reduction in tax payable — for example on the
+      inclusion of reliefs or a reduction in income.
+    source: understanding_assessment
+  - text: >
+      A Notice of Assessment (Additional) is issued when an assessment is amended
+      upwards, resulting in additional tax payable — for example on the
+      withdrawal of reliefs or the inclusion of additional income.
+    source: understanding_assessment
+  - text: >
+      A Notice of Assessment (Estimated) may be issued where a return has not been
+      filed by the due date, estimating tax from available information. The
+      taxpayer must still file the return for IRAS to issue an amended or
+      additional assessment.
+    source: understanding_assessment
+  - text: >
+      Year of Assessment (YA) is the tax year in which income tax is calculated
+      and charged, on income earned in the preceding calendar year. Income taxed
+      in YA 2026 is income earned from 1 January 2025 to 31 December 2025.
+    source: understanding_assessment
+  - text: >
+      A return filed online may be re-filed once, by 18 April. Otherwise the tax
+      bill is amended through the 'Amend Tax Bill' digital service at myTax
+      Portal.
+    source: amend_bill
+  - text: >
+      Amendments must be filed within 30 days from the date stated on the income
+      tax bill (the Notice of Assessment). IRAS reviews the amendment and informs
+      the taxpayer of the outcome.
+    source: amend_bill
+  - text: >
+      The 'Amend Tax Bill' digital service may be used to revise an income
+      declaration, to add or amend claims for deductions and reliefs, and to claim
+      Parenthood Tax Rebate.
+    source: amend_bill
+  - text: >
+      The obligation to pay is not suspended by an objection: tax must be paid
+      within 1 month of the Notice of Assessment, and a late payment penalty
+      applies to tax outstanding after 1 month, even where an objection is under
+      review.
+    source: amend_bill
+  - text: >
+      Where an assessment is revised after an objection is reviewed, any credit
+      balance is refunded within 30 days from the date of the new tax bill, the
+      Notice of Assessment (Amended).
+    source: amend_bill
+  - text: >
+      The re-filing route by 18 April does not apply to taxpayers under the Direct
+      Notice of Assessment (D-NOA) scheme.
+    source: amend_bill
+
+decision_steps:
+  - condition: Asking about the figures in their own assessment, or the status of their own objection
+    action: Escalate
+    reason: account_specific
+  - condition: Asking IRAS to recompute their tax, relief or revised balance
+    action: Escalate
+    reason: amount_computation_requested
+  - condition: Asking for a penalty to be waived because of the assessment
+    action: Escalate
+    reason: hardship_or_waiver_request
+  - condition: Asking only how or when to file a return, with no dispute about figures
+    action: Route to SOP-FIL-001
+    reason: tie_break_filing_mechanics
+  - condition: Otherwise
+    action: Explain the assessment type and the amendment route from the key facts
+
+approved_phrasing:
+  - id: noa_types
+    text: >
+      A Notice of Assessment (Original) is the tax bill computed from the return
+      you filed together with information provided under the Auto-Inclusion
+      Scheme. A Notice of Assessment (Amended) is issued when your assessment is
+      revised downwards, and a Notice of Assessment (Additional) when it is
+      revised upwards. A Notice of Assessment (Estimated) may be issued where a
+      return has not been filed by the due date; you must still file the return so
+      that the assessment can be revised.
+  - id: amend_window
+    text: >
+      If you need to make a change after receiving your tax bill, you may file an
+      amendment using the 'Amend Tax Bill' digital service at myTax Portal within
+      30 days from the date on your Notice of Assessment. IRAS will review the
+      amendment and inform you of the outcome.
+  - id: pay_while_objecting
+    text: >
+      Please note that filing an objection does not defer payment. Tax is due
+      within 1 month of the date of your Notice of Assessment, and a late payment
+      penalty applies to tax outstanding after that date even while an objection
+      is being reviewed. If your assessment is revised, any credit balance is
+      refunded within 30 days from the date of the amended tax bill.
+  - id: ya_meaning
+    text: >
+      The Year of Assessment is the year in which tax is calculated and charged on
+      income earned in the preceding calendar year. For example, Year of
+      Assessment 2026 covers income earned from 1 January to 31 December 2025.
+
+do_not:
+  - Do not comment on the figures in a specific taxpayer's assessment.
+  - Do not predict the outcome of an objection or amendment.
+  - Do not recompute tax, reliefs or a revised balance.
+  - Do not advise that payment may be withheld pending an objection.
+
+related:
+  - SOP-FIL-001   # filing mechanics; see the tie-break rule above
+  - SOP-PAY-002   # payment due date and late-payment penalties
+  - SOP-REL-005   # relief cap — HELD OUT, see sop_design.md S5

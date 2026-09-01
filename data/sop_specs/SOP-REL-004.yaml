@@ -1,0 +1,184 @@
+# SOP-REL-004 — Working Mother's Child Relief and Parenthood Tax Rebate
+#
+# Class: tax_reliefs (auto_answerable). Fourth of four indexed relief SOPs.
+#
+# SUPERSESSION (sop_design.md S10.1). This is v2.0, superseding SOP-REL-004 v1.0.
+# The change is REAL, not invented: with effect from YA 2025, WMCR changed from a
+# percentage of the mother's earned income to a fixed dollar relief for Singaporean
+# children born or adopted on or after 1 Jan 2024. Children born before that date
+# keep the percentage basis. Both bases are therefore live simultaneously, and
+# which applies depends on the child's date of birth — not on the YA alone. An
+# agent that applies the wrong basis produces a confidently wrong answer, which is
+# exactly what `applies_to_ya` plus this note exist to test.
+#
+# COMPUTATION BOUNDARY: this SOP contains the ordering rule (QCR first, WMCR takes
+# the balance), the $50,000 per-child cap, and PTR carry-forward. All three are
+# arithmetic. State them as rules; never apply them.
+
+sop_id: SOP-REL-004
+title: Working Mother's Child Relief and Parenthood Tax Rebate
+version: "2.0"
+effective_date: 2025-01-01
+supersedes: SOP-REL-004-v1.0
+applies_to_ya: [2025, 2026]
+intents: [tax_reliefs]
+indexed: true
+owner_queue: IIT-General          # INVENTED — not a real IRAS queue
+handling_target: 5_working_days   # ILLUSTRATIVE — not a real IRAS SLA
+auto_reply_permitted: true
+escalate_if:
+  - account_specific
+  - amount_computation_requested
+
+references:
+  - id: wmcr
+    url: https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs/working-mother's-child-relief-(wmcr)
+    fetched: 2026-09-01
+  - id: ptr
+    url: https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs/parenthood-tax-rebate-(ptr)
+    fetched: 2026-09-01
+
+scope: >
+  Taxpayer asks whether they qualify for Working Mother's Child Relief, how the
+  amount is determined, how child order is decided, how WMCR interacts with QCR,
+  or how the Parenthood Tax Rebate works including carry-forward and transfer.
+
+not_in_scope:
+  - text: How much WMCR or PTR this taxpayer will receive, or their resulting tax.
+    route_to: amount_computation_requested
+  - text: The taxpayer's own PTR balance or whether a claim was allowed.
+    route_to: account_specific
+  - text: Whether the total of all reliefs is limited.
+    route_to: tax_reliefs                    # -> SOP-REL-005, HELD OUT
+
+facts:
+  - text: >
+      With effect from YA 2025, WMCR changed from a percentage of an eligible
+      working mother's annual earned income to a fixed dollar tax relief, for
+      Singaporean children born or adopted on or after 1 January 2024.
+    source: wmcr
+  - text: >
+      For a qualifying Singaporean child born or adopted on or after 1 January
+      2024, WMCR is $8,000 for the first child, $10,000 for the second, and
+      $12,000 for the third and each subsequent child.
+    source: wmcr
+  - text: >
+      For a qualifying Singaporean child born or adopted before 1 January 2024,
+      WMCR is 15% of the mother's earned income for the first child, 20% for the
+      second, and 25% for the third and each subsequent child.
+    source: wmcr
+  - text: >
+      Where a child was born or adopted before 1 January 2024 but became a
+      Singapore Citizen only after that date, the fixed dollar rate applies. The
+      amount is based on the date the child became a Singapore Citizen.
+    source: wmcr
+  - text: >
+      Child order is determined by date of birth for a child born to the taxpayer
+      and their spouse or ex-spouse; by date of marriage where the child was born
+      before the marriage; by date of birth for a step-child; and by the date of
+      legal adoption for an adopted child.
+    source: wmcr
+  - text: >
+      A deceased or stillborn child is counted in determining the order of
+      children.
+    source: wmcr
+  - text: >
+      Where a mother claims WMCR for multiple children, the amounts are added
+      together and the total claim is capped at 100% of her earned income.
+    source: wmcr
+  - text: >
+      WMCR may be claimed even where the taxpayer or her husband or ex-husband has
+      already claimed QCR or Child Relief (Disability) on the same child.
+    source: wmcr
+  - text: >
+      QCR or Child Relief (Disability) is allowed first, and WMCR is limited to
+      the remaining balance. The combined cap is $50,000 per child.
+    source: wmcr
+  - text: >
+      WMCR may be claimed for YA 2026 even where the child passed away in 2025.
+    source: wmcr
+  - text: >
+      Parenthood Tax Rebate is given to tax residents, is a one-off rebate of up to
+      $20,000 per child, and may be claimed on a qualifying child only once.
+    source: ptr
+  - text: >
+      PTR amounts by child order are $5,000 for the first child, $10,000 for the
+      second, and $20,000 for the third and fourth child.
+    source: ptr
+  - text: >
+      Any unutilised PTR is carried forward to offset income tax payable in
+      subsequent years until it is fully utilised.
+    source: ptr
+  - text: >
+      Unutilised PTR may be transferred to a spouse, and where one spouse passes
+      away the surviving spouse may continue to use the credit balance remaining
+      in their respective PTR accounts.
+    source: ptr
+  - text: >
+      For PTR purposes no child is considered a member of two households, and
+      children from a previous marriage are taken into account in determining
+      child order.
+    source: ptr
+
+decision_steps:
+  - condition: Asking how much WMCR or PTR they will get, or what their tax will be
+    action: Escalate
+    reason: amount_computation_requested
+  - condition: Asking about their own PTR balance, or whether their claim was allowed
+    action: Escalate
+    reason: account_specific
+  - condition: Child born or adopted on or after 1 Jan 2024 (or became a Singapore Citizen after that date)
+    action: Apply the fixed dollar basis
+  - condition: Child born or adopted before 1 Jan 2024
+    action: Apply the percentage-of-earned-income basis
+  - condition: Asking whether total reliefs are capped
+    action: Escalate
+    reason: no_supporting_sop                # REL-005 is held out
+  - condition: Otherwise
+    action: State the qualifying basis and the ordering rule from the key facts
+
+approved_phrasing:
+  - id: wmcr_post_2024
+    text: >
+      For a qualifying Singaporean child born or adopted on or after 1 January
+      2024, Working Mother's Child Relief is a fixed amount: $8,000 for the first
+      child, $10,000 for the second, and $12,000 for the third and each subsequent
+      child.
+  - id: wmcr_pre_2024
+    text: >
+      For a qualifying Singaporean child born or adopted before 1 January 2024,
+      Working Mother's Child Relief is calculated as a percentage of your earned
+      income: 15% for the first child, 20% for the second, and 25% for the third
+      and each subsequent child.
+  - id: wmcr_ordering
+    text: >
+      You may claim Working Mother's Child Relief even if you or your husband or
+      ex-husband has already claimed Qualifying Child Relief or Child Relief
+      (Disability) on the same child. Qualifying Child Relief is allowed first,
+      and Working Mother's Child Relief is limited to the remaining balance, with a
+      combined cap of $50,000 per child.
+  - id: ptr
+    text: >
+      The Parenthood Tax Rebate is a one-off rebate for tax residents, of $5,000
+      for the first child, $10,000 for the second, and $20,000 for the third and
+      fourth child. Any unutilised amount is carried forward to offset your income
+      tax in later years until it is fully used, and it may also be transferred to
+      your spouse.
+  - id: computation_escalation
+    text: >
+      Because these reliefs interact with one another and are subject to caps, we
+      have passed your enquiry to an officer who will confirm the amounts that
+      apply to your circumstances.
+
+do_not:
+  - Do not compute a WMCR amount, a PTR balance, or resulting tax.
+  - Do not apply the percentage basis to a child born on or after 1 Jan 2024, or
+    the fixed dollar basis to a child born before that date.
+  - Do not confirm whether a specific claim has been allowed.
+  - Do not state the overall personal relief cap — escalate instead.
+
+related:
+  - SOP-REL-001   # QCR and Child Relief (Disability) — allowed first
+  - SOP-REL-005   # personal income tax relief cap — HELD OUT (sop_design.md S5)
+  - SOP-ASM-001   # amending a relief claim after the tax bill
+  - ANNEX-REL-A   # DANGLING REFERENCE — deliberate (sop_design.md S10.4)

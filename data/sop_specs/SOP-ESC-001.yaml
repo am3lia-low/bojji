@@ -1,0 +1,114 @@
+# SOP-ESC-001 — Account-specific enquiries
+#
+# Class: account_specific. Bucket: requires_account_lookup — ALWAYS ESCALATES.
+#
+# `auto_reply_permitted: false` is what puts this class in an always-escalate
+# bucket. The BUCKET map is derived from that field, so escalation policy lives in
+# the corpus rather than in code (sop_design.md S4).
+#
+# KNOWN SIMPLIFICATION (sop_design.md S3.1). "Generic versus my case" genuinely
+# cuts across every topic and structurally belongs as a flag, not a class: "what
+# is the filing deadline" and "why was MY deduction reversed" differ by a
+# possessive, not by subject matter. It is kept as a class for the prototype
+# because a flag needs a second detector and the lexical signal is weak.
+#
+# Consequence accepted in review: this class will be confused with whichever topic
+# the email is about, because topical vocabulary dominates the one-or-two-token
+# possessive signal — and the confusion lands on the unsafe side, since a missed
+# account_specific means auto-drafting about a real taxpayer's account. A lexical
+# `account_specific` BACKSTOP FLAG is therefore specified below, mirroring
+# `computation_requested`: it forces escalation on strong possessive signals
+# regardless of the predicted class. Measured, not assumed — report its precision
+# and recall alongside the computation flag.
+
+sop_id: SOP-ESC-001
+title: Account-specific enquiries
+version: "1.0"
+effective_date: 2026-01-01
+supersedes: null
+applies_to_ya: [2025, 2026]
+intents: [account_specific]
+indexed: true
+owner_queue: IIT-General          # INVENTED — not a real IRAS queue
+handling_target: 3_working_days   # ILLUSTRATIVE — not a real IRAS SLA
+auto_reply_permitted: false       # -> bucket: requires_account_lookup
+escalate_if:
+  - account_specific
+
+# Lexical backstop, applied AFTER the bucket rollup alongside `computation_requested`.
+# Detection is a rule set, not a model: auditable, free, and testable.
+backstop_flag:
+  name: account_specific_signal
+  rationale: >
+    Converts a known taxonomy compromise into a measured safety net. Fires
+    independently of the predicted class and forces escalation.
+  patterns:
+    - my (noa|notice of assessment|tax bill|refund|giro|deduction|assessment|account|case|claim|relief|payment)
+    - "why (was|did|has|is) my"
+    - "when will i (receive|get)"
+    - "i (still )?(have not|haven't|did not|didn't) receive"
+    - "my (payment|refund|return|form|appeal|objection) (was|has|is)"
+    - "status of my"
+    - "check my"
+    - reference (number|no)
+  measure: precision and recall against the scenario spec's account_specific label
+
+references:
+  - id: mytax
+    url: https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/receive-tax-bill-pay-tax-check-refunds/getting-my-tax-assessment
+    fetched: 2026-09-01
+  - id: contact
+    url: https://www.iras.gov.sg/contact-us/individual-income-tax
+    fetched: 2026-09-01
+
+scope: >
+  Any enquiry whose answer requires looking up a specific taxpayer's record: the
+  content of their own assessment, the status of their own refund, payment,
+  objection or GIRO plan, whether their return was received, or what a figure on
+  their own tax bill represents.
+
+not_in_scope:
+  - text: Generic questions about how a procedure works, with no reference to the taxpayer's own record.
+    route_to: filing / payment / assessment_and_amendment / residency / tax_reliefs
+
+facts:
+  - text: >
+      All IRAS notices and letters to taxpayers are deposited in myTax Portal at
+      mytax.iras.gov.sg, which taxpayers access using Singpass authentication.
+    source: mytax
+  - text: >
+      Taxpayers who have updated their mobile number or email address are informed
+      by SMS or email to log in to myTax Portal to view their notices or letters.
+    source: mytax
+  - text: >
+      A taxpayer may view their own assessment, payment and GIRO details through
+      the digital services at myTax Portal.
+    source: mytax
+
+decision_steps:
+  - condition: The enquiry refers to the taxpayer's own record in any way
+    action: Escalate
+    reason: requires_account_lookup
+  - condition: Always
+    action: Escalate — this class never auto-replies
+
+approved_phrasing:
+  - id: acknowledgement
+    text: >
+      Thank you for writing in. Your enquiry relates to your own tax records, so it
+      has been passed to an officer who will review your account and reply to you
+      directly. In the meantime, you may be able to view your notices, assessments
+      and payment details by logging in to myTax Portal at mytax.iras.gov.sg with
+      your Singpass.
+
+do_not:
+  - Do not state, confirm or speculate about any figure, date or status on a
+    specific taxpayer's record.
+  - Do not guess why a payment, refund or deduction did or did not occur.
+  - Do not auto-reply with substantive content — acknowledge and escalate only.
+  - Do not ask the taxpayer to send an NRIC or other identifiers by email.
+
+related:
+  - SOP-ESC-002   # hardship and waiver requests
+  - SOP-PAY-001   # generic GIRO mechanics
+  - SOP-ASM-001   # generic assessment mechanics

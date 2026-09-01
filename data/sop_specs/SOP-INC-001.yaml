@@ -1,0 +1,124 @@
+# SOP-INC-001 — Rental income
+#
+# Class: rental_income. ***HELD OUT — indexed: false*** (sop_design.md S5).
+#
+# WHOLE-CLASS HOLDOUT, distinct from REL-005. Because no INDEXED SOP declares
+# `intents: [rental_income]`, CLASS_TO_SOPS["rental_income"] resolves EMPTY, and
+# the router fires `no_supporting_sop` by derivation — it does not read a
+# hand-written bucket entry (BUILD.md S5.6). One source of truth: holding out a
+# further class later needs no code change.
+#
+# This is what makes the unanswerable case genuine rather than simulated. The
+# emails are real enquiries a citizen would send, the topic is squarely individual
+# income tax, and the agent still cannot answer — because the procedure is absent,
+# not because the question is odd. An agent that answers this from general
+# knowledge of tax has failed the test the holdout exists to set.
+#
+# Authored in full so re-indexing is a one-field change.
+
+sop_id: SOP-INC-001
+title: Rental income
+version: "1.0"
+effective_date: 2026-01-01
+supersedes: null
+applies_to_ya: [2025, 2026]
+intents: [rental_income]
+indexed: false                    # HELD OUT — excluded from the index
+owner_queue: IIT-General          # INVENTED — not a real IRAS queue
+handling_target: 5_working_days   # ILLUSTRATIVE — not a real IRAS SLA
+auto_reply_permitted: true
+escalate_if:
+  - account_specific
+  - amount_computation_requested
+
+references:
+  - id: rental_income
+    url: https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/what-is-taxable-what-is-not/income-from-property-rented-out
+    fetched: 2026-09-01
+
+scope: >
+  Taxpayer asks whether rent received is taxable, when rental income must be
+  declared, what expenses may be deducted, or how the simplified claim for rental
+  expenses works.
+
+not_in_scope:
+  - text: The taxpayer's own declared rental figures or assessment.
+    route_to: account_specific
+  - text: Computing net rental income or tax for the taxpayer.
+    route_to: amount_computation_requested
+  - text: Property tax, which is a different tax type.
+    route_to: oos_other_agency
+
+facts:
+  - text: >
+      Rent payments received from renting out a property are subject to income tax
+      and must be declared in the Income Tax Return.
+    source: rental_income
+  - text: >
+      Net rental income, after deduction of allowable expenses, is subject to
+      income tax.
+    source: rental_income
+  - text: >
+      Rental income is taxable from the date it is due and payable to the property
+      owner, not the date it is actually received. Rent due in 2025 but paid in
+      2026 is declared for Year of Assessment 2026.
+    source: rental_income
+  - text: >
+      Any amount recovered from insurance on a property that is rented out is
+      taxable and should be reported as part of income.
+    source: rental_income
+  - text: >
+      Under the simplified claim for rental expenses for tenanted residential
+      property, deemed rental expenses calculated as 15% of gross rent are
+      pre-filled in the online tax form.
+    source: rental_income
+  - text: >
+      In addition to the 15% deemed rental expenses, property owners may still
+      claim mortgage interest on the loan taken to purchase the property.
+    source: rental_income
+  - text: >
+      The amount of taxable rental income depends on whether the property is solely
+      or jointly owned.
+    source: rental_income
+
+decision_steps:
+  - condition: Asking about their own declared rental figures or assessment
+    action: Escalate
+    reason: account_specific
+  - condition: Asking IRAS to compute net rental income or tax
+    action: Escalate
+    reason: amount_computation_requested
+  - condition: Asking about property tax rather than income tax on rent
+    action: Redirect
+    reason: oos_other_agency
+  - condition: Otherwise
+    action: State the treatment of rental income from the key facts
+
+approved_phrasing:
+  - id: taxable
+    text: >
+      Rent you receive from renting out your property is subject to income tax and
+      must be declared in your Income Tax Return. It is the net rental income,
+      after deducting allowable expenses, that is taxed.
+  - id: timing
+    text: >
+      Rental income is taxable from the date it is due and payable to you, rather
+      than the date you actually receive it. For example, rent due to you in 2025
+      but paid in January 2026 is declared for Year of Assessment 2026.
+  - id: simplified_expenses
+    text: >
+      For tenanted residential property, a simplified claim is available: deemed
+      rental expenses of 15% of your gross rent are pre-filled in the online tax
+      form. You may still claim mortgage interest on the loan taken to purchase the
+      property in addition to the 15%.
+
+do_not:
+  - Do not compute net rental income, allowable expenses or tax payable.
+  - Do not confirm a taxpayer's own declared figures.
+  - Do not advise whether the simplified claim or actual expenses is more
+    advantageous for a particular taxpayer.
+  - Do not answer property tax questions from this procedure.
+
+related:
+  - SOP-FIL-001   # declaring the income in the return
+  - SOP-RTE-002   # property tax and other tax types

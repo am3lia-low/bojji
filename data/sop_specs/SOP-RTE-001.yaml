@@ -1,0 +1,110 @@
+# SOP-RTE-001 — Redirect: business and corporate income tax
+#
+# Class: oos_business_tax. Bucket: out_of_scope.
+#
+# "NO BACK DOOR" (sop_design.md S2.3). The redirect is the correct outcome, not a
+# failure — and because it is an automated action, it COUNTS TOWARD COVERAGE
+# (BUILD.md S5.6). The system is scoped to individual income tax; answering a
+# corporate question from IIT knowledge would be the failure.
+#
+# `auto_reply_permitted: true` — unlike ESC-*, this class DOES auto-reply, with a
+# redirect. Its bucket has a threshold that bites, so a low-confidence redirect
+# still escalates rather than sending the citizen to the wrong place.
+#
+# KEPT SEPARATE FROM RTE-002 by review decision: the granularity principle would
+# merge them (identical routing), but the redirect destinations are unrelated —
+# another IRAS tax type versus another agency entirely — and a wrong redirect is a
+# visible citizen-facing failure. Cost accepted: one confusable pair, ~4 fewer
+# test examples per class.
+
+sop_id: SOP-RTE-001
+title: "Redirect: business and corporate income tax"
+version: "1.0"
+effective_date: 2026-01-01
+supersedes: null
+applies_to_ya: [2025, 2026]
+intents: [oos_business_tax]
+indexed: true
+owner_queue: IIT-General          # INVENTED — not a real IRAS queue
+handling_target: same_day         # ILLUSTRATIVE — not a real IRAS SLA
+auto_reply_permitted: true
+escalate_if:
+  - account_specific
+  - amount_computation_requested
+
+references:
+  - id: sole_prop
+    url: https://www.iras.gov.sg/taxes/individual-income-tax/self-employed-and-partnerships
+    fetched: 2026-09-01
+  - id: corporate_tax
+    url: https://www.iras.gov.sg/taxes/corporate-income-tax
+    fetched: 2026-09-01
+
+scope: >
+  Enquiry concerns the tax affairs of a business rather than an individual's
+  employment income: sole proprietorship or partnership trade income, filing Form
+  B or Form P, corporate income tax, Form C-S or Form C, or business expenses and
+  capital allowances.
+
+not_in_scope:
+  - text: An individual's own employment income, reliefs, assessment or payment.
+    route_to: filing / tax_reliefs / assessment_and_amendment / payment
+  - text: GST, property tax, stamp duty, or another agency entirely.
+    route_to: oos_other_agency                # -> SOP-RTE-002
+
+facts:
+  - text: >
+      Self-employed persons and partners have distinct tax obligations covering
+      trade income, record keeping, and the calculation of business income, set out
+      in the IRAS guidance for the self-employed and partnerships.
+    source: sole_prop
+  - text: >
+      Corporate income tax is a separate tax type with its own filing obligations,
+      including Form C-S, Form C-S (Lite) and Form C.
+    source: corporate_tax
+  - text: >
+      A sole proprietor or partner declares business income in their individual
+      Income Tax Return, but the computation of that business income follows the
+      self-employed guidance rather than the employment income rules.
+    source: sole_prop
+
+decision_steps:
+  - condition: The enquiry concerns a company's tax affairs
+    action: Redirect to the corporate income tax guidance
+  - condition: The enquiry concerns sole proprietorship or partnership trade income
+    action: Redirect to the self-employed and partnerships guidance
+  - condition: The enquiry asks IRAS to compute business income or tax
+    action: Escalate
+    reason: amount_computation_requested
+  - condition: The enquiry concerns a specific business's own records or filings
+    action: Escalate
+    reason: account_specific
+  - condition: Never
+    action: Do not answer a business tax question from individual income tax knowledge
+
+approved_phrasing:
+  - id: corporate_redirect
+    text: >
+      Your enquiry relates to corporate income tax, which is handled separately
+      from individual income tax. Guidance on company filing obligations, including
+      Form C-S and Form C, is available at
+      iras.gov.sg/taxes/corporate-income-tax.
+  - id: self_employed_redirect
+    text: >
+      Your enquiry relates to income from a sole proprietorship or partnership.
+      While business income is declared in your individual Income Tax Return, it is
+      computed under separate rules. Guidance for self-employed persons and
+      partners, including record keeping and calculating business income, is
+      available at iras.gov.sg/taxes/individual-income-tax/self-employed-and-partnerships.
+
+do_not:
+  - Do not answer a business or corporate tax question using individual income tax
+    rules — redirect instead.
+  - Do not state corporate tax rates, deadlines or thresholds from this procedure.
+  - Do not compute business income, capital allowances or corporate tax.
+  - Do not treat the redirect as a refusal — it is the correct outcome, and the
+    citizen must be told exactly where to go.
+
+related:
+  - SOP-RTE-002   # other agencies and other tax types
+  - SOP-FIL-001   # individual filing obligations
