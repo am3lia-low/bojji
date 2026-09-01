@@ -1,6 +1,6 @@
 # SOP Corpus Design
 
-Companion to `architecture.md`. Defines what an SOP contains, which SOPs exist,
+Companion to `BUILD.md`. Defines what an SOP contains, which SOPs exist,
 how classes map onto them, and how retrieval works.
 
 All IRAS facts cited below were verified against live pages on 1 Sep 2026.
@@ -308,7 +308,7 @@ Only `tax_reliefs` (4 SOPs) and `payment` (2 SOPs) pull groups, so this applies 
 2 of 12 classes. It is a **secondary metric, not the headline.** The headline
 remains the risk-coverage curve.
 
-**Draft quality is evaluated separately** — see `architecture.md` S3b. A bounded
+**Draft quality is evaluated separately** — see `BUILD.md` S6.3. A bounded
 LLM-as-judge groundedness check over ~50 sampled drafts asks one binary question
 ("does this reply assert any fact not present in the provided SOP?"), with the
 same 50 reviewed by hand so judge-human agreement is reported. Narrow question,
@@ -469,7 +469,7 @@ State this in limitations; do not defend it away.
 | Per-class consequence-weighted thresholds | Per-bucket thresholds | The per-class claim was self-imposed in the Day-1 brainstorm, required by nothing in the assessment, and only 2 of 5 buckets have a threshold that bites |
 | Drafting mechanism unspecified | Template floor (SOP S4) + LLM ceiling | Runtime must produce a reply with no API key; also makes draft groundedness true by construction |
 | DistilBERT primary | MiniLM-L6 primary | ~90MB commits in plain git, removing the Hugging Face dependency from the clean-machine run |
-| Scraping "disallowed" | Fetching fine; committing avoided | Earlier framing was overstated — see S7.1 |
+| Scraping "disallowed" | Fetching fine; committing avoided | Earlier framing was overstated — see S8.1 |
 | ~800 emails | ~1,800 emails | Bucket-level calibration needs ~100 test examples per bucket |
 
 Dropped from the candidate list entirely, and not part of the taxonomy: course
