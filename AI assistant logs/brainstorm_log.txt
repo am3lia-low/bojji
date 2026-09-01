@@ -1,0 +1,1102 @@
+=========================================================
+BRAINSTORM SESSION LOG
+Topic: GovTech Data Scientist Technical Assessment (AI Track)
+Sessions: 31 August 2026 (Session 1), 1 September 2026 (Session 2)
+Participants: USER, CLAUDE
+Status at end of Session 2: SCOPE LOCKED. Day 1 of 5.
+=========================================================
+
+
+=========================================================
+SESSION 1 — 31 AUGUST 2026
+=========================================================
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+[Uploaded: Data_Science_-_Take_Home_Test__AI_Track_.pdf]
+
+Asked Claude to brainstorm ideas for the take-home, assessing scoring
+against the rubric, 5-day feasibility with coding-agent assistance, and
+failure modes. Requested a labelled .txt log at session end.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+Framed the scoring reality: Evaluation is 30% and the heaviest dimension,
+so the deciding question for any idea is whether a defensible eval set can
+be built in 5 days. Problem framing is 20% and punishes "the first thing
+that came to mind". Data thinking is 15%. Technical execution is 25% and
+Docker plus a clean README is table stakes.
+
+Proposed filter: for each idea, state in one sentence what the eval
+measures and where the labels come from.
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Proposed "Midas" — a compiled AI second brain for government + finance
+information, aimed at scattered info across IRAS, CPF, medical and AIC
+sites. Asked whether Singapore had done this, whether it was too
+ambitious, what challenges would arise, and how it would score.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+Yes, several times over, and the people grading it built it:
+SupportGoWhere eligibility checker, Ask Jamie across 70-80 sites with a
+42,000-pair knowledge base, GovBenefits. Maps almost exactly onto Annex A
+#5.
+
+Too ambitious because unbounded, not because large. "Anything government +
+finance" has no corpus boundary, so coverage can never be characterised.
+"Continually updated" cannot be demonstrated in 5 days and putting it in
+the README is a code-writeup mismatch.
+
+Key technical trap identified: eligibility is conjunctive rule sets with
+numeric thresholds. RAG over prose degrades badly — it retrieves a
+paragraph mentioning the scheme and the LLM confabulates the arithmetic.
+
+Proposed three reframes: rules-as-code hybrid, staleness-aware retrieval,
+abstention benchmark.
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Asked for alternative ideas.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+Proposed the "free ground truth" filter — invariance, holdout
+construction, or historical record. Offered six ideas ranked by how well
+they exploit it. Top three: dialect/register robustness testing,
+confabulation harness with constructed unanswerables, plain-language
+rewriting with a fidelity floor.
+
+
+=========================================================
+SESSION 2 — 1 SEPTEMBER 2026
+=========================================================
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Noted that code-switching is already explored extensively at HTX and by
+people involved in MERaLiON. Proposed stepping back to understand key
+pain points in public service or society first, then building a solution
+from there.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+Agreed, with one constraint added: look for pain that leaves a paper
+trail. Most real public-service pain is real precisely because it is hard
+to measure. Mapped four verticals — officer-facing, citizen-facing,
+business-facing, institutional — and cross-referenced against public
+Singapore paper trails (Singapore Statutes Online, Hansard, POFMA
+corrections, REACH, agency circulars, data.gov.sg).
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Asked for key examples per vertical in bullet form.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+Gave ~16 items across the four verticals, each with the friction and
+whether a public paper trail exists. Flagged bereavement and caregiver
+navigation as the most humanly compelling and the least measurable —
+recommending they be rejected knowingly rather than discovered as dead
+ends on day 4.
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Asked Claude to check the web for prior art on every item, and to add and
+vet any new ideas.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+Ran prior-art checks. Findings:
+
+TAKEN (shipped, do not touch):
+- PQ / ministerial reply drafting — GovText Hansard Analysis tool, OGP's
+  Pair Search over Hansard/judgments/legislation, and GovTech's own
+  published fine-tuning of Llama 3 and Gemma 2 on Hansard data.
+- Bereavement — MyLegacy, used by ~90% of bereaved families monthly for
+  digital death certificates; My Legacy Link extended it at hack.gov.sg
+  2025.
+- Caregiver navigation — AIC refreshed its website with a GenAI feature
+  for ageing and caregiving information.
+- LLM assurance — IMDA / AI Verify / Project Moonshot, whose Starter Kit
+  covers hallucination, undesirable content, data disclosure and
+  adversarial prompts, informed by CSA and GovTech.
+
+CROWDED ACADEMICALLY:
+- Staleness / temporal RAG — HoH, FRESCO, MemStrata.
+- Consultation synthesis and minority-view loss — DeliberationBank,
+  participatory-provenance auditing applied to Canada's AI Strategy
+  consultation.
+- Under-specification and clarifying questions — CLAMBER, ClarQ-LLM,
+  AskBench, AbstentionBench, CoCoNot. One finding worth reusing: models
+  recognise ambiguity when asked to judge it, but default to answering,
+  and retrieved context makes them *less* likely to ask.
+
+OPEN:
+- Plain-language rewriting with a fidelity floor (closest ancestor is
+  FactPICO, in medicine).
+- Tender/clause extraction *benchmarking* — commercial category ships
+  without published accuracy numbers.
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Asked for elaboration on the three surviving ideas. Challenged idea 3
+(contradiction detection) as likely already handled by government QA.
+Revealed context: applied to GovTech GASP.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+Conceded idea 3 — agencies do have clearance processes and most apparent
+contradictions are scope or version differences, so the honest result
+would be "found almost nothing".
+
+Identified GASP as GovTech Anti Scam Products, not a graduate programme.
+Team runs SATIS with the in-house rMSE classifier analysing 400,000+
+websites daily and disrupting 15,000+ monthly, and ScamShield, which has
+blocked 120,000+ scam entities since 2022.
+
+Advised against building a scam detector — worst possible team to
+out-build on their home turf without their data.
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Challenged the fidelity idea hard: why would citizens paste letters with
+PII into ChatGPT; aren't modern LLMs already careful with numbers; why not
+just read Straits Times or call the hotline. Also challenged whether
+guardrails have diminishing value as models improve.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+Conceded the weak version — frontier models do transcribe digits
+reliably, and a benchmark showing otherwise would be boring. Reframed:
+real failures are semantic (negation, conditionals, temporal anchoring,
+dropped exceptions), not numeric.
+
+Reframed the user as the *agency*, not the citizen — which dissolves the
+PII and hotline objections. Found the anchoring evidence: a 27 Feb 2023
+PQ where Leon Perera asked about a whole-of-government simplification
+movement and read out an AGC letter; Janil Puthucheary agreed but named
+the precise tension — simplification versus precision and accuracy.
+Also found LetterSG, OGP's platform for issuing official e-letters.
+
+On diminishing value: distinguished a *fix* from an *instrument*.
+Verification value is orthogonal to generation quality.
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Asked whether originality is actually required by the brief, or whether
+that constraint was self-imposed. Asked to prioritise showcasing AI
+project implementation capability.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+Owned the error. Originality is NOT required. The brief says Annex A
+items may be picked, remixed or ignored; framing asks only whether the
+angle is non-obvious; evaluation explicitly warns that novelty counts only
+together with effectiveness. The only originality rule is not recycling a
+past project.
+
+Claude had introduced the novelty constraint in Session 1 and compounded
+it across five turns. Midas would have scored badly for being unbounded
+and unmeasurable, not for being unoriginal.
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Stated strengths: systems and orchestration for backend, good
+understanding of retrieval pipelines. Shared portfolio site.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+URGENT FLAG: the user's existing public Portfolio Risk Analyst Chatbot
+already does intent classification, RAG grounding across four vector
+stores, and a hallucination guard that checks every number. The fidelity
+project would look like a re-skin, inviting the recycling question. Killed
+it on day 1.
+
+Recommended Annex A #12 (triage agent) with the contribution moved from
+drafting to **calibrated escalation** — a risk–coverage curve answering
+"what fraction of the inbox can be safely automated at what error rate".
+Rationale: calibration and uncertainty quantification are absent from the
+user's portfolio, so it demonstrates new capability.
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Asked whether to tie the project to GASP via phishing detection.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+Advised against as a project — wrong direction of data flow (citizen-to-
+agency vs impersonation-to-citizen), competing on their strongest ground
+without their data, dual-use risk of a public phishing generator, and the
+repo must stay anonymous about the organisation.
+
+Proportionate version accepted instead: `suspected_scam_report` as ONE
+intent class among ten, where correct behaviour is refusing to adjudicate
+and routing to ScamShield / 1799. This motivates per-class thresholds set
+by consequence rather than a single global cutoff.
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Worked through scoping questions: data sourcing, model choice, confidence
+estimation, escalation UI, PII in API calls, Outlook integration,
+distillation, and whether the system is genuinely agentic.
+
+
+---------------------------------------------------------
+CLAUDE & USER:
+---------------------------------------------------------
+Key resolutions:
+- CFPB consumer complaints (Hugging Face, PII pre-redacted) demoted to
+  register exemplars only, to avoid financial-services skew.
+- OpenAI chosen for the classifier because it exposes logprobs, which
+  calibration requires. Warned that rotating API keys to bypass free-tier
+  quotas breaches provider terms and must not be documented in a repo a
+  government hiring team will read.
+- Distillation reframed from LLM-to-LLM to LLM-to-encoder (DistilBERT and
+  MiniLM-L6) — CPU-viable, dockerisable, and plays to the user's prior
+  BERT work. Expected finding: the small student calibrates better than
+  the large teacher.
+- PII handled as scrub → call → rehydrate with local placeholder
+  substitution.
+- Outlook integration rejected: privacy exposure, reproducibility risk,
+  zero marks. Mock JSON inbox instead.
+- Full autonomy rejected as the wrong design AND unevaluable. Bounded
+  autonomy becomes the thesis.
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Revealed prior part-time experience as an IRAS call agent (individual and
+business income tax) and a COVID-19 call agent in 2022. Described IIT
+seasonality (filing Mar–Apr, estimates May–Jun, NOAs Jun–Jul) and the real
+escalation boundary: account-specific queries require database lookup and
+therefore escalate; generic queries do not. Noted domain expertise covers
+only IIT and BIT, and that other tax types follow different seasons.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+Switched the anchor agency to IRAS, scoped to individual income tax only.
+The user's call-centre experience supplies an operationally grounded
+escalation rule rather than an invented consequence matrix. Other tax
+types become realistic out-of-scope routing tests rather than a gap.
+
+Resolved the "there is always an SOP" problem via three distinct
+unanswerable sources: SOP holdout, account-specific queries, and
+author-recalled edge cases — each reported as a separate escalation
+reason.
+
+Could not verify a published enquiry-volume figure for CPF or HDB;
+advised against putting an unverified volume claim in the README.
+
+Rejected fine-tuning a drafting LLM: no gold reference drafts, fuzzy
+evaluation, competes with day 4, and the encoder distillation already
+supplies the fine-tuning story.
+
+
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Challenged whether intent classification, orchestration and retrieval —
+3 of 6 components — constitute recycling the framework used in a prior
+NUS Portfolio Risk Analyst Chatbot project. Asked Claude to verify
+objectively whether these are standard agentic patterns.
+
+
+---------------------------------------------------------
+CLAUDE & USER:
+---------------------------------------------------------
+Verified via search. Findings:
+
+- Routing is one of five named workflow patterns in Anthropic's
+  engineering guide: classify the input, direct it to specialized
+  downstream processes, enabling separation of concerns.
+- Anthropic's guide and LangChain's documentation converge on the same
+  taxonomy: prompt chaining, routing, parallelization,
+  orchestrator-workers, evaluator-optimizer, plus autonomous agents.
+- Routing is described as a foundational design pattern in agentic AI
+  systems, with a central router analysing intent and dispatching to a
+  handler.
+- CUSTOMER SUPPORT TRIAGE IS THE TEXTBOOK EXAMPLE of the routing pattern.
+
+Conclusion: this is the canonical pattern applied to its canonical use
+case, not a reused personal framework. Claude retracted the earlier
+suggestion to drop vector retrieval for overlap reasons — that decision
+should be made on technical merit alone (a closed 10-class taxonomy over a
+bounded corpus does not require semantic search; deterministic mapping is
+more auditable and removes a compounding failure mode).
+
+Two further findings usable in the README:
+- High-stakes auditable workflows favour constrained patterns like
+  chaining and routing because their paths are traceable end to end,
+  whereas orchestrator-workers has a wider blast radius. This sources the
+  "bounded autonomy is the design" argument.
+- Industry routing patterns commonly use a hand-picked confidence
+  threshold (e.g. fall back below 0.8) with no calibration behind it.
+  This is precisely the gap the project fills.
+
+Prior-work disclosure retained in the development narrative regardless.
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Flagged the resource-accessibility requirement: solutions must be
+functional within free-tier limits, and paid infrastructure needs must be
+documented. Noted OpenAI API is paid and asked about Gemini, OpenRouter or
+Ollama alternatives. Requested separated README draft and deliverables
+files, and an updated log. Ending Day 1 at 3am.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+Agreed — this changes the model plan, and for the better.
+
+The logprobs constraint that drove the earlier OpenAI choice dissolves
+once the architecture is looked at properly: it is the STUDENT ENCODER
+that gets calibrated, and encoders emit genuine softmax probabilities
+natively. No logprob API access is required anywhere. The teacher only
+produces training labels, which any free-tier model can do.
+
+Revised plan:
+- Teacher (labels only): Gemini free tier or OpenRouter free models
+- Runtime classifier: DistilBERT / MiniLM-L6, local, free, CPU
+- Drafting: Gemini free tier or Ollama
+- Default MODEL_BACKEND=local, so a grader with no API key runs everything
+- Fallback confidence signal if needed: self-consistency sampling
+  (model-agnostic, no special API support)
+- Paid OpenAI credits demoted to an optional documented comparison run
+
+This satisfies the free-tier requirement AND strengthens the public-sector
+story: a free, local, CPU-runnable classifier with calibrated escalation
+is a more deployable artifact than one dependent on a paid US API.
+
+Produced three companion files: implementation_plan.md, README_draft.md,
+deliverables_checklist.md.
+
+
+
+---------------------------------------------------------
+USER (correction):
+---------------------------------------------------------
+Corrected Claude on free-tier scope: the requirement is that the SOLUTION
+operates within free-tier limits. The teacher runs offline at dataset-build
+time and can therefore be a paid model. Only the runtime components — the
+drafter and the runtime classifier — must be free. Suggested teacher and
+drafter could be the same model for convenience.
+
+Also accepted Claude's catch that the encoder training is not knowledge
+distillation, and asked for all files to be renamed accordingly, while
+retaining the LLM zero-shot comparison as a baseline.
+
+Noted demo video is not a concern (prior experience building them for
+client and hackathon work); reserving 3 manual hours.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+Conceded both points and patched implementation_plan.md and
+README_draft.md.
+
+FREE-TIER, correctly scoped:
+- Runtime must be free: local CPU encoder classifier + free-tier drafter,
+  MODEL_BACKEND=local by default so a grader needs no API key.
+- Build time may be paid: synthetic email generation, optional labelling.
+  Documented as a data-preparation dependency.
+- Commit the generated dataset and trained encoder weights so no grader
+  ever re-runs a paid step.
+- One constraint retained: the email GENERATOR must differ from the model
+  used as the LLM classification baseline, or the baseline partly measures
+  self-recognition.
+
+{build} 2025 CALIBRATION (partial — page lazy-loads, ~12 of 110 seen):
+Sampled projects include a Slack RAG chatbot, a virtual agent for public
+legal information, a procurement audit tool, a multi-modal local LLM for
+business analysts, and a multi-agent orchestrator system.
+
+Three readings:
+- SCOPE: in range. These are month-long team builds; this is 5 days solo.
+  A routing agent with a calibration layer and eval harness is
+  appropriately scoped, not under-scoped.
+- SHAPE: differentiated. Every sampled description is pitched on
+  capability, not evaluation. None mention metrics or measurement. The
+  take-home weights evaluation at 30%, so the eval spine is an advantage
+  against this reference class, not a gap.
+- RISK: the demo must still LOOK like a working system, not only plots.
+  Two queues, reason chips, threshold slider, then the curve.
+
+Note: the brief frames Annex B as scope calibration, not a quality bar.
+
+=========================================================
+DAY 1 CLOSE — 1 SEPTEMBER 2026, 03:00
+=========================================================
+Scope locked. Companion documents produced. Next action on waking:
+
+1. Set up coding-agent session logging BEFORE writing any code.
+   Required deliverable; cannot be reconstructed retroactively.
+2. Repo hygiene: .gitignore, no keys committed, anonymous repo name and
+   commit messages.
+3. Scrape IRAS IIT guidance pages; write data/SOURCES.md as you fetch.
+4. Fix the intent taxonomy (~8-10 classes with escalation reasons).
+5. Verify robots.txt and terms of use per source.
+
+Day 2 is dataset day. Day 4 is calibration day and must be protected.
+=========================================================
+
+=========================================================
+LOCKED SCOPE
+=========================================================
+A bounded LangGraph triage agent for IRAS individual income tax email
+enquiries. Classifies intent, retrieves published guidance, drafts where
+safe, escalates where not. The contribution is the calibrated escalation
+mechanism, evaluated as a risk–coverage curve.
+
+Core: IIT-only scope · intents from real query patterns · synthetic corpus
+across content/style/seasonality axes · LangGraph orchestration · API
+teacher with logprobs · DistilBERT + MiniLM students · calibration with
+ECE and reliability diagrams · per-class consequence thresholds · three
+escalation reasons · PII scrub-call-rehydrate with measured recall ·
+Streamlit demo with reason chips and threshold slider.
+
+See implementation_plan.md for full detail, KIVs, future improvements,
+README outline and deliverables checklist.
+
+
+=========================================================
+OPEN ITEMS / NEXT STEPS
+=========================================================
+- DAY 1 CRITICAL PATH: scrape IRAS IIT guidance pages, write SOURCES.md,
+  fix the intent taxonomy. Nothing downstream can start without these.
+- Set up coding-agent session logging BEFORE any code is written — the
+  logs are a required deliverable and cannot be reconstructed later.
+- Verify robots.txt and terms of use for every source as it is fetched.
+- Day 2 is dataset day. Day 4 is calibration day and must be protected.
+- Keep the README honest: write result claims only after results exist.
+=========================================================
+
+=========================================================
+SESSION 3 — 1 SEPTEMBER 2026
+=========================================================
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Asked for two things: verification that IRAS IIT SOPs are complex enough to
+be a worthwhile test case and simple enough to automate, and a general repo
+architecture. Invited questions.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+Verified empirically against live IRAS pages rather than assumed.
+
+COMPLEXITY — confirmed sufficient. Measured 10-11k chars, 4-12 tables, 12-20
+conditionals, 2-8 worked examples per page. Tax residency is a 4-branch
+disjunctive test with carve-outs, a 2007 cutoff date and a definitional
+subtlety. QCR/Child Relief (Disability) stacks conjunctive conditions, caps
+($4,000/$7,500), a combined $50,000 cap with WMCR, an ordering rule, spousal
+apportionment, a 1 Jan 2024 regime split and PTR interaction. Cross-page
+dependency is real (QCR-WMCR-PTR-$80k cap). Everything is YA-versioned.
+
+Caveat: this is conjunctive numeric rule complexity, which RAG-over-prose
+handles worst. Forced design rule — the agent never computes an amount.
+
+SCRAPING — technically trivial (server-rendered Sitefinity, no JS, no auth,
+no robots.txt at all: /robots.txt 404s). But IRAS Terms of Use forbid
+reproduction or redistribution without written permission. The plan to commit
+a scraped corpus would violate the exact clause the rubric grades under
+"compliance with source licensing".
+
+Also flagged that the brief says "internal SOPs", which IRAS does not publish
+and which the README draft had quietly drifted away from.
+
+Wrote architecture.md.
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Agreed to author SOPs from public information and common knowledge. Raised
+concern about breaching policy/privacy, and about lacking time to hand-write
+them. Asked what actually goes in an SOP, and where SOPs are stored. Proposed
+designing classes around SOPs rather than adding vector search. Asked whether
+this chat and brainstorm_log.txt need to be submitted as AI declarations.
+
+
+---------------------------------------------------------
+CLAUDE & USER:
+---------------------------------------------------------
+CONFIDENTIALITY LINE — every factual claim in an SOP must trace to a public
+IRAS URL recorded in frontmatter. Prior call-centre experience is used only to
+choose which topics matter and to state the escalation boundary in principle.
+Excluded: real internal system names, queue identifiers, reference codes,
+SLAs, internal wording, taxpayer data. Every file carries a synthetic banner.
+
+AUTHORING — user writes YAML specs, LLM renders prose from public reference
+pages fetched into a gitignored scratch directory. Only derived text is
+committed. ~5 hours total.
+
+RETRIEVAL — adopted the user's reframe (classes designed around SOPs) over
+both original options. Retrieval becomes a dictionary lookup; vector search,
+embeddings and chunking all drop out of scope. Noted the consequence: retrieval
+hit-rate collapses into classification accuracy and must be dropped rather than
+reported as a tautology.
+
+Verified GIRO facts: deduction on the 6th, retry on the 20th, cancelled after
+2 consecutive months of failure, provisional plan begins May. Enumerated the
+full IIT page tree (90 pages).
+
+Wrote sop_design.md with the SOP template and a class inventory.
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Challenged the class count as too high and questioned whether offline encoders
+could handle it. Noted the scam class from the implementation plan had gone
+missing. Later challenged two specific class merges and asked whether a
+two-level taxonomy would complicate the architecture.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+Conceded the scam class was wrongly folded into a flag — the justification was
+real-world volume, but the dataset is synthetic and stratified, so volume is a
+design choice. Restored as a full class and the clearest high-consequence case.
+
+Corrected the framing on capacity: encoders are not the bottleneck (Banking77
+has 77 intents, CLINC150 has 150). The bottleneck is test-set statistics. At
+800 emails and 18 classes the test split gives ~15 examples per class, which
+cannot support a defensible per-class threshold. Recommended generating ~1,800.
+
+Retracted both class merges. The stated criterion ("similar SOP shape") was not
+a criterion; the correct one is that two leaves merge only if they route
+identically AND pull the same SOPs. Both proposed merges fail it.
+
+TWO-LEVEL TAXONOMY — resolved the complexity concern by implementing L1 as a
+deterministic rollup of the leaf softmax rather than a second classifier. One
+model, ~10 lines, BUCKET derived from SOP frontmatter. Gives ~108 test examples
+per L1 bucket for calibration versus ~30 per leaf. Yields two separately
+reported error modes. Leaves that straddle buckets (relief_child: eligibility
+vs computation) handled by an orthogonal computation_requested flag applied
+after the rollup.
+
+Final: 15 indexed classes + 3 held-out = 18 generated, over 5 routing buckets.
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Asked what else had been merged beyond the two disclosed, on the grounds that
+the classes need to be accurate. Questioned the total SOP and class count for a
+prototype. Observed that L1 classification appeared to be a manual mapping
+requiring no model training, and proposed keeping it that way since the mapping
+is arguably part of the SOP itself.
+
+
+---------------------------------------------------------
+CLAUDE & USER:
+---------------------------------------------------------
+FULL MERGE LEDGER DISCLOSED. The 14-class inventory had been cut from a ~31-item
+candidate list. Two merges were disclosed at the time; there were actually nine
+merges and seven drops.
+
+Merges that hold: filing_obligation (who-must-file + NFS), relief_child (QCR +
+WMCR + PTR, coupled by the $50k cap), oos_business_tax.
+Merges that are weak: filing_deadline_method (deadlines + late filing),
+assessment_and_amendment, residency_status (status test + Certificate of
+Residence), payment_modes_penalty.
+Merges that are wrong: oos_other_agency (CPF Board and other IRAS tax types have
+different redirects), account_specific_query absorbing refunds.
+
+Undisclosed drops: course fees / NSman / grandparent caregiver reliefs, newborn,
+retrenchment and retirement, deceased estate, platform workers and gig income,
+tax evasion reporting, refunds as a standalone class.
+
+KEY OBSERVATION — account_specific_query should not be a class. The
+generic-versus-my-case distinction cuts across nearly every topic ("what is the
+GIRO deduction date" vs "why did MY deduction fail"), exactly like
+computation_requested. It strictly belongs as an orthogonal flag. Retained as a
+class for the prototype because a flag needs a second detector and the lexical
+signal is weak, but recorded as a known simplification rather than taxonomy.
+
+L1 CONFIRMED as the user described: a hand-written leaf-to-bucket map living in
+SOP frontmatter, no second model, no second training run. Clarified one point —
+calibration does not disappear; temperature or isotonic scaling is still fitted
+on the summed L1 distribution. A fitting step, not a training run.
+
+CLASS COUNT — resolved the tension between "classes must be accurate" (which
+implies splitting) and "there are too many for a prototype" (which implies
+merging) by separating the two questions:
+  - Taxonomy SPECIFIED at 18 classes / 22 SOPs.
+  - Prototype IMPLEMENTS 13 classes / 15 SOPs, selected to cover all five
+    routing buckets and all four escalation reasons.
+Deferred classes are documented in sop_design.md S2.5, not silently dropped.
+Rejected merges are recorded in S2.6. Roughly a third less Day 1 authoring work,
+and ~41 test examples per leaf at 1,800 emails.
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Asked why tax reliefs were split across several classes rather than surfaced as
+one, whether SOPs were meant to handle singular questions, and why they were
+structured that way. Separately challenged the claim that scraping and vector
+search were "wrong", asking which four items were wrong and why. Later asked
+what the licensing terms explicitly said, and what actually constitutes
+redistributing IRAS text.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+GRANULARITY — conceded the split was wrong. SOPs had been structured one-per-
+IRAS-page, a holdover from the abandoned scraping plan that survived the pivot
+to authoring without re-examination. Corrected principle: leaf granularity is
+the COARSEST partition that still lets the drafter ground correctly, because the
+classifier's job is a routing decision at bucket level and a leaf exists only to
+select an SOP set. Under that principle all reliefs are one class. Also makes
+multi-relief emails ordinary rather than a multi_intent special case.
+
+"WRONG" RETRACTED as sloppy wording. Correct status: only committing/
+redistributing IRAS text is constrained; fetching is fine. Vector search, the
+800-email target and retrieval hit-rate were superseded design decisions, not
+external invalidity.
+
+LICENSING RECALIBRATED. Read the remainder of the IRAS Terms of Use. It requires
+written permission to hyperlink to an internal page and written notification to
+link to the homepage — placing it as early-2000s boilerplate universally not
+observed. Earlier "hard blocker" framing was overstated. The line the project
+actually relies on is copyright: expression is protected, facts are not. Tax
+rates, deadlines and thresholds are facts stated in legislation. Fetch widely;
+commit only restatements with citations.
+
+Noted the user's point that a substantial amount of IIT information already
+exists on the site but sits several navigation levels deep — this is the real
+problem framing for the README and justifies the triage premise.
+
+PROCESS FAILURE — the restructure had been proposed twice in conversation and
+offered as a question, but never applied to the file, leaving the user reading a
+stale document across three turns. Rewrote sop_design.md in full.
+
+FINAL DESIGN: 12 classes (10 indexed + 2 held out), 17 SOPs (14 indexed +
+3 held out), 5 routing buckets.
+  Auto: filing, tax_reliefs, assessment_and_amendment, payment, residency
+  Escalate: account_specific, hardship_or_waiver, scam_report
+  Redirect: oos_business_tax, oos_other_agency
+  Held out: rental_income, foreign_income_dta
+Two holdout kinds: whole-class (unanswerable -> no_supporting_sop) and
+single-SOP within an indexed class (REL-005 relief cap -> partial answer).
+
+RETRIEVAL — no search anywhere. Classifier -> BUCKET map -> calibrate ->
+CLASS_TO_SOPS map -> router -> drafter reads 1-4 markdown files. Both maps built
+at startup from SOP frontmatter, so they live in the corpus. Grounding accuracy
+becomes measurable only for the two group-pulling classes (tax_reliefs, payment)
+and is a secondary metric; the headline stays the risk-coverage curve. Revives a
+legitimate ablation slot for vector search as a measured comparison.
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Said the real class volume proportions cannot be ascertained, especially as it varies
+across time, and proposed reporting on the types of topics the agent can tackle
+instead. Asked what flag detection means. Confirmed MiniLM stays KIV and asked
+that vector search also become KIV, given SOPs are already mapped to intents.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+PER-TOPIC REPORTING ADOPTED, and it is the stronger result rather than a
+fallback. An aggregate "X% of the inbox" depends on a volume mix that is not
+published, varies seasonally, and cannot be ascertained — asserting one would be
+a fabricated denominator presented as a finding. Per-topic coverage is also
+composable: an agency knows its own mix and can multiply through to its own
+aggregate, which a single blended figure does not permit.
+
+Side effect: this settles the test-set design question raised earlier. Balanced
+sampling was a compromise under an aggregate headline; under per-topic reporting
+it is correct, because equal statistical power per topic is exactly what is
+wanted when every topic gets its own number. An aggregate may still appear as a
+clearly labelled illustration under a stated uniform-mix assumption.
+
+FLAG DETECTION EXPLAINED AND SPECIFIED. Flags are signals that cut across
+classes rather than partitioning them, applied after the bucket rollup.
+  computation_requested -> lexical rules, IMPLEMENTED AND MEASURED
+  multi_intent          -> second-highest class probability above a threshold
+                           (free; the distribution already exists)
+  under_specified       -> KIV, hard to separate from ordinary low confidence
+Emphasised that computation_requested must be measured, not merely implemented:
+a missed flag means the agent computes a relief amount, the single failure mode
+the whole design exists to prevent. Ground truth is free from the scenario spec.
+
+VECTOR SEARCH -> KIV. Agreed; SOPs declare intents: in frontmatter so the mapping
+is complete by construction. Noted the consequence: the README must argue the
+absence rather than cite a measurement, and must not drift into "we measured it".
+
+MiniLM remains KIV.
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Adopted per-topic coverage for the evaluation breakdown and asked what other
+architecture issues needed finalising. Did not follow the framing of two of the
+five raised, and challenged where "consequence-weighted thresholds" had come
+from and whether the assessment required it. Agreed to promote MiniLM to
+primary. Confirmed that automated redirects count as coverage, consistent with
+the no-back-door policy.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+THRESHOLDS — checked the provenance rather than continuing to treat it as a
+constraint. "A hand-set per-class dictionary justified by consequence" is from
+implementation_plan.md:206, written during the Day-1 brainstorm. THE ASSESSMENT
+REQUIRES NONE OF IT. Retracted the earlier framing ("the claim is thinner than
+pitched") — the correct framing is that the claim was self-imposed and can simply
+be dropped. Decision: per-BUCKET thresholds, per-class language deleted from the
+plan and README. Only auto_answerable and out_of_scope have a threshold that
+bites; the other three buckets escalate regardless. The contribution is
+calibration plus the risk-coverage curve, which stands with a single threshold.
+
+DRAFTING — nothing had specified what produces reply text when MODEL_BACKEND is
+local, which silently broke the clean-machine requirement. Decision: template
+floor, LLM ceiling. In local mode the system emits the SOP's S4 Approved Phrasing
+block with slots filled — no LLM, no key, instant. With a key present the LLM
+rewrites it for tone. Makes SOP S4 load-bearing, avoids shipping a multi-GB
+Ollama image, and yields a free template-vs-LLM ablation.
+
+DRAFT QUALITY — resolved as a consequence of the above. In local mode the reply
+is SOP text with slots filled and cannot assert a fact absent from the SOP, so
+groundedness holds by construction and is stated rather than measured. Only api
+mode can paraphrase into an error; a sampled groundedness check is warranted only
+if that mode is used.
+
+MiniLM-L6 PROMOTED TO PRIMARY. At ~90MB the weights commit via git-lfs, removing
+the Hugging Face Hub dependency from the Docker build entirely — no network, no
+account, and no partial deanonymisation of the repository. DistilBERT moves to
+KIV as the second point on the size/accuracy/calibration curve.
+
+REDIRECTS COUNT AS COVERAGE. Confirmed by the user.
+
+Also corrected stale content in architecture.md S2.3, which still described one
+SOP per class and claimed account-specific intents had no SOP.
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Confirmed the LLM stays as the email drafter and recalled that fine-tuning an
+offline drafting LLM had already been rejected. Drew the distinction between
+model confidence and model accuracy, and asked how a classifier over discrete
+classes produces confidence probabilities at all — whether it works like a neural
+network with a probability at the final output. Corrected the record that the
+drafter was already established as Gemini, which frees a different provider for
+LLM-as-judge, and asked for this to be documented properly. Raised that the OpenAI API costs money and asked about free alternatives via OpenRouter, Mistral,
+Groq or Ollama.
+
+
+---------------------------------------------------------
+CLAUDE & USER:
+---------------------------------------------------------
+MISATTRIBUTION CORRECTED. Claude had previously described the
+"consequence-weighted thresholds" phrase as self-imposed by the user in their
+Day-1 brainstorm. It was in fact authored by Claude in Session 2 and carried into
+implementation_plan.md:206. The user never chose it. The decision to drop the
+per-class refinement stands, but the attribution was wrong.
+
+CONFIDENCE MECHANISM EXPLAINED. Yes — it is the neural network situation the user
+described. MiniLM-L6 encoder -> pooled embedding (384 dims) -> linear
+classification head -> 12 logits -> softmax -> 12 probabilities summing to 1. The
+largest is the confidence, native to the architecture; the head is added at
+fine-tuning time.
+
+Confirmed the user's confidence/accuracy distinction is exactly what calibration
+measures. Raw softmax is systematically overconfident (a network reporting 0.95
+may be right 85% of the time), which is why an off-the-shelf 0.8 cutoff is
+unsound. Corrected by temperature scaling (one learned scalar dividing the logits)
+or isotonic regression, fitted on the 20% calibration split, reported as ECE plus
+reliability diagrams before and after.
+
+Noted this is also the operational argument for an encoder over an LLM
+classifier: an LLM returns text, so probabilities need logprobs (not always
+exposed) or repeated sampling with agreement measurement, whereas the encoder
+emits a calibratable distribution natively. Feeds the model-selection deliverable.
+
+WHY THRESHOLDS EXIST AT ALL — classification yields a probability; the system must
+yield an action. Converting one to the other requires a cutoff, and "always
+auto-reply" is simply a cutoff of zero. The threshold is the hinge between
+classifying and acting, and the swept threshold is what produces the
+risk-coverage curve. Only the per-class refinement was ornamental.
+
+MODEL ROLES DOCUMENTED (architecture.md S3b). Gemini drafts; the judge must not be
+Gemini. Three separation rules, all so that no model is scored on its own output:
+generator != classification baseline; drafter != judge; judge != generator.
+
+JUDGE COST — the judge need not be OpenAI. Recommended Groq free tier (fast,
+genuinely free, different model family from Gemini). Mistral free tier also
+viable. OpenRouter free models are rate-limited with a rotating roster, which
+hurts reproducibility. Judge outputs are committed to eval/results/ so a grader
+never re-runs them or holds a key; judge model id and date recorded, as free-tier
+rosters rotate.
+
+EVALUATION METHODOLOGY now benchmarking + ablation + a bounded LLM-as-judge
+groundedness check (~50 drafts, one binary question, judge-human agreement
+reported from the user's own review of the same 50).
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Asked Claude to finish the reconciliation and finalise the architecture.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+Rewrote implementation_plan.md in full rather than patching, since it had drifted
+in roughly a dozen places. Added an authority note at the top: sop_design.md wins
+on corpus and taxonomy, architecture.md wins on layout and model roles, and the
+plan is the plan of work.
+
+Reconciled README_draft.md surgically (S3.3 pipeline, S4.1 provenance and
+licensing, S5 methodology, S6 headline format, S7 model selection and free-tier
+paragraph). Sections 1, 2, 3.1, 3.2 and 11 were still accurate and left alone.
+
+Corrected a stale alarmist paragraph in architecture.md S3 that still said the
+IRAS ToU "forbid" redistribution and treated it as the binding constraint. Now
+consistent with sop_design.md S8.1: the brief's "internal SOPs" wording is the
+primary reason to author, licensing is secondary, and the operative principle is
+that copyright protects expression rather than facts.
+
+Swept all four documents for stale terminology (scraping, 800 emails, indexing 45
+/ holding out 15, per-class thresholds, retrieval hit-rate, DistilBERT primary,
+vector search, HF Hub, Colab). All remaining occurrences are deliberate negations
+or corrected values.
+
+ARCHITECTURE IS NOW FINAL. Four documents agree. No open design questions.
+
+
+---------------------------------------------------------
+USER:
+---------------------------------------------------------
+Chose temperature scaling as the calibration method. Chose Groq as judge with
+the OpenAI API slotted in as a bonus second judge. Asked Claude to do full sweep and see if anything else about the architecture was missing.
+
+
+---------------------------------------------------------
+CLAUDE:
+---------------------------------------------------------
+TEMPERATURE SCALING confirmed, and noted it is the statistically correct choice
+at this data volume rather than merely the simpler one: the calibration split is
+~72 examples per bucket, at which isotonic regression (non-parametric) would
+overfit, whereas temperature scaling fits a single scalar. Isotonic is KIV.
+
+TWO JUDGES yield three-way agreement — Groq, OpenAI and the author's own labels
+over the same ~50 drafts. Agreement across all three makes the groundedness
+result solid; divergence is itself reportable. Neither judge is Gemini, so the
+separation rules hold. OpenAI is eval-time and droppable if budget bites.
+
+FIVE ARCHITECTURE GAPS FOUND AND CLOSED (architecture.md S6):
+1. Model weights / git-lfs. Fine-tuned MiniLM-L6 is ~90MB, under GitHub's 100MB
+   limit, so it commits to PLAIN GIT with no LFS. Deliberate: with LFS a grader
+   cloning without git-lfs installed gets pointer files and a confusing failure.
+2. Docker must pin CPU-only torch (~200MB) — the default pulls CUDA wheels (~2GB)
+   that a CPU runtime never uses.
+3. Inbox schema was undefined despite being the entry point. Specified, including
+   received_at, which drives the seasonality generation axis.
+4. Gemini API failure now falls back to the template floor with the reply flagged
+   degraded — free, because the floor already exists, but stated rather than
+   improvised on Day 5.
+5. no_supporting_sop is DERIVED from an empty CLASS_TO_SOPS lookup rather than
+   hand-mapped in BUCKET. One source of truth; holding out a further SOP later
+   needs no code change.
+Plus: seeds pinned for splits, generation and training; a placeholder threshold
+of 0.5 for Day 3 so the pipeline runs end to end before calibration exists, with
+the rule that no number is reported under the placeholder.
+
+Renumbered architecture.md sections (3a/3b/3c -> 4/5/6) and synced
+implementation_plan.md.
+
+
+---------------------------------------------------------
+STATUS AT END OF SESSION 3 — ARCHITECTURE FINAL
+---------------------------------------------------------
+
+THE SYSTEM IN ONE PARAGRAPH
+A bounded LangGraph agent for IRAS individual income tax email enquiries. It
+scrubs PII, classifies the email into one of 12 intent classes with a fine-tuned
+MiniLM-L6 encoder, rolls those class probabilities up into 5 routing buckets,
+calibrates that confidence with temperature scaling, looks up the governing SOP by
+dictionary, and either drafts a reply or escalates with a stated reason. The
+contribution is the calibrated escalation mechanism, evaluated as a risk-coverage
+curve reported per topic — not the drafting.
+
+
+CORPUS
+- 17 SOPs AUTHORED, not scraped: 14 indexed, 3 held out.
+- SOPs are officer-facing HANDLING PROCEDURES, not one-per-website-page.
+- IRAS pages fetched widely into .scratch/ (gitignored) as generation input;
+  only restatements with URL citations are committed.
+- Licensing rests on COPYRIGHT (expression is protected, facts are not), not on
+  the IRAS ToU, which read literally also forbids hyperlinking and is not
+  observed in practice.
+- Confidentiality line: every factual claim traces to a public IRAS URL in
+  frontmatter. No real system names, queue ids, codes, SLAs or taxpayer data.
+- Every SOP carries a synthetic banner.
+- SOP frontmatter is the AGENCY INTEGRATION SEAM: intents: builds CLASS_TO_SOPS,
+  auto_reply_permitted/escalate_if builds BUCKET. Escalation policy is
+  corpus-derived, not hardcoded.
+
+TAXONOMY — 12 classes, 5 buckets
+  auto_answerable ......... filing, tax_reliefs, assessment_and_amendment,
+                            payment, residency
+  requires_account_lookup . account_specific
+  high_consequence ........ hardship_or_waiver, scam_report
+  out_of_scope ............ oos_business_tax, oos_other_agency
+  no_supporting_sop ....... rental_income*, foreign_income_dta*   (*held out)
+- Granularity principle: the COARSEST partition that still lets the drafter
+  ground correctly. This is why all reliefs are one class.
+- Flags applied after the rollup: computation_requested (lexical, MEASURED),
+  multi_intent (2nd-highest class probability), under_specified (KIV).
+- account_specific is a class for the prototype but is structurally a flag —
+  recorded as a known simplification.
+
+DATASET
+- ~1,800 emails, balanced across 12 classes, split 50/20/30.
+- Three axes: content, style (incl. Singlish + CFPB-grounded register), season.
+- Balance matters under per-topic reporting — no class may be starved.
+- Anti-leakage: generator model differs from the classification baseline.
+
+CLASSIFIER AND CONFIDENCE
+- MiniLM-L6 (22M) PRIMARY. DistilBERT KIV as a second point on the curve.
+- Weights commit to PLAIN GIT (~90MB, under GitHub's 100MB limit). NO git-lfs —
+  deliberately, so a grader cloning without lfs cannot get pointer files.
+- No Hugging Face Hub dependency; clean-machine run needs no network or account.
+- Confidence = softmax over the linear classification head, summed into buckets.
+- Calibrated by TEMPERATURE SCALING (one scalar) on the 20% split. Isotonic is
+  KIV — ~72 examples per bucket is too thin for a non-parametric fit.
+- Encoder over LLM justified operationally: an LLM returns text, so probabilities
+  need logprobs or repeated sampling; the encoder emits a calibratable
+  distribution natively.
+
+ROUTING
+- Retrieval is a DICTIONARY LOOKUP. No vector search, no embeddings, no index.
+- Thresholds are PER BUCKET, not per class. Only auto_answerable and
+  out_of_scope have a threshold that bites.
+- no_supporting_sop is DERIVED from an empty CLASS_TO_SOPS lookup.
+- The agent NEVER computes a tax or relief amount.
+- Escalation reasons: requires_account_lookup, high_consequence, out_of_scope,
+  no_supporting_sop, computation_requested, low_confidence.
+
+DRAFTING
+- Template floor (SOP S4 approved phrasing, no key) + Gemini ceiling (demo mode).
+- No drafting model is fine-tuned.
+- API failure degrades to the template, reply flagged degraded.
+- In template mode groundedness holds by construction.
+
+EVALUATION
+- Methodology: benchmarking + ablation + bounded LLM-as-judge.
+- Reported PER TOPIC, never as one aggregate inbox percentage — volume mix is
+  unpublished, seasonal and unascertainable. Per-topic is composable by an
+  operator. Automated redirects COUNT toward coverage.
+- Judges: Groq primary, OpenAI bonus, plus author labels = three-way agreement
+  over ~50 drafts, one binary groundedness question. Judge outputs committed.
+- Model separation: generator != baseline; drafter != judge; judge != generator.
+
+KIV
+  vector search as a measured comparison - DistilBERT second encoder -
+  isotonic regression - under_specified flag - TF-IDF leakage check -
+  hand-written adversarial set
+
+CORRECTIONS MADE THIS SESSION (worth not repeating)
+- "Consequence-weighted per-class thresholds" was authored by Claude in Session
+  2, not chosen by the user. Treating it as a requirement drove several turns of
+  unnecessary design. Checking provenance removed a constraint rather than
+  satisfying one.
+- The licensing position was initially overstated as a hard blocker. Reading the
+  full ToU (which also forbids hyperlinking) recalibrated it to boilerplate.
+- A class restructure was discussed across three turns and offered as a question
+  but never applied, leaving the user reading a stale document.
+- Nine merges and seven drops were made when first building the taxonomy; only
+  two were disclosed at the time.
+
+OPEN — DAY 2
+1. Confirm three API keys work: generator, Gemini (drafter), Groq (judge). A
+   blocked signup discovered on Day 4 would force an eval redesign on the day it
+   matters most.
+2. Verify agent-log capture on the personal laptop — run a throwaway session and
+   confirm a .jsonl appears under ~/.claude/projects/. The slug derives from the
+   working directory, so it will differ from this machine's.
+3. Repo skeleton per architecture.md S1.
+4. Write 17 YAML specs in data/sop_specs/, generate, then the human review pass
+   that enforces public-URL traceability.
+
+DOCUMENT AUTHORITY
+  sop_design.md ......... corpus, taxonomy, buckets, licensing, reporting
+  architecture.md ....... layout, the nine decisions, model roles, confidence
+  implementation_plan.md  plan of work; defers to the two above
+  README_draft.md ....... README skeleton
+All four reconciled and mutually consistent as of end of Session 3.
+
+NOTE ON THIS LOG: sessions 1 and 2 were conducted in Claude.ai; those transcripts
+were not retained (temporary chat). Session 3 was Claude Code on a work machine
+whose transcript contains employer-identifying paths and is therefore summarised
+rather than committed verbatim. All implementation-phase sessions are committed
+as raw JSONL under agent_logs/.
