@@ -48,7 +48,10 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.handle not in PAGES:
-        raise SystemExit(f"unknown handle: {args.handle}\n  see: python scripts/fetch_reference.py --list")
+        raise SystemExit(
+            f"unknown handle: {args.handle}\n"
+            "  see: python scripts/fetch_reference.py --list"
+        )
 
     text = body_text(args.handle, strip_nav=not args.raw)
     print(f"# {args.handle}\n# {PAGES[args.handle]}\n")

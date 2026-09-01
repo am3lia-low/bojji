@@ -62,6 +62,15 @@ facts:
       they claim exceeds $80,000.
     source: relief_cap
   - text: >
+      The overall personal income tax relief cap takes effect from Year of
+      Assessment 2018.
+    source: relief_cap
+  - text: >
+      The cap applies to the total of all personal reliefs taken together. It is
+      not a limit within any single relief, so it cannot be determined from the
+      rules of one relief alone.
+    source: relief_cap
+  - text: >
       Where the cap applies, the reliefs allowed are limited to $80,000, and this
       is reflected in the Notice of Assessment.
     source: relief_cap

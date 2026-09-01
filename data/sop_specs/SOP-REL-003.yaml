@@ -2,11 +2,19 @@
 #
 # Class: tax_reliefs (auto_answerable). Third of four indexed relief SOPs.
 #
-# NOTE: the source pages for both CPF and SRS relief mention the $80,000 personal
-# relief cap in passing. That fact is deliberately NOT restated here — it belongs
-# to SOP-REL-005, which is held out (sop_design.md S5). Repeating it would defeat
-# the partial-answer holdout, since the agent could answer the cap question from
-# an indexed SOP. Correct behaviour is to state eligibility and escalate the cap.
+# RELIEF CAP LEAKAGE GUARD. The $80,000 personal income tax relief cap is a
+# GLOBAL cap on the TOTAL of all reliefs (in force from YA 2018), not a property
+# of CPF or SRS relief. IRAS repeats it as a warning on most individual relief
+# pages -- it appears on 6 of the 8 relief pages fetched for this corpus, and the
+# CPF and SRS pages are among the most emphatic because contributions there are
+# irreversible. It is deliberately NOT restated here: it belongs to SOP-REL-005,
+# which is HELD OUT (sop_design.md S5).
+#
+# This suppression is what makes the partial-answer holdout real. The cap is the
+# one relief fact that cannot be derived from any single relief's rules, because
+# it is a property of the sum. If any indexed SOP restated it, the agent could
+# answer the cap question from the index and the holdout would collapse into an
+# ordinary answerable case.
 
 sop_id: SOP-REL-003
 title: CPF and SRS reliefs
