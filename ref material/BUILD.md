@@ -862,6 +862,18 @@ an 11-class taxonomy would give.
 - TF-IDF + logistic regression leakage check (15 min, high value)
 - Hand-written adversarial set (~30 emails) as an unbiased slice
 - Full EDA: class balance, length distribution, inter-class vocabulary overlap
+- **A `hardship_or_waiver` lexical flag.** `hardship_or_waiver` is already a
+  CLASS (bucket `high_consequence`, SOP-ESC-002), so an email that is a hardship
+  plea escalates today. The gap is narrower: a hardship mention *buried inside*
+  an otherwise ordinary question -- *"when is the filing deadline? also I am
+  struggling to pay and hope the penalty can be waived"* -- which the classifier
+  will likely label `filing` because most of the email is about filing. Every
+  auto-answerable SOP already declares `hardship_or_waiver_request` in
+  `escalate_if`, so the corpus expects a detector that does not yet exist.
+  Deferred rather than built: the two flags on the critical path
+  (`computation_requested`, `account_specific`) each guard a failure mode the
+  design exists to prevent, and a third detector adds scope without closing a
+  comparable risk. Stated in limitations as a known unenforced trigger.
 - **Reserve 3 hours of manual time for the demo video**
 - Batch throughput demonstration (async, rate-limit aware)
 - Interview prep: an answer on throughput and scaling architecture
