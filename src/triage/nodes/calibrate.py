@@ -28,8 +28,10 @@ bucket level (``sop_design.md`` S3).
 logits do not sum into 5 bucket logits -- summation happens in probability space,
 after the softmax. So the bucket distribution is mapped back to log space
 (``log p``) and the temperature applied there, which is the same monotonic
-correction the scaler was fitted under. ``fit_calibration.py`` fits on exactly this
-quantity, so the fit and the application agree by construction.
+correction the scaler was fitted under. The training notebook's calibration section
+fits on exactly this quantity -- through the same
+:func:`triage.models.calibration.bucket_confidences` this module mirrors -- so the
+fit and the application agree by construction.
 """
 
 from __future__ import annotations

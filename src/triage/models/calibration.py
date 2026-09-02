@@ -160,3 +160,74 @@ def fit_temperature(
 
     optimiser.step(closure)  # type: ignore[arg-type]
     return float(log_temperature.exp().item())
+
+
+#: Guards ``log(0)`` when a bucket carries no probability mass at all.
+_EPSILON: Final[float] = 1e-12
+
+
+def bucket_confidences(
+    log_probabilities: list[list[float]],
+    predicted: list[int],
+    temperature: float,
+) -> list[float]:
+    """Softmax over temperature-scaled bucket log-probabilities.
+
+    Returns the probability of the PREDICTED bucket, not the maximum.
+
+    Those differ, and the difference is the point. The predicted bucket is the one
+    holding the predicted CLASS; the argmax is the largest summed bucket. An email
+    at ``account_specific`` 0.40 with three auto-answerable classes at 0.20 each has
+    0.60 of bucket mass on ``auto_answerable`` and 0.40 on the bucket that actually
+    applies -- so ``max`` reports 0.60 for a decision made at 0.40. On the
+    calibration split the two disagree on 38 of 401 emails (9.5%), mean gap 0.109.
+
+    :func:`triage.nodes.calibrate.calibrate` returns ``p[predicted]`` and the router
+    thresholds that value, so scoring ``max`` here would fit the temperature against
+    a number the runtime never reads.
+    """
+    import math
+
+    out: list[float] = []
+    for row, index in zip(log_probabilities, predicted, strict=True):
+        scaled = [v / temperature for v in row]
+        ceiling = max(scaled)
+        exponentiated = [math.exp(v - ceiling) for v in scaled]
+        out.append(exponentiated[index] / sum(exponentiated))
+    return out
+
+
+def bucket_log_probabilities(
+    rows: Any,
+    classifier: Any,
+    bucket_of: dict[str, str],
+    batch_size: int = 64,
+) -> tuple[list[list[float]], list[int], list[int]]:
+    """Return per-email bucket log-probabilities, predictions and true buckets.
+
+    The true bucket is the bucket of the true CLASS -- the label the generator
+    recorded, mapped through the same frontmatter-derived map the runtime uses.
+    """
+    import math
+
+    from triage.nodes.calibrate import rollup
+    from triage.schemas import Bucket
+
+    order = list(Bucket)
+    index_of = {bucket: i for i, bucket in enumerate(order)}
+
+    log_probabilities: list[list[float]] = []
+    predicted: list[int] = []
+    truth: list[int] = []
+
+    for start in range(0, len(rows), batch_size):
+        chunk = rows[start : start + batch_size]
+        for row, classification in zip(
+            chunk, classifier.predict_batch([r.email.text for r in chunk]), strict=True
+        ):
+            bucket, summed = rollup(classification, bucket_of)
+            log_probabilities.append([math.log(max(summed[b], _EPSILON)) for b in order])
+            predicted.append(index_of[bucket])
+            truth.append(index_of[Bucket(bucket_of.get(row.label, Bucket.NO_SUPPORTING_SOP.value))])
+
+    return log_probabilities, predicted, truth

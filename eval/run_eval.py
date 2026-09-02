@@ -207,7 +207,8 @@ def main() -> int:
     if not scaler.fitted:
         print(
             "WARNING: calibration is NOT fitted -- these numbers must not be reported.\n"
-            "         Run: python scripts/fit_calibration.py\n",
+            "         Run the training notebook: "
+            "models/01_dataset_eda_and_training.ipynb\n",
             file=sys.stderr,
         )
 

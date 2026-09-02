@@ -224,3 +224,142 @@ def test_missing_file_loads_the_identity():
 
     assert loaded.temperature == IDENTITY_TEMPERATURE
     assert not loaded.fitted
+
+
+# --------------------------------------------------------------------------- #
+# Stage 3 as a pure transformation -- no model, no corpus predictions
+# --------------------------------------------------------------------------- #
+
+def _taxonomy_buckets() -> dict[str, str]:
+    """class -> bucket, read from config rather than from the SOP index.
+
+    The index derives its map from INDEXED SOP frontmatter, so the two held-out
+    classes are absent from it by design. The taxonomy declares all twelve, which
+    is what makes it the right reference for "did every class land where the
+    policy says it should".
+    """
+    from pathlib import Path
+
+    import yaml
+
+    root = Path(__file__).resolve().parents[1]
+    doc = yaml.safe_load((root / "config" / "taxonomy.yaml").read_text(encoding="utf-8"))
+    return {
+        cls: bucket
+        for bucket, spec in doc["buckets"].items()
+        for cls in spec["classes"]
+    }
+
+
+def test_every_class_rolls_up_to_its_declared_bucket():
+    """A one-hot distribution must land in the bucket the taxonomy declares.
+
+    Verified against synthetic distributions rather than model output, so the
+    rollup is checked as a transformation independent of how well the classifier
+    happens to be performing. The two held-out classes reach ``no_supporting_sop``
+    through ``bucket_of.get(..., NO_SUPPORTING_SOP)`` -- by derivation from an empty
+    lookup, not from a hand-written entry.
+    """
+    from triage.sop.index import build_index
+
+    declared = _taxonomy_buckets()
+    bucket_of = dict(build_index().bucket)
+
+    for cls, expected in declared.items():
+        one_hot = {c: (1.0 if c == cls else 0.0) for c in declared}
+        classification = Classification(
+            label=cls, probabilities=one_hot, model_name="stub"
+        )
+        predicted, _ = rollup(classification, bucket_of)
+        assert predicted.value == expected, cls
+
+
+def test_rollup_conserves_probability_mass():
+    """The summed bucket distribution is still a distribution."""
+    import random
+
+    from triage.sop.index import build_index
+
+    bucket_of = dict(build_index().bucket)
+    classes = sorted(_taxonomy_buckets())
+    rng = random.Random(7)
+
+    for _ in range(500):
+        weights = [rng.random() ** 3 for _ in classes]
+        total = sum(weights)
+        probabilities = {c: w / total for c, w in zip(classes, weights, strict=True)}
+        classification = Classification(
+            label=max(probabilities, key=lambda k: probabilities[k]),
+            probabilities=probabilities,
+            model_name="stub",
+        )
+        _, summed = rollup(classification, bucket_of)
+        assert sum(summed.values()) == pytest.approx(1.0, abs=1e-9)
+
+
+def test_predicted_bucket_never_follows_the_argmax():
+    """Under stress, the predicted bucket tracks the CLASS every time.
+
+    Random distributions make the class-bucket and the argmax-bucket disagree far
+    more often than real predictions do, which is the point: the property is
+    asserted where it is most likely to break. Taking the argmax would auto-reply
+    to an enquiry about a real taxpayer's record whenever several auto-answerable
+    classes outweighed one account-specific prediction.
+    """
+    import random
+
+    from triage.sop.index import build_index
+
+    bucket_of = dict(build_index().bucket)
+    classes = sorted(_taxonomy_buckets())
+    rng = random.Random(11)
+    disagreements = 0
+
+    for _ in range(500):
+        weights = [rng.random() ** 3 for _ in classes]
+        total = sum(weights)
+        probabilities = {c: w / total for c, w in zip(classes, weights, strict=True)}
+        label = max(probabilities, key=lambda k: probabilities[k])
+        classification = Classification(
+            label=label, probabilities=probabilities, model_name="stub"
+        )
+        predicted, summed = rollup(classification, bucket_of)
+
+        expected = Bucket(bucket_of.get(label, Bucket.NO_SUPPORTING_SOP.value))
+        assert predicted is expected
+        if max(summed, key=lambda b: summed[b]) is not predicted:
+            disagreements += 1
+
+    # The scenario the property exists for must actually occur in this sample.
+    assert disagreements > 0
+
+
+def test_fit_scores_the_quantity_the_router_reads():
+    """``bucket_confidences`` must return p[predicted], not max(p).
+
+    Regression test. The fit once scored ``max(p)`` over the five buckets while
+    :func:`triage.nodes.calibrate.calibrate` returns ``p[predicted]`` -- the bucket
+    of the predicted CLASS, which is not always the argmax. The temperature was
+    therefore chosen against a number the router never reads.
+
+    The case below is the one the rollup design exists to handle: ``account_specific``
+    at 0.40 is the predicted class, but three auto-answerable classes at 0.20 each
+    give ``auto_answerable`` 0.60 of bucket mass. ``max`` would report 0.60 for a
+    decision actually made at 0.40.
+    """
+    from triage.models.calibration import bucket_confidences
+
+    result = classification({
+        "filing": 0.2, "payment": 0.2, "residency": 0.2,
+        "account_specific": 0.4,
+    }, label="account_specific")
+    bucket, summed = rollup(result, BUCKET_OF)
+
+    order = list(Bucket)
+    log_probabilities = [[math.log(max(summed[b], 1e-12)) for b in order]]
+    predicted = [order.index(bucket)]
+
+    scored = bucket_confidences(log_probabilities, predicted, 1.0)[0]
+
+    assert scored == pytest.approx(0.4, abs=1e-6), "must score the predicted bucket"
+    assert scored != pytest.approx(0.6, abs=1e-6), "must not score the argmax bucket"
