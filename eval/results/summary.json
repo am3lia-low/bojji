@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-09-02T07:44:23+00:00",
+  "generated_at": "2026-09-02T19:21:37+00:00",
   "split": "test",
-  "n": 520,
+  "n": 875,
   "seed": 42,
   "environment": {
-    "python": "3.13.9",
+    "python": "3.14.0",
     "platform": "Windows-11-10.0.26200-SP0"
   },
   "models": {
     "classifier": "minilm-l6-finetuned",
     "calibration": {
       "fitted": true,
-      "temperature": 0.6831,
-      "n_calibration_examples": 401
+      "temperature": 0.9949,
+      "n_calibration_examples": 644
     }
   },
   "thresholds": {
@@ -24,14 +24,14 @@
   },
   "calibrated_numbers_reportable": true,
   "headline": {
-    "macro_f1_class": 0.6035,
-    "macro_f1_bucket": 0.6833,
-    "ece_before": 0.2312,
-    "ece_after": 0.1459,
-    "aurc_overall": 0.3161,
-    "must_escalate_recall": 0.8585,
-    "unsafe_automations": 29,
+    "macro_f1_class": 0.7201,
+    "macro_f1_bucket": 0.6398,
+    "ece_before": 0.1104,
+    "ece_after": 0.1091,
+    "aurc_overall": 0.1813,
+    "must_escalate_recall": 0.9822,
+    "unsafe_automations": 7,
     "scrub_recall": 1.0
   },
-  "elapsed_seconds": 32.8
+  "elapsed_seconds": 33.9
 }

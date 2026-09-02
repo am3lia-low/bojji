@@ -85,8 +85,19 @@ DUPLICATE_THRESHOLD: Final[float] = 0.90
 SYSTEM_WORDS: Final[tuple[str, ...]] = (
     "auto answerable", "no supporting sop", "out of scope", "account specific",
     "hardship or waiver", "standard operating procedure", "classify this",
-    "classification", "triage", "escalation bucket", "intent label",
+    "triage", "escalation bucket", "intent label",
     "sop-", "human queue", "confidence score", "routing decision",
+)
+
+#: Words that are system vocabulary in the system's sense but ordinary English in a
+#: citizen's. ``classification`` is the case: "could you confirm the classification
+#: for my case" is how someone asks about their residency status, and failing the
+#: corpus for it is the same mistake as failing "rental income" for naming its class
+#: (S4 of the training notebook). They are caught only in a phrase that no member of
+#: the public would write.
+AMBIGUOUS_SYSTEM_PHRASES: Final[tuple[str, ...]] = (
+    "classification bucket", "classification label", "classification model",
+    "classification confidence", "the classifier",
 )
 
 #: Minimum occurrences before a word's class distribution is worth reading.
@@ -157,7 +168,7 @@ def check_system_words(rows: list[dict[str, object]], report: Report) -> None:
     hits: list[tuple[str, str]] = []
     for row in rows:
         text = f"{row['subject']} {row['body']}".lower()
-        for word in SYSTEM_WORDS:
+        for word in (*SYSTEM_WORDS, *AMBIGUOUS_SYSTEM_PHRASES):
             if re.search(rf"\b{re.escape(word)}", text):
                 hits.append((str(row["id"]), word))
     if hits:
@@ -253,9 +264,19 @@ def check_boilerplate(rows: list[dict[str, object]], report: Report) -> None:
     else:
         report.ok("openings vary", detail)
 
+    # Anchored to a sign-off POSITION, not to the words anywhere in the body.
+    # "I sincerely hope my circumstances can be taken into consideration" is a
+    # sentence a person in difficulty writes; "Sincerely," on its own line is a
+    # template the generator failed to strip. Matching the bare word failed the
+    # corpus on the former.
+    placeholder = re.compile(r"\[your name\]|\[name\]|\[insert[^\]]*\]", re.I)
+    signoff = re.compile(
+        r"(?:^|\n)\s*(?:best regards|sincerely|yours (?:truly|faithfully|sincerely))"
+        r"\s*[,.]?\s*$",
+        re.I | re.M,
+    )
     artefacts = [str(r["id"]) for r in rows
-                 if re.search(r"\[your name\]|\[name\]|best regards|sincerely",
-                              str(r["body"]), re.I)]
+                 if placeholder.search(str(r["body"])) or signoff.search(str(r["body"]))]
     if artefacts:
         report.fail(f"{len(artefacts)} emails carry sign-off artefacts", ", ".join(artefacts[:5]))
     else:
@@ -280,14 +301,33 @@ def check_flag_confounding(rows: list[dict[str, object]], report: Report) -> Non
             report.ok(f"{flag} spans the taxonomy", detail)
 
 
+
+def _expected_class_count() -> int:
+    """How many classes the taxonomy declares.
+
+    Read rather than hardcoded: the class set is a projection of the SOP corpus and
+    has already changed once (12 -> 10, merging the two out-of-scope classes and
+    demoting ``account_specific`` to a flag). A literal here would turn the next
+    such change into a spurious leakage failure.
+    """
+    import yaml
+
+    path = ROOT / "config" / "taxonomy.yaml"
+    if not path.exists():
+        return 0
+    doc = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    return len(doc.get("classes") or ())
+
+
 def check_balance(rows: list[dict[str, object]], report: Report) -> None:
     print("\n0. Balance")
     counts = Counter(str(r["label"]) for r in rows)
     spread = max(counts.values()) - min(counts.values())
     detail = (f"{len(rows)} emails, {len(counts)} classes, "
               f"min {min(counts.values())}, max {max(counts.values())}")
-    if len(counts) < 12:
-        report.fail(f"only {len(counts)} of 12 classes present", detail)
+    expected = _expected_class_count()
+    if len(counts) < expected:
+        report.fail(f"only {len(counts)} of {expected} classes present", detail)
     elif spread > 2:
         report.warn("classes are unbalanced", detail)
     else:

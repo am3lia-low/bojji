@@ -1,10 +1,10 @@
 {
   "note": "Reported per reason. The headline is recall on must-escalate cases: a false escalation costs coverage and is recoverable, a false auto-reply is the citizen-facing failure.",
-  "n": 520,
-  "must_escalate_recall": 0.8585,
-  "must_escalate_support": 205,
-  "unsafe_automations": 29,
-  "false_escalations": 186,
+  "n": 875,
+  "must_escalate_recall": 0.9822,
+  "must_escalate_support": 394,
+  "unsafe_automations": 7,
+  "false_escalations": 152,
   "per_reason": [
     {
       "reason": "account_specific_signal",
@@ -12,44 +12,35 @@
       "recall": 0.0,
       "support": 0,
       "true_positive": 0,
-      "false_positive": 27,
+      "false_positive": 60,
       "false_negative": 0
     },
     {
       "reason": "computation_requested",
-      "precision": 0.3333,
-      "recall": 1.0,
-      "support": 8,
-      "true_positive": 8,
-      "false_positive": 16,
-      "false_negative": 0
+      "precision": 0.5657,
+      "recall": 0.875,
+      "support": 64,
+      "true_positive": 56,
+      "false_positive": 43,
+      "false_negative": 8
     },
     {
       "reason": "high_consequence",
-      "precision": 0.7692,
-      "recall": 0.7692,
-      "support": 78,
-      "true_positive": 60,
-      "false_positive": 18,
-      "false_negative": 18
+      "precision": 0.9061,
+      "recall": 0.988,
+      "support": 166,
+      "true_positive": 164,
+      "false_positive": 17,
+      "false_negative": 2
     },
     {
       "reason": "no_supporting_sop",
-      "precision": 0.7736,
-      "recall": 1.0,
-      "support": 82,
-      "true_positive": 82,
-      "false_positive": 24,
-      "false_negative": 0
-    },
-    {
-      "reason": "requires_account_lookup",
-      "precision": 0.2564,
-      "recall": 0.5405,
-      "support": 37,
-      "true_positive": 20,
-      "false_positive": 58,
-      "false_negative": 17
+      "precision": 0.8663,
+      "recall": 0.9878,
+      "support": 164,
+      "true_positive": 162,
+      "false_positive": 25,
+      "false_negative": 2
     }
   ]
 }

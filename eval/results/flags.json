@@ -1,42 +1,42 @@
 {
   "computation_requested": {
-    "precision": 0.4583,
-    "recall": 0.8462,
-    "f1": 0.5946,
-    "true_positive": 22,
-    "false_positive": 26,
-    "false_negative": 4,
-    "true_negative": 468,
-    "support": 26
+    "precision": 0.6207,
+    "recall": 0.9,
+    "f1": 0.7347,
+    "true_positive": 90,
+    "false_positive": 55,
+    "false_negative": 10,
+    "true_negative": 720,
+    "support": 100
   },
   "account_specific_signal": {
-    "precision": 0.575,
-    "recall": 0.4742,
-    "f1": 0.5198,
-    "true_positive": 46,
-    "false_positive": 34,
-    "false_negative": 51,
-    "true_negative": 389,
-    "support": 97
+    "precision": 0.2414,
+    "recall": 0.2625,
+    "f1": 0.2515,
+    "true_positive": 21,
+    "false_positive": 66,
+    "false_negative": 59,
+    "true_negative": 729,
+    "support": 80
   },
   "foreign_income_signal": {
     "precision": 1.0,
-    "recall": 0.7619,
-    "f1": 0.8649,
-    "true_positive": 32,
+    "recall": 0.619,
+    "f1": 0.7647,
+    "true_positive": 52,
     "false_positive": 0,
-    "false_negative": 10,
-    "true_negative": 478,
-    "support": 42
+    "false_negative": 32,
+    "true_negative": 791,
+    "support": 84
   },
   "scam_signal": {
     "precision": 1.0,
-    "recall": 0.9762,
-    "f1": 0.988,
-    "true_positive": 41,
+    "recall": 0.9524,
+    "f1": 0.9756,
+    "true_positive": 80,
     "false_positive": 0,
-    "false_negative": 1,
-    "true_negative": 478,
-    "support": 42
+    "false_negative": 4,
+    "true_negative": 791,
+    "support": 84
   }
 }

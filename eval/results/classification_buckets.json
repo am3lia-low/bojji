@@ -1,81 +1,81 @@
 {
-  "n": 520,
-  "accuracy": 0.7058,
-  "macro_f1": 0.6833,
-  "macro_precision": 0.7086,
-  "macro_recall": 0.7082,
+  "n": 875,
+  "accuracy": 0.88,
+  "macro_f1": 0.6398,
+  "macro_precision": 0.6501,
+  "macro_recall": 0.6438,
   "per_class": [
     {
       "label": "auto_answerable",
-      "precision": 0.744,
-      "recall": 0.6581,
-      "f1": 0.6984,
-      "support": 234
+      "precision": 0.9119,
+      "recall": 0.9099,
+      "f1": 0.9109,
+      "support": 455
     },
     {
       "label": "requires_account_lookup",
-      "precision": 0.2564,
-      "recall": 0.5405,
-      "f1": 0.3478,
-      "support": 37
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
     },
     {
       "label": "high_consequence",
-      "precision": 0.7692,
-      "recall": 0.7692,
-      "f1": 0.7692,
-      "support": 78
+      "precision": 0.9061,
+      "recall": 0.988,
+      "f1": 0.9452,
+      "support": 166
     },
     {
       "label": "out_of_scope",
-      "precision": 1.0,
-      "recall": 0.573,
-      "f1": 0.7286,
-      "support": 89
+      "precision": 0.566,
+      "recall": 0.3333,
+      "f1": 0.4196,
+      "support": 90
     },
     {
       "label": "no_supporting_sop",
-      "precision": 0.7736,
-      "recall": 1.0,
-      "f1": 0.8723,
-      "support": 82
+      "precision": 0.8663,
+      "recall": 0.9878,
+      "f1": 0.9231,
+      "support": 164
     }
   ],
   "confusion": {
     "auto_answerable": {
-      "auto_answerable": 154,
-      "requires_account_lookup": 58,
-      "high_consequence": 18,
-      "out_of_scope": 0,
-      "no_supporting_sop": 4
+      "auto_answerable": 414,
+      "requires_account_lookup": 0,
+      "high_consequence": 17,
+      "out_of_scope": 21,
+      "no_supporting_sop": 3
     },
     "requires_account_lookup": {
-      "auto_answerable": 17,
-      "requires_account_lookup": 20,
+      "auto_answerable": 0,
+      "requires_account_lookup": 0,
       "high_consequence": 0,
       "out_of_scope": 0,
       "no_supporting_sop": 0
     },
     "high_consequence": {
-      "auto_answerable": 18,
+      "auto_answerable": 0,
       "requires_account_lookup": 0,
-      "high_consequence": 60,
-      "out_of_scope": 0,
+      "high_consequence": 164,
+      "out_of_scope": 2,
       "no_supporting_sop": 0
     },
     "out_of_scope": {
-      "auto_answerable": 18,
+      "auto_answerable": 38,
       "requires_account_lookup": 0,
       "high_consequence": 0,
-      "out_of_scope": 51,
-      "no_supporting_sop": 20
+      "out_of_scope": 30,
+      "no_supporting_sop": 22
     },
     "no_supporting_sop": {
-      "auto_answerable": 0,
+      "auto_answerable": 2,
       "requires_account_lookup": 0,
       "high_consequence": 0,
       "out_of_scope": 0,
-      "no_supporting_sop": 82
+      "no_supporting_sop": 162
     }
   }
 }
