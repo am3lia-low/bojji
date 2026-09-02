@@ -1,0 +1,177 @@
+# Scenarios for the `oos_redirect` class.
+#
+# Situations only. The generator never sees `label`, `source_sops` or this file's
+# name -- see data/scenarios/README.md for why.
+#
+# OUT OF SCOPE -> auto-replies with a REDIRECT.
+#
+# MERGED CLASS. This file replaces `oos_business_tax.yaml` and
+# `oos_other_agency.yaml`, which were separate classes serving separate SOPs.
+#
+# Why they were merged: both roll up to `out_of_scope`, both auto-reply with a
+# redirect, and nothing downstream branches on which of the two an email was. The
+# classifier, meanwhile, could not separate them at all -- `oos_other_agency`
+# scored 0.000 on the test split, and half its errors landed on its sibling class,
+# which is to say the model had learned "this is out of scope" and could not
+# learn "which kind". A distinction that costs accuracy and buys no behaviour is
+# not a distinction worth keeping.
+#
+# What still separates them is the redirect TARGET -- CPF Board, MOM, the GST
+# division, the corporate tax line. That selection now happens in the drafter,
+# which receives both redirect SOPs and picks the applicable one, and it is
+# measured through the cited `source_sops` (BUILD.md S9.2) rather than through
+# the classifier.
+#
+# Two boundaries are the sharp ones and both are deliberately represented below:
+#   * CPF -- IRAS handles CPF RELIEF (a tax question); the CPF Board handles
+#     contributions, balances and withdrawals.
+#   * a salaried job alongside a side business, which sits right next to `filing`.
+
+label: oos_redirect
+source_sops: [SOP-RTE-001, SOP-RTE-002]
+
+scenarios:
+  # --- another agency entirely ---------------------------------------------
+  - scenario_id: OOSA-CPF-001
+    situation: >
+      Someone wants to know how much is being put into their retirement account
+      each month and whether the rate has changed.
+    persona: {role: employee, literacy: standard, register: polite}
+    season: any
+    computation_requested: false
+    account_specific: false
+    variants: 24
+    notes: CPF contribution rates -> CPF Board. Near REL-003.
+
+  - scenario_id: OOSA-CPF-002
+    situation: >
+      A person wants to know when they can take money out of their retirement
+      account.
+    persona: {role: retiree, literacy: imperfect, register: polite}
+    season: any
+    computation_requested: false
+    account_specific: false
+    variants: 22
+    notes: CPF withdrawals -> CPF Board.
+
+  - scenario_id: OOSA-MOM-001
+    situation: >
+      Someone in a dispute with their employer over unpaid salary wants to know
+      how to take it further.
+    persona: {role: employee, literacy: imperfect, register: frustrated}
+    season: any
+    computation_requested: false
+    account_specific: false
+    variants: 22
+    notes: Employment dispute -> MOM.
+
+  - scenario_id: OOSA-IR21-001
+    situation: >
+      An employer wants to know what they must do before a foreign employee
+      leaves the country.
+    persona: {role: employee, literacy: standard, register: polite}
+    season: any
+    computation_requested: false
+    account_specific: false
+    variants: 22
+    notes: Tax clearance IR21 -> employer obligation.
+
+  # --- another tax type -----------------------------------------------------
+  - scenario_id: OOSA-GST-001
+    situation: >
+      Someone wants to know whether they need to register for the consumption tax
+      now their turnover has grown.
+    persona: {role: self_employed, literacy: standard, register: polite}
+    season: any
+    computation_requested: false
+    account_specific: false
+    variants: 24
+    notes: GST -> different tax type.
+
+  - scenario_id: OOSA-PROP-001
+    situation: >
+      A person received a bill about the flat they own and is confused about which
+      tax it is.
+    persona: {role: employee, literacy: standard, register: anxious}
+    season: any
+    computation_requested: false
+    account_specific: false
+    variants: 24
+    notes: Property tax -> different tax type.
+
+  - scenario_id: OOSA-STAMP-001
+    situation: >
+      Someone buying a property wants to know what duty is payable on the
+      purchase.
+    persona: {role: employee, literacy: standard, register: polite}
+    season: any
+    computation_requested: false
+    account_specific: false
+    variants: 21
+    notes: Stamp duty -> different tax type.
+
+  # --- business and corporate ----------------------------------------------
+  - scenario_id: OOSB-SOLE-001
+    situation: >
+      Someone running a small business on their own wants to know how to declare
+      what the business earned.
+    persona: {role: self_employed, literacy: standard, register: polite}
+    season: filing
+    computation_requested: false
+    account_specific: false
+    variants: 26
+    notes: Sole proprietor trade income.
+
+  - scenario_id: OOSB-PARTNER-001
+    situation: >
+      A person in a two-person partnership wants to know who is responsible for
+      submitting what.
+    persona: {role: self_employed, literacy: standard, register: polite}
+    season: filing
+    computation_requested: false
+    account_specific: false
+    variants: 23
+    notes: Partnership, precedent partner.
+
+  - scenario_id: OOSB-COMPANY-001
+    situation: >
+      Someone who has just incorporated a company wants to know what the company
+      must submit and when.
+    persona: {role: self_employed, literacy: standard, register: polite}
+    season: any
+    computation_requested: false
+    account_specific: false
+    variants: 26
+    notes: Corporate income tax, Form C-S.
+
+  - scenario_id: OOSB-EXPENSE-001
+    situation: >
+      A person wants to know which of their business costs can be set against what
+      the business earned.
+    persona: {role: self_employed, literacy: standard, register: polite}
+    season: filing
+    computation_requested: false
+    account_specific: false
+    variants: 23
+    notes: Business expenses and deductions.
+
+  - scenario_id: OOSB-RECORD-001
+    situation: >
+      Someone selling online wants to know what records they are expected to keep.
+    persona: {role: self_employed, literacy: imperfect, register: polite}
+    season: any
+    computation_requested: false
+    account_specific: false
+    variants: 21
+    notes: Record keeping for the self-employed.
+
+  - scenario_id: OOSB-MIXED-001
+    situation: >
+      A person with both a salaried job and a small side business is unsure how
+      the two fit together on one form.
+    persona: {role: self_employed, literacy: standard, register: anxious}
+    season: filing
+    computation_requested: false
+    account_specific: false
+    variants: 22
+    notes: "HARD CASE: sits near `filing`."

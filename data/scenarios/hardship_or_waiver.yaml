@@ -3,104 +3,170 @@
 # Situations only. The generator never sees `label`, `source_sops` or this file's
 # name -- see data/scenarios/README.md for why.
 #
-# ALWAYS ESCALATES (bucket: high_consequence).
+# HIGH CONSEQUENCE -> always escalates, regardless of confidence.
 #
-# Consequence and discretion: the writer is in financial distress and the
-# outcome turns on their circumstances. No confidence score should be able to
-# authorise an automated answer here.
+# THE SEPARATION PROBLEM, AND WHAT CHANGED HERE.
+#
+# This class and `payment` were the most damaging confusion in the corpus: 35
+# errors in both directions on a 520-email test split, and dangerous in one of
+# them, because a hardship email misfiled as `payment` becomes eligible for an
+# automated answer about instalment mechanics when the person is in financial
+# distress.
+#
+# The cause was visible in the scenarios rather than in the model. A situation
+# reading "someone wants to spread what they owe over a longer period" describes
+# an instalment request, which is exactly what `payment` covers. The two classes
+# were being asked to differ on a distinction the text did not carry.
+#
+# What actually separates them is not the topic -- both are about money owed --
+# but the CIRCUMSTANCE: hardship emails describe an inability to pay arising from
+# a change in the writer's life, or ask for a charge already imposed to be undone.
+# `payment` asks how a procedure works. Every situation below therefore names the
+# circumstance, not just the request.
+#
+# What this deliberately does NOT do is plant vocabulary. No situation says
+# "hardship", "waiver", "distress" or any other word from the taxonomy: the
+# generator writes what a person in that circumstance would write, and
+# `scripts/check_leakage.py` will report it if a single token starts carrying the
+# class. Making a class learnable and making it leak are different things, and the
+# confinement scan is what tells them apart.
 
 label: hardship_or_waiver
 source_sops: [SOP-ESC-002]
 
 scenarios:
+  # --- cannot pay: the circumstance is stated, not just the shortfall -------
   - scenario_id: HARD-CANT-001
     situation: >
-      Someone has lost their job and cannot pay the bill they have just
-      received.
+      Someone has lost their job, has no income coming in, and cannot pay the bill
+      they have just received. They are frightened about what happens next.
     persona: {role: employee, literacy: standard, register: anxious}
     season: noa
     computation_requested: false
     account_specific: false
     plant_pii: [nric]
-    variants: 22
-    notes: "Plain inability to pay."
+    variants: 30
+    notes: Plain inability to pay, with the cause and the fear both present.
 
   - scenario_id: HARD-CANT-002
     situation: >
-      A self-employed person whose business has collapsed owes more than they
-      can find and is asking for help.
-    persona: {role: self_employed, literacy: imperfect, register: anxious}
+      A self-employed person whose business has collapsed owes more than they can
+      find, and has no savings left to draw on.
+    persona: {role: self_employed, literacy: standard, register: anxious}
+    season: noa
+    computation_requested: false
+    account_specific: false
+    variants: 26
+    notes: Business failure. Distinct cause, same inability.
+
+  - scenario_id: HARD-MED-001
+    situation: >
+      A person undergoing long-term medical treatment can no longer keep up with
+      the monthly amounts they agreed to, and is worried about what happens if
+      they stop.
+    persona: {role: employee, literacy: standard, register: anxious}
     season: any
     computation_requested: false
     account_specific: false
-    variants: 18
-    notes: "Business failure."
+    variants: 28
+    notes: >
+      HARD CASE by design: mentions an existing arrangement, like `payment` does.
+      What separates it is that the writer cannot sustain it, and says why.
 
-  - scenario_id: HARD-PLAN-001
+  - scenario_id: HARD-RETRENCH-001
     situation: >
-      Someone wants to spread what they owe over a longer period than they were
-      offered.
-    persona: {role: employee, literacy: standard, register: polite}
+      Someone made redundant halfway through the year is worried about a bill
+      calculated on the higher salary they no longer earn, and does not know how
+      they will meet it.
+    persona: {role: employee, literacy: standard, register: anxious}
     season: noa
     computation_requested: false
     account_specific: false
-    variants: 18
-    notes: "Longer payment plan request."
+    variants: 28
+    notes: Retrenchment mid-year.
 
+  - scenario_id: HARD-ELDER-001
+    situation: >
+      An elderly person living on a small fixed income has received a bill they
+      cannot manage and does not know who to turn to.
+    persona: {role: retiree, literacy: imperfect, register: anxious}
+    season: noa
+    computation_requested: false
+    account_specific: false
+    variants: 26
+    notes: Fixed income, low literacy.
+
+  - scenario_id: HARD-SOLE-001
+    situation: >
+      A person supporting a family on one income has had their hours cut and can
+      no longer cover what they owe alongside rent and food.
+    persona: {role: employee, literacy: imperfect, register: anxious}
+    season: any
+    computation_requested: false
+    account_specific: false
+    variants: 26
+    notes: NEW. Reduced income rather than lost income.
+
+  - scenario_id: HARD-BEREAVE-001
+    situation: >
+      Someone dealing with the death of the family member who used to handle these
+      matters has found an unpaid bill and has no way to settle it.
+    persona: {role: employee, literacy: standard, register: anxious}
+    season: any
+    computation_requested: false
+    account_specific: false
+    variants: 24
+    notes: NEW. Bereavement.
+
+  # --- asking for something already imposed to be undone -------------------
   - scenario_id: HARD-WAIVE-001
     situation: >
-      A person was charged extra for paying late and is asking for that charge
-      to be removed, explaining they were in hospital.
-    persona: {role: retiree, literacy: standard, register: anxious}
-    season: noa
+      A person was charged extra for paying late and is asking for that charge to
+      be removed, explaining that they were in hospital at the time.
+    persona: {role: employee, literacy: standard, register: anxious}
+    season: any
     computation_requested: false
     account_specific: false
-    variants: 22
-    notes: "Penalty waiver on medical grounds."
+    variants: 30
+    notes: >
+      Asks for a charge to be undone, with a reason. `payment` asks what the
+      charge IS; this asks for it to be lifted.
 
   - scenario_id: HARD-WAIVE-002
     situation: >
       Someone who missed a deadline while caring for a dying relative is asking
-      for the resulting charge to be reconsidered.
+      for the consequence of that to be set aside.
     persona: {role: employee, literacy: standard, register: anxious}
     season: any
     computation_requested: false
     account_specific: false
-    variants: 18
-    notes: "Composition waiver, bereavement."
+    variants: 28
+    notes: Caregiving. Missed deadline with cause.
 
-  - scenario_id: HARD-MED-001
+  - scenario_id: HARD-WAIVE-003
     situation: >
-      A person undergoing long-term treatment cannot keep up with instalments
-      and is worried about what happens next.
-    persona: {role: retiree, literacy: imperfect, register: anxious}
+      A person who was overseas without access to their post for several months
+      has come back to find a penalty and wants it reconsidered.
+    persona: {role: employee, literacy: standard, register: polite}
     season: any
     computation_requested: false
     account_specific: false
-    plant_pii: [nric]
-    variants: 18
-    notes: "Ongoing medical hardship."
+    variants: 24
+    notes: NEW. Absence rather than distress. Politely phrased on purpose.
 
-  - scenario_id: HARD-RETRENCH-001
+  # --- unaffordable arrangement: the boundary case, stated carefully -------
+  - scenario_id: HARD-PLAN-001
     situation: >
-      Someone made redundant mid-year is worried about a bill based on the
-      higher salary they no longer earn.
+      Someone whose income has dropped sharply cannot manage the monthly amount
+      they were offered, and is asking whether anything can be done given their
+      circumstances.
     persona: {role: employee, literacy: standard, register: anxious}
-    season: estimates
+    season: any
     computation_requested: false
     account_specific: false
-    variants: 18
-    notes: "Retrenchment."
-
-  - scenario_id: HARD-ELDER-001
-    situation: >
-      An elderly person on a small fixed income has received a bill they cannot
-      manage and does not know what to do.
-    persona: {role: retiree, literacy: imperfect, register: anxious}
-    season: noa
-    computation_requested: false
-    account_specific: false
-    plant_pii: [nric, phone]
-    variants: 16
-    notes: "Fixed-income hardship."
-
+    variants: 30
+    notes: >
+      REWRITTEN. Previously read "wants to spread what they owe over a longer
+      period", which is an instalment request and belongs to `payment`. The
+      distinguishing fact is the drop in income and the inability, not the
+      request itself.

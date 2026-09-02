@@ -14,212 +14,197 @@
 label: tax_reliefs
 source_sops: [SOP-REL-001, SOP-REL-002, SOP-REL-003, SOP-REL-004]
 
+#
+# Now also carries the account-specific situations that used to be their own
+# class. Being account-specific is a property, not a topic: the `account_specific`
+# FLAG escalates them at router reason 5, before confidence is consulted, so the
+# classifier is asked for the topic and nothing else.
 scenarios:
+
   - scenario_id: REL-CHILD-001
     situation: >
-      A parent wants to know whether they can claim something for their teenage
-      child who did some part-time work over the school holidays and earned a
-      few thousand dollars.
+      A parent wants to know whether they can claim something for their teenage child who did some part-time work over the school holidays and earned a few thousand dollars.
     persona: {role: parent, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    source_sops: [SOP-REL-001]
-    variants: 11
-    notes: "QCR $8,000 child income threshold."
+    variants: 20
+    notes: QCR $8,000 child income threshold.
 
   - scenario_id: REL-CHILD-002
     situation: >
-      Someone with a child who has a disability wants to understand what support
-      is available through the tax system and whether their child qualifies.
+      Someone with a child who has a disability wants to understand what support is available through the tax system and whether their child qualifies.
     persona: {role: parent, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    source_sops: [SOP-REL-001]
-    variants: 8
-    notes: "Child Relief (Disability), $7,500."
+    variants: 14
+    notes: Child Relief (Disability), $7,500.
 
   - scenario_id: REL-CHILD-003
     situation: >
-      A separated couple both want to claim for the same child and are unsure
-      how that is meant to work between them.
+      A separated couple both want to claim for the same child and are unsure how that is meant to work between them.
     persona: {role: parent, literacy: standard, register: anxious}
     season: filing
     computation_requested: false
     account_specific: false
-    source_sops: [SOP-REL-001]
-    variants: 8
-    notes: "Sharing by agreed apportionment."
+    variants: 14
+    notes: Sharing by agreed apportionment.
 
   - scenario_id: REL-PARENT-001
     situation: >
-      Someone supports their elderly mother who lives with them and wants to
-      know if that support is recognised.
+      Someone supports their elderly mother who lives with them and wants to know if that support is recognised.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    source_sops: [SOP-REL-002]
-    variants: 11
-    notes: "Parent Relief $9,000 living together."
+    variants: 19
+    notes: Parent Relief $9,000 living together.
 
   - scenario_id: REL-PARENT-002
     situation: >
-      A person sends money regularly to their father, who lives in his own flat
-      across town, and wonders whether it makes a difference that they do not
-      live together.
+      A person sends money regularly to their father, who lives in his own flat across town, and wonders whether it makes a difference that they do not live together.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    source_sops: [SOP-REL-002]
-    variants: 8
-    notes: "$5,500 not staying together; 8-month residence condition."
+    variants: 14
+    notes: $5,500 not staying together; 8-month residence condition.
 
   - scenario_id: REL-PARENT-003
     situation: >
-      Someone supports both parents and a grandparent, and wants to know how
-      many dependants they are allowed to include.
+      Someone supports both parents and a grandparent, and wants to know how many dependants they are allowed to include.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    source_sops: [SOP-REL-002]
-    variants: 7
-    notes: "Up to 2 dependants."
+    variants: 12
+    notes: Up to 2 dependants.
 
   - scenario_id: REL-CPF-001
     situation: >
-      A person made a voluntary top-up to their medical savings account and
-      wants to know whether that reduces what they owe.
+      A person made a voluntary top-up to their medical savings account and wants to know whether that reduces what they owe.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    source_sops: [SOP-REL-003]
-    variants: 10
-    notes: "MediSave voluntary contributions qualify."
+    variants: 17
+    notes: MediSave voluntary contributions qualify.
 
   - scenario_id: REL-CPF-002
     situation: >
-      Someone working here for a foreign company wants to know whether the
-      retirement contributions they make count for anything.
+      Someone working here for a foreign company wants to know whether the retirement contributions they make count for anything.
     persona: {role: foreigner, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    source_sops: [SOP-REL-003]
-    variants: 8
-    notes: "Overseas employment contributions do not qualify."
+    variants: 14
+    notes: Overseas employment contributions do not qualify.
 
   - scenario_id: REL-SRS-001
     situation: >
-      A foreigner has been told about a voluntary retirement savings scheme and
-      wants to know how much they are allowed to put in.
+      A foreigner has been told about a voluntary retirement savings scheme and wants to know how much they are allowed to put in.
     persona: {role: foreigner, literacy: standard, register: polite}
     season: estimates
     computation_requested: false
     account_specific: false
-    source_sops: [SOP-REL-003]
-    variants: 8
-    notes: "SRS caps: $15,300 citizen/PR, $35,700 foreigner."
+    variants: 14
+    notes: >
+      SRS caps: $15,300 citizen/PR, $35,700 foreigner.
 
   - scenario_id: REL-WMCR-001
     situation: >
-      A working mother whose child was born last year wants to understand what
-      she can claim for the child.
+      A working mother whose child was born last year wants to understand what she can claim for the child.
     persona: {role: parent, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    source_sops: [SOP-REL-004]
-    variants: 11
-    notes: "Post-1 Jan 2024: fixed dollar $8,000 first child."
+    variants: 19
+    notes: >
+      Post-1 Jan 2024: fixed dollar $8,000 first child.
 
   - scenario_id: REL-WMCR-002
     situation: >
-      A working mother with an older child, born several years ago, is confused
-      because a colleague told her the amount is worked out differently from
-      what she expected.
+      A working mother with an older child, born several years ago, is confused because a colleague told her the amount is worked out differently from what she expected.
     persona: {role: parent, literacy: standard, register: anxious}
     season: filing
     computation_requested: false
     account_specific: false
-    source_sops: [SOP-REL-004]
-    variants: 10
-    notes: "Pre-1 Jan 2024: 15% of earned income. THE SUPERSESSION CASE."
+    variants: 17
+    notes: >
+      Pre-1 Jan 2024: 15% of earned income. THE SUPERSESSION CASE.
 
   - scenario_id: REL-PTR-001
     situation: >
-      New parents want to know about the one-off rebate they have heard about,
-      and what happens if it is more than they owe this year.
+      New parents want to know about the one-off rebate they have heard about, and what happens if it is more than they owe this year.
     persona: {role: parent, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    source_sops: [SOP-REL-004]
-    variants: 8
-    notes: "PTR carry-forward and spousal transfer."
+    variants: 14
+    notes: PTR carry-forward and spousal transfer.
 
   - scenario_id: REL-MULTI-001
     situation: >
-      Someone wants to claim for both their young child and their elderly mother
-      in the same year and asks about both together.
+      Someone wants to claim for both their young child and their elderly mother in the same year and asks about both together.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    source_sops: [SOP-REL-001, SOP-REL-002]
-    variants: 8
-    notes: "MULTI-SOP: needs REL-001 AND REL-002. Grounding accuracy case."
+    variants: 14
+    notes: >
+      MULTI-SOP: needs REL-001 AND REL-002. Grounding accuracy case.
 
   - scenario_id: REL-CAP-001
     situation: >
-      A high earner has several claims going at once and wants to know whether
-      there is an overall ceiling on how much they can claim in total.
+      A high earner has several claims going at once and wants to know whether there is an overall ceiling on how much they can claim in total.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    source_sops: [SOP-REL-005]
-    variants: 8
-    notes: "PARTIAL-ANSWER CASE: the cap is in held-out REL-005."
+    variants: 14
+    notes: >
+      PARTIAL-ANSWER CASE: the cap is in held-out REL-005.
 
   - scenario_id: REL-COMP-001
     situation: >
-      A parent lists their income and their children's ages and asks to be told
-      the exact amount they will get back.
+      A parent lists their income and their children's ages and asks to be told the exact amount they will get back.
     persona: {role: parent, literacy: standard, register: polite}
     season: filing
     computation_requested: true
     account_specific: false
-    source_sops: [SOP-REL-001]
-    variants: 10
-    notes: "The failure mode the design exists to prevent."
+    variants: 17
+    notes: The failure mode the design exists to prevent.
 
   - scenario_id: REL-COMP-002
     situation: >
-      A working mother gives her salary and asks how much her child-related
-      claim will come to.
+      A working mother gives her salary and asks how much her child-related claim will come to.
     persona: {role: parent, literacy: standard, register: polite}
     season: filing
     computation_requested: true
     account_specific: false
-    source_sops: [SOP-REL-004]
-    variants: 8
-    notes: "WMCR is a percentage for pre-2024 children - tempting to compute."
+    variants: 14
+    notes: WMCR is a percentage for pre-2024 children - tempting to compute.
 
   - scenario_id: REL-ACCT-001
     situation: >
-      Someone claimed for their mother last year and this year the claim does
-      not appear on their bill, and they want to know why.
+      Someone claimed for their mother last year and this year the claim does not appear on their bill, and they want to know why.
     persona: {role: employee, literacy: standard, register: frustrated}
     season: noa
     computation_requested: false
     account_specific: true
     plant_pii: [nric]
-    source_sops: [SOP-REL-002]
-    variants: 8
-    notes: "Requires a record lookup."
+    variants: 14
+    notes: Requires a record lookup.
 
+  - scenario_id: ACCT-RELIEF-001
+    situation: >
+      A person's claim for a dependant was not allowed this year and they want to
+      know why it was rejected.
+    persona: {role: employee, literacy: standard, register: frustrated}
+    season: any
+    computation_requested: false
+    account_specific: true
+    plant_pii: [nric]
+    variants: 39
+    notes: Was its own class. Topic is a relief claim.

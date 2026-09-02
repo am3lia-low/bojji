@@ -6,7 +6,7 @@ version: "1.0"
 effective_date: 2026-01-01
 supersedes: null
 applies_to_ya: [2025, 2026]
-intents: [oos_other_agency]
+intents: [oos_redirect]
 indexed: true
 owner_queue: IIT-General
 handling_target: same_day

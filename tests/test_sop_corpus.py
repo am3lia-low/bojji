@@ -35,11 +35,16 @@ from triage.sop.index import (
 )
 from triage.sop.loader import SOP, CorpusError, load_corpus
 
-#: The 12 classes (``sop_design.md`` S2).
+#: The 10 classes (``sop_design.md`` S2).
+#:
+#: Was 12. ``account_specific`` stopped being a class: it is a property an enquiry
+#: has rather than a topic it is about, carried by the flag and escalated at router
+#: reason 5. ``oos_business_tax`` and ``oos_other_agency`` merged into
+#: ``oos_redirect``: same bucket, same action, and the classifier could not separate
+#: them (0.000 on the held-out split).
 ALL_CLASSES = [
     "filing", "tax_reliefs", "assessment_and_amendment", "payment", "residency",
-    "account_specific", "hardship_or_waiver", "scam_report",
-    "oos_business_tax", "oos_other_agency",
+    "hardship_or_waiver", "scam_report", "oos_redirect",
     "rental_income", "foreign_income_dta",
 ]
 
@@ -54,11 +59,9 @@ EXPECTED_BUCKETS = {
     "assessment_and_amendment": AUTO_ANSWERABLE,
     "payment": AUTO_ANSWERABLE,
     "residency": AUTO_ANSWERABLE,
-    "account_specific": REQUIRES_ACCOUNT_LOOKUP,
     "hardship_or_waiver": HIGH_CONSEQUENCE,
     "scam_report": HIGH_CONSEQUENCE,
-    "oos_business_tax": OUT_OF_SCOPE,
-    "oos_other_agency": OUT_OF_SCOPE,
+    "oos_redirect": OUT_OF_SCOPE,
     "rental_income": NO_SUPPORTING_SOP,
     "foreign_income_dta": NO_SUPPORTING_SOP,
 }
@@ -150,8 +153,37 @@ def test_payment_pulls_a_group(index: SOPIndex) -> None:
     assert [s.sop_id for s in index.sops_for("payment")] == ["SOP-PAY-001", "SOP-PAY-002"]
 
 
-def test_index_covers_exactly_the_ten_indexed_classes(index: SOPIndex) -> None:
+def test_index_covers_exactly_the_indexed_classes(index: SOPIndex) -> None:
     assert set(index.class_to_sops) == set(ALL_CLASSES) - set(HELD_OUT_CLASSES)
+
+
+def test_no_class_routes_to_requires_account_lookup(index: SOPIndex) -> None:
+    """The bucket is reachable through the FLAG only, never through a class.
+
+    ``account_specific`` was a class and is not any more. The distinction it asked
+    the classifier to draw was not in the text -- "how do instalments work" and
+    "what is happening with my instalment" differ by one possessive -- so it was
+    unlearnable by construction, and it pulled 63 test emails away from five other
+    classes. The condition is now carried by the ``account_specific`` flag, which
+    the router escalates at reason 5, before any confidence is consulted.
+
+    If a future frontmatter change gives some class this bucket, that is a design
+    regression rather than a detail, and it fails here.
+    """
+    assert all(bucket != REQUIRES_ACCOUNT_LOOKUP for bucket in index.bucket.values())
+
+
+def test_the_account_specific_sop_is_still_reachable(index: SOPIndex) -> None:
+    """Declaring no intent must not make SOP-ESC-001 fall out of the corpus.
+
+    It is what the officer receives when the flag fires, so it has to load and stay
+    indexed even though nothing retrieves it by class.
+    """
+    sop = index.by_id["SOP-ESC-001"]
+
+    assert sop.intents == ()
+    assert sop.indexed
+    assert not sop.auto_reply_permitted
 
 
 # --------------------------------------------------------------------------- #
@@ -191,14 +223,14 @@ def test_unanswerable_reports_exactly_the_held_out_classes(index: SOPIndex) -> N
 
 def test_escalating_classes_do_not_permit_auto_reply(index: SOPIndex) -> None:
     """The bucket must follow the frontmatter, not the other way round."""
-    for cls in ("account_specific", "hardship_or_waiver", "scam_report"):
+    for cls in ("hardship_or_waiver", "scam_report"):
         for sop in index.sops_for(cls):
             assert not sop.auto_reply_permitted, sop.sop_id
 
 
 def test_out_of_scope_classes_do_auto_reply(index: SOPIndex) -> None:
     """A redirect is an automated action and counts toward coverage (S5.6)."""
-    for cls in ("oos_business_tax", "oos_other_agency"):
+    for cls in ("oos_redirect",):
         for sop in index.sops_for(cls):
             assert sop.auto_reply_permitted, sop.sop_id
 
@@ -401,7 +433,7 @@ def test_taxonomy_yaml_matches_the_corpus() -> None:
     assert result.returncode == 0, result.stdout + result.stderr
 
 
-def test_taxonomy_labels_match_the_twelve_classes() -> None:
+def test_taxonomy_labels_match_the_classes() -> None:
     from pathlib import Path
 
     import yaml as _yaml

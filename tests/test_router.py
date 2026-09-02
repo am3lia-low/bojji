@@ -201,7 +201,7 @@ def test_computation_outranks_low_confidence(index) -> None:
 # Coverage accounting
 # --------------------------------------------------------------------------- #
 
-@pytest.mark.parametrize("cls", ["oos_business_tax", "oos_other_agency"])
+@pytest.mark.parametrize("cls", ["oos_redirect"])
 def test_confident_out_of_scope_redirects(index, cls: str) -> None:
     """A clean redirect is the correct outcome, and counts toward coverage."""
     decision = decide(index, cls, Bucket.OUT_OF_SCOPE, 0.95)
@@ -211,7 +211,7 @@ def test_confident_out_of_scope_redirects(index, cls: str) -> None:
 
 def test_uncertain_out_of_scope_escalates(index) -> None:
     """A wrong redirect sends a citizen to the wrong agency -- visible, and theirs."""
-    decision = decide(index, "oos_business_tax", Bucket.OUT_OF_SCOPE, 0.40)
+    decision = decide(index, "oos_redirect", Bucket.OUT_OF_SCOPE, 0.40)
     assert decision.action is Action.ESCALATE
     assert decision.reason is EscalationReason.LOW_CONFIDENCE
 
@@ -334,3 +334,120 @@ def test_flags_combine() -> None:
     flags = detect_flags(text)
     assert Flag.COMPUTATION_REQUESTED in flags
     assert Flag.ACCOUNT_SPECIFIC_SIGNAL in flags
+
+
+@pytest.mark.parametrize(
+    "cls", ["filing", "tax_reliefs", "payment", "residency", "assessment_and_amendment"],
+)
+def test_scam_signal_escalates_every_auto_answerable_class(index, cls: str) -> None:
+    """A misfiled fraud report must never be auto-answered with tax content.
+
+    The scam flag is a MISFILE guard: a correctly classified scam report already
+    escalates on the ``high_consequence`` bucket without consulting it. It matters
+    only when the classifier put a fraud report somewhere else, and the unsafe
+    directions are two, not one:
+
+    * redirected to another agency (``oos_redirect``), which SOP-RTE-002 has
+      always covered; and
+    * answered with substantive tax content from an auto-answerable SOP, which
+      nothing covered until these five SOPs declared the trigger.
+
+    The flag is computed from text alone and is independent of the predicted class,
+    but the router honours it only where a RETRIEVED SOP declares it -- so declaring
+    it in frontmatter is what makes it bite. That is the corpus-as-policy seam
+    working: no code change, no retrain, and the 12-class label set is untouched.
+    """
+    decision = decide(
+        index, cls, Bucket.AUTO_ANSWERABLE, 0.99, frozenset({Flag.SCAM_SIGNAL}),
+    )
+    assert decision.action is Action.ESCALATE
+    assert decision.reason is EscalationReason.SCAM_SIGNAL
+
+
+def test_scam_signal_still_escalates_an_out_of_scope_redirect(index) -> None:
+    """The original guard is unaffected: a fraud victim is not redirected away."""
+    decision = decide(
+        index, "oos_redirect", Bucket.OUT_OF_SCOPE, 0.99,
+        frozenset({Flag.SCAM_SIGNAL}),
+    )
+    assert decision.action is Action.ESCALATE
+    assert decision.reason is EscalationReason.SCAM_SIGNAL
+
+
+# --------------------------------------------------------------------------- #
+# Exhaustive invariants
+# --------------------------------------------------------------------------- #
+
+_ALWAYS_ESCALATE = {
+    Bucket.REQUIRES_ACCOUNT_LOOKUP: "account_specific",
+    Bucket.HIGH_CONSEQUENCE: "scam_report",
+}
+
+
+@pytest.mark.parametrize("bucket,cls", list(_ALWAYS_ESCALATE.items()))
+@pytest.mark.parametrize("confidence", [0.0, 0.5, 0.9, 1.0])
+def test_always_escalate_buckets_ignore_every_flag_combination(
+    index, bucket: Bucket, cls: str, confidence: float
+) -> None:
+    """No flag combination and no confidence can make these buckets act.
+
+    Swept over the full power set of flags rather than a sample: these two buckets
+    are the ones where an automated reply would be worst, so the guarantee is
+    asserted exhaustively rather than spot-checked.
+    """
+    import itertools
+
+    flags = list(Flag)
+    for size in range(len(flags) + 1):
+        for combination in itertools.combinations(flags, size):
+            decision = decide(index, cls, bucket, confidence, frozenset(combination))
+            assert decision.action is Action.ESCALATE
+            assert decision.reason is not None
+
+
+@pytest.mark.parametrize("confidence", [0.0, 0.49, 0.75, 1.0])
+def test_escalation_implies_a_reason_and_action_implies_none(
+    index, confidence: float
+) -> None:
+    """``reason`` is present exactly when the item escalated.
+
+    The officer queue groups by reason, so an escalation without one is an item
+    nobody can triage; an action carrying one would be a contradiction the demo
+    would render.
+    """
+    for bucket, cls in (
+        (Bucket.AUTO_ANSWERABLE, "filing"),
+        (Bucket.OUT_OF_SCOPE, "oos_redirect"),
+        (Bucket.REQUIRES_ACCOUNT_LOOKUP, "account_specific"),
+        (Bucket.HIGH_CONSEQUENCE, "scam_report"),
+    ):
+        decision = decide(index, cls, bucket, confidence)
+        assert (decision.action is Action.ESCALATE) == (decision.reason is not None)
+
+
+def test_threshold_boundary_escalates_strictly_below(index) -> None:
+    """The rule is ``confidence < threshold``: equality acts.
+
+    Pinned because the boundary decides coverage at the operating point, and a
+    later edit to ``<=`` would move every reported coverage figure without any
+    test noticing.
+    """
+    assert decide(index, "filing", Bucket.AUTO_ANSWERABLE, 0.7499).action is Action.ESCALATE
+    assert decide(index, "filing", Bucket.AUTO_ANSWERABLE, 0.75).action is Action.AUTO_REPLY
+
+
+@pytest.mark.parametrize("multiplier", [2.0, 3.0, 100.0])
+def test_multiplier_above_the_sweep_maximum_does_not_raise(
+    index, multiplier: float
+) -> None:
+    """The sweep pushes the multiplier past 1.0; a threshold above 1.0 is clamped.
+
+    ``BUILD.md`` S9.9 records this as one of two router bugs found by testing. The
+    clamp means "always escalate" rather than a validation error.
+    """
+    decision = decide(
+        index, "filing", Bucket.AUTO_ANSWERABLE, 0.9, multiplier=multiplier
+    )
+    assert decision.threshold is not None
+    assert decision.threshold <= 1.0
+    assert decision.action is Action.ESCALATE

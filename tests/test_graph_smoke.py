@@ -163,7 +163,7 @@ def test_escalated_items_never_reach_the_drafter(index, labels):
 
 def test_out_of_scope_redirects_and_counts_as_automated(index, labels):
     """A redirect is an automated action and belongs in the coverage numerator."""
-    state = run(index, labels, "oos_business_tax")
+    state = run(index, labels, "oos_redirect")
 
     assert state.decision.action is Action.REDIRECT
     assert state.decision.is_automated

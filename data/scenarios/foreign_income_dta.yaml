@@ -16,80 +16,75 @@ label: foreign_income_dta
 source_sops: [SOP-INC-002]
 
 scenarios:
+
   - scenario_id: FOR-TAX-001
     situation: >
-      Someone receiving money from a job they do partly overseas wants to know
-      whether it is taxable here.
+      Someone receiving money from a job they do partly overseas wants to know whether it is taxable here.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 24
-    notes: "Unanswerable: no indexed SOP."
+    variants: 48
+    notes: >
+      Unanswerable: no indexed SOP.
 
   - scenario_id: FOR-REMIT-001
     situation: >
-      A person who transferred savings earned abroad into a local bank account
-      wants to know if that transfer is taxed.
+      A person who transferred savings earned abroad into a local bank account wants to know if that transfer is taxed.
     persona: {role: employee, literacy: standard, register: anxious}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 24
-    notes: "Unanswerable."
+    variants: 48
+    notes: Unanswerable.
 
   - scenario_id: FOR-DTA-001
     situation: >
-      Someone taxed on the same income in two countries wants to know how to
-      avoid paying twice.
+      Someone taxed on the same income in two countries wants to know how to avoid paying twice.
     persona: {role: employee, literacy: standard, register: frustrated}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 24
-    notes: "Unanswerable. NEAR-MISS: adjacent to indexed RES-001."
+    variants: 48
+    notes: >
+      Unanswerable. NEAR-MISS: adjacent to indexed RES-001.
 
   - scenario_id: FOR-DIVIDEND-001
     situation: >
-      A person holding shares in a foreign company wants to know how the payouts
-      are treated here.
+      A person holding shares in a foreign company wants to know how the payouts are treated here.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 21
-    notes: "Unanswerable."
+    variants: 42
+    notes: Unanswerable.
 
   - scenario_id: FOR-TRAVEL-001
     situation: >
-      Someone whose job requires frequent travel abroad wants to know whether
-      the time spent overseas changes anything.
+      Someone whose job requires frequent travel abroad wants to know whether the time spent overseas changes anything.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 21
-    notes: "Unanswerable. Incidental-employment exception."
+    variants: 42
+    notes: Unanswerable. Incidental-employment exception.
 
   - scenario_id: FOR-CREDIT-001
     situation: >
-      A person who already paid tax in another country wants to know whether
-      that counts for anything here.
+      A person who already paid tax in another country wants to know whether that counts for anything here.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 18
-    notes: "Unanswerable."
+    variants: 36
+    notes: Unanswerable.
 
   - scenario_id: FOR-PENSION-001
     situation: >
-      Someone drawing a pension from a former employer overseas wants to know
-      how it is treated.
+      Someone drawing a pension from a former employer overseas wants to know how it is treated.
     persona: {role: retiree, literacy: standard, register: polite}
     season: any
     computation_requested: false
     account_specific: false
-    variants: 18
-    notes: "Unanswerable."
-
+    variants: 36
+    notes: Unanswerable.

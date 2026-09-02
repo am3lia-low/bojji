@@ -57,15 +57,27 @@ BUCKETS: Final[tuple[str, ...]] = (
 #:
 #: `out_of_scope` is deliberately absent: those classes DO auto-reply, with a
 #: redirect, and that redirect counts toward coverage (``BUILD.md`` S5.6).
+#: ``account_specific`` is deliberately absent: it is no longer a class. Being
+#: account-specific is a property an enquiry has, not a topic it is about, and the
+#: two read identically -- "how do instalments work" and "what is the status of my
+#: instalment plan" differ by one possessive. The condition is carried by the
+#: ``account_specific`` FLAG, which the router escalates at reason 5, before any
+#: confidence is consulted. ``requires_account_lookup`` is therefore reachable only
+#: through that flag, and ``SOP-ESC-001`` serves it while declaring no intent.
 ESCALATION_BUCKETS: Final[Mapping[str, str]] = {
-    "account_specific": REQUIRES_ACCOUNT_LOOKUP,
     "hardship_or_waiver": HIGH_CONSEQUENCE,
     "scam_report": HIGH_CONSEQUENCE,
 }
 
 #: Classes that auto-reply with a redirect rather than a substantive answer.
+#:
+#: ``oos_business_tax`` and ``oos_other_agency`` were merged into one class. They
+#: shared a bucket and an action, so the split bought nothing downstream, while the
+#: classifier could not separate them at all -- ``oos_other_agency`` scored 0.000,
+#: with half its errors landing on its sibling. Both redirect SOPs now serve the
+#: merged class, and the drafter selects the applicable redirect from the group.
 OUT_OF_SCOPE_CLASSES: Final[frozenset[str]] = frozenset({
-    "oos_business_tax", "oos_other_agency",
+    "oos_redirect",
 })
 
 

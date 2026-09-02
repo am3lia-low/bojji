@@ -6,8 +6,9 @@ version: "1.0"
 effective_date: 2026-01-01
 supersedes: null
 applies_to_ya: [2025, 2026]
-intents: [account_specific]
+intents: []
 indexed: true
+reachable_via: account_specific_flag
 owner_queue: IIT-General
 handling_target: 3_working_days
 auto_reply_permitted: false
@@ -29,6 +30,8 @@ last_reviewed: 2026-09-01
 ## 1. Scope
 
 Any enquiry whose answer requires looking up a specific taxpayer's record: the content of their own assessment, the status of their own refund, payment, objection or GIRO plan, whether their return was received, or what a figure on their own tax bill represents.
+
+**This SOP declares no intent, and no class routes to it.** Being account-specific is a property an enquiry *has*, not a topic it is *about*: the same question about an instalment plan is account-specific when it asks after the sender's own arrangement and generic when it asks how instalments work. A classifier cannot separate those from the text, because the text is nearly identical — so the condition is detected by the `account_specific` flag and escalated by the router before any confidence is consulted, and this document is what the officer receives.
 
 **Not in scope:**
 - Generic questions about how a procedure works, with no reference to the taxpayer's own record. -> escalate (`filing / payment / assessment_and_amendment / residency / tax_reliefs`)

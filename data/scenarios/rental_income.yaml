@@ -16,80 +16,74 @@ label: rental_income
 source_sops: [SOP-INC-001]
 
 scenarios:
+
   - scenario_id: RENT-TAX-001
     situation: >
-      Someone letting out a spare room wants to know whether the rent they
-      receive has to be declared.
+      Someone letting out a spare room wants to know whether the rent they receive has to be declared.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 25
-    notes: "Unanswerable: no indexed SOP."
+    variants: 50
+    notes: >
+      Unanswerable: no indexed SOP.
 
   - scenario_id: RENT-EXP-001
     situation: >
-      A landlord wants to know which of the costs of maintaining the property
-      can be set against the rent.
+      A landlord wants to know which of the costs of maintaining the property can be set against the rent.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 25
-    notes: "Unanswerable."
+    variants: 50
+    notes: Unanswerable.
 
   - scenario_id: RENT-TIMING-001
     situation: >
-      A person whose tenant paid late, in January, for months of the previous
-      year is unsure which year it belongs to.
+      A person whose tenant paid late, in January, for months of the previous year is unsure which year it belongs to.
     persona: {role: employee, literacy: standard, register: anxious}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 22
-    notes: "Unanswerable."
+    variants: 44
+    notes: Unanswerable.
 
   - scenario_id: RENT-JOINT-001
     situation: >
-      Two people who own a flat together want to know how the rent is split
-      between them for tax.
+      Two people who own a flat together want to know how the rent is split between them for tax.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 21
-    notes: "Unanswerable."
+    variants: 42
+    notes: Unanswerable.
 
   - scenario_id: RENT-SIMPLE-001
     situation: >
-      Someone has heard there is a simpler way to claim property costs without
-      keeping every receipt.
+      Someone has heard there is a simpler way to claim property costs without keeping every receipt.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 21
-    notes: "Unanswerable."
+    variants: 42
+    notes: Unanswerable.
 
   - scenario_id: RENT-VACANT-001
     situation: >
-      A landlord whose property sat empty for several months wants to know how
-      that affects things.
+      A landlord whose property sat empty for several months wants to know how that affects things.
     persona: {role: employee, literacy: imperfect, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 18
-    notes: "Unanswerable."
+    variants: 36
+    notes: Unanswerable.
 
   - scenario_id: RENT-COMP-001
     situation: >
-      Someone gives the rent received and their expenses and asks what the
-      taxable amount comes to.
+      Someone gives the rent received and their expenses and asks what the taxable amount comes to.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: true
     account_specific: false
-    variants: 18
-    notes: "Unanswerable AND computation-demanding."
-
+    variants: 36
+    notes: Unanswerable AND computation-demanding.

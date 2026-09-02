@@ -140,8 +140,20 @@ def _parse(path: Path) -> SOP:
     # exists to prevent, so an un-flagged file must not load at all.
     if meta["synthetic"] is not True:
         raise CorpusError(f"{path.name}: synthetic must be true")
-    if not meta["intents"]:
-        raise CorpusError(f"{path.name}: intents must not be empty")
+    # An SOP with no intent is normally unreachable -- nothing would ever retrieve
+    # it -- so the empty case must be declared rather than merely permitted.
+    #
+    # `reachable_via` names the non-classifier path that reaches it. SOP-ESC-001 is
+    # the case this exists for: being account-specific is a property an enquiry has
+    # rather than a topic it is about, so it is detected by the `account_specific`
+    # flag and escalated at router reason 5, before confidence is consulted. Giving
+    # it an intent would ask the classifier to separate "how do instalments work"
+    # from "what is happening with my instalment", which differ by one possessive.
+    if not meta["intents"] and not meta.get("reachable_via"):
+        raise CorpusError(
+            f"{path.name}: intents must not be empty unless reachable_via names "
+            "the path that reaches this SOP (e.g. reachable_via: account_specific_flag)"
+        )
     if not meta["references"]:
         raise CorpusError(f"{path.name}: references must not be empty -- every SOP "
                           "must trace to a public source")

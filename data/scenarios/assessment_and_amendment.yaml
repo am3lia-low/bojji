@@ -11,104 +11,114 @@
 label: assessment_and_amendment
 source_sops: [SOP-ASM-001]
 
+#
+# Now also carries the account-specific situations that used to be their own
+# class. Being account-specific is a property, not a topic: the `account_specific`
+# FLAG escalates them at router reason 5, before confidence is consulted, so the
+# classifier is asked for the topic and nothing else.
 scenarios:
+
   - scenario_id: ASM-TYPE-001
     situation: >
-      Someone received a document headed with a word in brackets they do not
-      recognise, and wants to know what kind of bill it is.
+      Someone received a document headed with a word in brackets they do not recognise, and wants to know what kind of bill it is.
     persona: {role: employee, literacy: standard, register: polite}
     season: noa
     computation_requested: false
     account_specific: false
-    variants: 20
-    notes: "Original / Amended / Additional / Estimated."
+    variants: 34
+    notes: Original / Amended / Additional / Estimated.
 
   - scenario_id: ASM-TYPE-002
     situation: >
-      A person got a second bill after already receiving one, showing a higher
-      amount, and does not understand why there are two.
+      A person got a second bill after already receiving one, showing a higher amount, and does not understand why there are two.
     persona: {role: employee, literacy: standard, register: anxious}
     season: noa
     computation_requested: false
     account_specific: false
-    variants: 16
-    notes: "NOA (Additional) after withdrawal of reliefs."
+    variants: 28
+    notes: NOA (Additional) after withdrawal of reliefs.
 
   - scenario_id: ASM-AMEND-001
     situation: >
-      Someone spotted that a claim they were entitled to is missing from their
-      bill and wants to know how to get it corrected.
+      Someone spotted that a claim they were entitled to is missing from their bill and wants to know how to get it corrected.
     persona: {role: employee, literacy: standard, register: polite}
     season: noa
     computation_requested: false
     account_specific: false
-    variants: 19
-    notes: "Amend Tax Bill within 30 days."
+    variants: 33
+    notes: Amend Tax Bill within 30 days.
 
   - scenario_id: ASM-AMEND-002
     situation: >
-      A person wants to know how long they have to object after receiving a bill
-      they disagree with.
+      A person wants to know how long they have to object after receiving a bill they disagree with.
     persona: {role: employee, literacy: standard, register: polite}
     season: noa
     computation_requested: false
     account_specific: false
-    variants: 16
-    notes: "30 days from the date on the bill."
+    variants: 28
+    notes: 30 days from the date on the bill.
 
   - scenario_id: ASM-PAY-001
     situation: >
-      Someone has objected to their bill and wants to know whether they still
-      have to pay while it is being looked at.
+      Someone has objected to their bill and wants to know whether they still have to pay while it is being looked at.
     persona: {role: employee, literacy: standard, register: anxious}
     season: noa
     computation_requested: false
     account_specific: false
-    variants: 19
-    notes: "THE TRAP: payment is NOT deferred by an objection."
+    variants: 33
+    notes: >
+      THE TRAP: payment is NOT deferred by an objection.
 
   - scenario_id: ASM-YA-001
     situation: >
-      A person is confused that a bill dated this year appears to be about money
-      they earned last year.
+      A person is confused that a bill dated this year appears to be about money they earned last year.
     persona: {role: employee, literacy: imperfect, register: polite}
     season: noa
     computation_requested: false
     account_specific: false
-    variants: 14
-    notes: "Year of Assessment vs preceding calendar year."
+    variants: 24
+    notes: Year of Assessment vs preceding calendar year.
 
   - scenario_id: ASM-EST-001
     situation: >
-      Someone who did not submit anything received a bill with a figure that
-      seems far too high, and wants to challenge it.
+      Someone who did not submit anything received a bill with a figure that seems far too high, and wants to challenge it.
     persona: {role: self_employed, literacy: standard, register: frustrated}
     season: noa
     computation_requested: false
     account_specific: false
-    variants: 16
-    notes: "TIE-BREAK CASE: disputing an estimated NOA is THIS class."
+    variants: 28
+    notes: >
+      TIE-BREAK CASE: disputing an estimated NOA is THIS class.
 
   - scenario_id: ASM-COMP-001
     situation: >
-      A person disagrees with their bill, lists what they think the correct
-      figures are, and asks to be told the revised amount.
+      A person disagrees with their bill, lists what they think the correct figures are, and asks to be told the revised amount.
     persona: {role: employee, literacy: standard, register: frustrated}
     season: noa
     computation_requested: true
     account_specific: false
-    variants: 14
-    notes: "Recomputation request."
+    variants: 24
+    notes: Recomputation request.
 
   - scenario_id: ASM-ACCT-001
     situation: >
-      Someone submitted an amendment weeks ago and wants to know whether it has
-      been dealt with.
+      Someone submitted an amendment weeks ago and wants to know whether it has been dealt with.
     persona: {role: employee, literacy: standard, register: anxious}
     season: noa
     computation_requested: false
     account_specific: true
     plant_pii: [nric]
-    variants: 16
-    notes: "Objection status requires a lookup."
+    variants: 28
+    notes: Objection status requires a lookup.
 
+  - scenario_id: ACCT-NOA-001
+    situation: >
+      Someone is looking at a figure on their own bill and cannot work out what it
+      refers to.
+    persona: {role: employee, literacy: standard, register: anxious}
+    season: any
+    computation_requested: false
+    account_specific: true
+    plant_pii: [nric]
+    variants: 40
+    notes: Was its own class. Topic is the content of an assessment.

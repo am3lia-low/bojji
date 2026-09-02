@@ -12,103 +12,94 @@ label: residency
 source_sops: [SOP-RES-001]
 
 scenarios:
+
   - scenario_id: RES-TEST-001
     situation: >
-      A foreigner who arrived partway through last year wants to know how their
-      days in the country affect the way they are taxed.
+      A foreigner who arrived partway through last year wants to know how their days in the country affect the way they are taxed.
     persona: {role: foreigner, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 19
-    notes: "183-day rule."
+    variants: 38
+    notes: 183-day rule.
 
   - scenario_id: RES-TEST-002
     situation: >
-      Someone who has been working here on and off across three years wants to
-      understand which years count for them.
+      Someone who has been working here on and off across three years wants to understand which years count for them.
     persona: {role: foreigner, literacy: standard, register: anxious}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 17
-    notes: "Three consecutive years rule."
+    variants: 34
+    notes: Three consecutive years rule.
 
   - scenario_id: RES-TEST-003
     situation: >
-      A person whose employment straddled two calendar years wants to know how
-      that period is treated.
+      A person whose employment straddled two calendar years wants to know how that period is treated.
     persona: {role: foreigner, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 15
-    notes: "Straddling employment, at least 183 days total."
+    variants: 30
+    notes: Straddling employment, at least 183 days total.
 
   - scenario_id: RES-RATE-001
     situation: >
-      Someone who spent only a couple of months in the country last year wants
-      to know what rate applies to their salary.
+      Someone who spent only a couple of months in the country last year wants to know what rate applies to their salary.
     persona: {role: foreigner, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 19
-    notes: "15% flat or progressive, whichever is higher."
+    variants: 38
+    notes: 15% flat or progressive, whichever is higher.
 
   - scenario_id: RES-RATE-002
     situation: >
-      A person receiving director's fees but not employed here wants to know how
-      those are taxed.
+      A person receiving director's fees but not employed here wants to know how those are taxed.
     persona: {role: foreigner, literacy: standard, register: polite}
     season: any
     computation_requested: false
     account_specific: false
-    variants: 15
-    notes: "24% on director's fees and other income."
+    variants: 30
+    notes: 24% on director's fees and other income.
 
   - scenario_id: RES-COR-001
     situation: >
-      Someone needs a document proving they are taxed here, because an authority
-      in another country is asking for it.
+      Someone needs a document proving they are taxed here, because an authority in another country is asking for it.
     persona: {role: employee, literacy: standard, register: polite}
     season: any
     computation_requested: false
     account_specific: false
-    variants: 20
-    notes: "Certificate of Residence, 2-3 weeks."
+    variants: 40
+    notes: Certificate of Residence, 2-3 weeks.
 
   - scenario_id: RES-COR-002
     situation: >
-      A person applied for a certificate a month ago and wants to know how it
-      will reach them.
+      A person applied for a certificate a month ago and wants to know how it will reach them.
     persona: {role: employee, literacy: standard, register: polite}
     season: any
     computation_requested: false
     account_specific: false
-    variants: 15
-    notes: "Notified by SMS/email, viewed at myTax Portal."
+    variants: 30
+    notes: Notified by SMS/email, viewed at myTax Portal.
 
   - scenario_id: RES-COMP-001
     situation: >
-      A foreigner gives their salary and arrival date and asks to be told what
-      they will be taxed.
+      A foreigner gives their salary and arrival date and asks to be told what they will be taxed.
     persona: {role: foreigner, literacy: standard, register: polite}
     season: filing
     computation_requested: true
     account_specific: false
-    variants: 15
-    notes: "Rate selection plus arithmetic."
+    variants: 30
+    notes: Rate selection plus arithmetic.
 
   - scenario_id: RES-ACCT-001
     situation: >
-      Someone wants confirmation of which status was applied to them personally
-      for a particular year.
+      Someone wants confirmation of which status was applied to them personally for a particular year.
     persona: {role: foreigner, literacy: standard, register: anxious}
     season: noa
     computation_requested: false
     account_specific: true
     plant_pii: [nric]
-    variants: 15
-    notes: "Own status requires a lookup."
-
+    variants: 30
+    notes: Own status requires a lookup.

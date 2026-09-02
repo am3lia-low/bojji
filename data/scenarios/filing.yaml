@@ -10,177 +10,199 @@
 label: filing
 source_sops: [SOP-FIL-001]
 
+#
+# Now also carries the account-specific situations that used to be their own
+# class. Being account-specific is a property, not a topic: the `account_specific`
+# FLAG escalates them at router reason 5, before confidence is consulted, so the
+# classifier is asked for the topic and nothing else.
 scenarios:
-  # --- answerable: obligation --------------------------------------------------
+
   - scenario_id: FIL-OBLIG-001
     situation: >
-      Someone started their first job partway through last year and is unsure
-      whether the amount they earned means they need to submit anything to the
-      tax authority at all.
+      Someone started their first job partway through last year and is unsure whether the amount they earned means they need to submit anything to the tax authority at all.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 13
-    notes: Covers the $22,000 total income threshold without asking for a sum.
+    variants: 19
+    notes: >
+      Covers the $22,000 total income threshold without asking for a sum.
 
   - scenario_id: FIL-OBLIG-002
     situation: >
-      A person earns a small amount on the side from freelance design work,
-      alongside a salaried job, and wonders if that side income changes their
-      obligations.
+      A person earns a small amount on the side from freelance design work, alongside a salaried job, and wonders if that side income changes their obligations.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 12
+    variants: 17
     notes: Covers the $6,000 self-employment net profit threshold.
 
   - scenario_id: FIL-OBLIG-003
     situation: >
-      A foreigner who worked in Singapore for part of last year before moving
-      away wants to know if they still have to submit anything here.
+      A foreigner who worked in Singapore for part of last year before moving away wants to know if they still have to submit anything here.
     persona: {role: foreigner, literacy: standard, register: anxious}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 9
+    variants: 13
     notes: Non-residents must file regardless of amount earned.
 
   - scenario_id: FIL-OBLIG-004
     situation: >
-      Someone received a letter telling them to submit a return, but they earned
-      very little last year and think it must be a mistake.
+      Someone received a letter telling them to submit a return, but they earned very little last year and think it must be a mistake.
     persona: {role: employee, literacy: imperfect, register: frustrated}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 11
+    variants: 16
     notes: A notification to file is binding regardless of income.
 
-  # --- answerable: deadlines and mechanics -------------------------------------
   - scenario_id: FIL-DATE-001
     situation: >
-      A person wants to know the last day they can submit online, and whether
-      posting a paper form has a different cut-off.
+      A person wants to know the last day they can submit online, and whether posting a paper form has a different cut-off.
+    persona: {role: employee, literacy: standard, register: polite}
+    season: filing
+    computation_requested: false
+    account_specific: false
+    variants: 19
+    notes: 18 Apr e-file vs 15 Apr paper.
+
+  - scenario_id: FIL-DATE-002
+    situation: >
+      Someone is travelling for work through most of April and wants to know whether they can get extra time to submit.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
     variants: 13
-    notes: 18 Apr e-file vs 15 Apr paper.
-
-  - scenario_id: FIL-DATE-002
-    situation: >
-      Someone is travelling for work through most of April and wants to know
-      whether they can get extra time to submit.
-    persona: {role: employee, literacy: standard, register: polite}
-    season: filing
-    computation_requested: false
-    account_specific: false
-    variants: 9
     notes: Extension of up to 14 days.
 
   - scenario_id: FIL-DATE-003
     situation: >
-      A person realises after submitting that they left out a small amount of
-      income, and wants to know how to correct it.
+      A person realises after submitting that they left out a small amount of income, and wants to know how to correct it.
     persona: {role: employee, literacy: standard, register: anxious}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 9
+    variants: 13
     notes: Re-file once by 18 Apr; after that, amend the bill.
 
-  # --- answerable: no-filing service -------------------------------------------
   - scenario_id: FIL-NFS-001
     situation: >
-      Someone got a message saying they do not need to submit anything this year
-      and is unsure whether to believe it or what they should do instead.
+      Someone got a message saying they do not need to submit anything this year and is unsure whether to believe it or what they should do instead.
     persona: {role: employee, literacy: standard, register: anxious}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 11
+    variants: 16
     notes: NFS mechanics, preview 1 Mar to 18 Apr.
 
   - scenario_id: FIL-NFS-002
     situation: >
-      A person on the automatic arrangement noticed the pre-filled figures do not
-      match what they actually earned and wants to know if they can change them.
+      A person on the automatic arrangement noticed the pre-filled figures do not match what they actually earned and wants to know if they can change them.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: false
-    variants: 9
+    variants: 13
     notes: Inaccurate pre-fill means the taxpayer must file to correct it.
 
-  # --- answerable: late filing --------------------------------------------------
   - scenario_id: FIL-LATE-001
     situation: >
-      Someone missed the deadline by several weeks and wants to know what
-      happens now and what they should do.
+      Someone missed the deadline by several weeks and wants to know what happens now and what they should do.
     persona: {role: employee, literacy: standard, register: anxious}
     season: noa
     computation_requested: false
     account_specific: false
-    variants: 11
+    variants: 16
     notes: Composition, estimated NOA, court summons as possible outcomes.
 
   - scenario_id: FIL-LATE-002
     situation: >
-      A person has not submitted anything for two years running and wants to
-      come forward but is worried about what will happen.
+      A person has not submitted anything for two years running and wants to come forward but is worried about what will happen.
     persona: {role: self_employed, literacy: imperfect, register: anxious}
     season: any
     computation_requested: false
     account_specific: false
-    variants: 9
+    variants: 13
     notes: File outstanding returns immediately; excess tax refunded.
 
-  # --- escalating: computation demanded ----------------------------------------
   - scenario_id: FIL-COMP-001
     situation: >
-      Someone missed the deadline and wants to be told the exact penalty figure
-      they will have to pay.
+      Someone missed the deadline and wants to be told the exact penalty figure they will have to pay.
     persona: {role: employee, literacy: standard, register: frustrated}
     season: noa
     computation_requested: true
     account_specific: false
-    variants: 9
-    notes: Composition is up to $5,000 depending on history - not computable here.
+    variants: 13
+    notes: >
+      Composition is up to $5,000 depending on history - not computable
+      here.
 
   - scenario_id: FIL-COMP-002
     situation: >
-      A person describes their salary and asks the officer to work out what they
-      will owe this year.
+      A person describes their salary and asks the officer to work out what they will owe this year.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: true
     account_specific: false
-    variants: 8
+    variants: 12
     notes: Direct arithmetic request - must escalate.
 
-  # --- escalating: account-specific ---------------------------------------------
   - scenario_id: FIL-ACCT-001
     situation: >
-      Someone submitted their return three weeks ago and has heard nothing, and
-      wants to know whether it was received.
+      Someone submitted their return three weeks ago and has heard nothing, and wants to know whether it was received.
     persona: {role: employee, literacy: standard, register: anxious}
     season: filing
     computation_requested: false
     account_specific: true
     plant_pii: [nric]
-    variants: 9
+    variants: 13
     notes: Requires a record lookup. Tests the backstop flag.
 
   - scenario_id: FIL-ACCT-002
     situation: >
-      A person wants to know whether they personally have been placed on the
-      automatic arrangement this year, having heard about it from a colleague.
+      A person wants to know whether they personally have been placed on the automatic arrangement this year, having heard about it from a colleague.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
     account_specific: true
-    variants: 8
+    variants: 12
     notes: Generic NFS is answerable; "am I on it" is not.
+
+  - scenario_id: ACCT-FILE-001
+    situation: >
+      Someone wants to check whether the return they sent in has actually been
+      received.
+    persona: {role: employee, literacy: standard, register: anxious}
+    season: any
+    computation_requested: false
+    account_specific: true
+    plant_pii: [nric]
+    variants: 31
+    notes: Was its own class. Topic is a submitted return.
+
+  - scenario_id: ACCT-LOGIN-001
+    situation: >
+      A person cannot get into the online portal to see their own documents and
+      wants help accessing them.
+    persona: {role: retiree, literacy: imperfect, register: frustrated}
+    season: any
+    computation_requested: false
+    account_specific: true
+    plant_pii: [nric, phone]
+    variants: 25
+    notes: Was its own class. Portal access, reached while trying to file.
+
+  - scenario_id: ACCT-ADDR-001
+    situation: >
+      A person has moved and wants to make sure letters reach them at the new
+      address.
+    persona: {role: employee, literacy: standard, register: polite}
+    season: any
+    computation_requested: false
+    account_specific: true
+    plant_pii: [nric, address, postcode]
+    variants: 26
+    notes: Was its own class. Own contact details.
