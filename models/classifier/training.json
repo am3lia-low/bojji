@@ -9,7 +9,7 @@
   "n_calibration": 401,
   "n_test": 520,
   "split_grouped_by": "scenario_id",
-  "elapsed_seconds": 495.6,
+  "elapsed_seconds": 423.9,
   "history": [
     {
       "epoch": 1,
