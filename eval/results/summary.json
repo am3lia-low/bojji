@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-02T07:14:37+00:00",
+  "generated_at": "2026-09-02T07:44:23+00:00",
   "split": "test",
   "n": 520,
   "seed": 42,
@@ -33,5 +33,5 @@
     "unsafe_automations": 29,
     "scrub_recall": 1.0
   },
-  "elapsed_seconds": 32.1
+  "elapsed_seconds": 32.8
 }

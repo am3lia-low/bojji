@@ -36,7 +36,7 @@ roles:
       a grader cloning the repository gets real weights rather than LFS pointers.
 
   classifier_baseline:
-    model: llama-3.3-70b-versatile
+    model: qwen/qwen3.8-27b
     provider: groq
     runtime: false
     cost: free_tier
@@ -61,7 +61,7 @@ roles:
       rate limits are real and are reported as drafting availability.
 
   judge_primary:
-    model: llama-3.3-70b-versatile
+    model: qwen/qwen3.8-27b
     provider: groq
     runtime: false
     cost: free
@@ -69,8 +69,17 @@ roles:
     override: GROQ_MODEL
     note: >
       Groundedness judge. A different model family from the drafter on purpose --
-      separation rule 2. One binary question, and judge-human agreement reported,
-      which is what makes an LLM judge defensible rather than decorative.
+      separation rule 2. Qwen rather than the `openai/gpt-oss-*` models also on
+      Groq's roster, because GPT-4o generated the email corpus and a judge from the
+      generator's family would weaken separation rule 3. One binary question, and
+      judge-human agreement reported, which is what makes an LLM judge defensible
+      rather than decorative.
+
+      ROSTER ROTATION IS REAL, NOT HYPOTHETICAL. This project originally pinned
+      `llama-3.3-70b-versatile`; Groq withdrew it mid-build and every call began
+      returning 404. The failure was silent in effect -- dropped samples fell back
+      to a uniform distribution rather than crashing -- which is why the model
+      identifier is recorded in eval/results/ alongside every number.
 
   judge_secondary:
     model: gpt-4o
