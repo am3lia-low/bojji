@@ -50,7 +50,7 @@ class EncoderClassifier:
         if not (self._dir / "model.pt").exists():
             raise ModelNotTrainedError(
                 f"no trained classifier at {self._dir}.\n"
-                "Run the training notebook, or: python scripts/train_encoder.py"
+                "Run the training notebook: models/01_dataset_eda_and_training.ipynb"
             )
         self._labels: tuple[str, ...] = tuple(
             json.loads((self._dir / "labels.json").read_text(encoding="utf-8"))
@@ -94,7 +94,8 @@ class EncoderClassifier:
         if not (config_dir / "config.json").exists():
             raise ModelNotTrainedError(
                 f"no model config at {self._dir} or {config_dir}.\n"
-                "Run: python scripts/download_model.py && python scripts/train_encoder.py"
+                "Run: python scripts/download_model.py, then the training notebook "
+                "models/01_dataset_eda_and_training.ipynb"
             )
 
         model = MiniLMClassifier(config_dir, len(self._labels))

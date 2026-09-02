@@ -2,12 +2,14 @@
   "base_model": "sentence-transformers/all-MiniLM-L6-v2",
   "seed": 42,
   "epochs": 4,
+  "max_length": 256,
   "batch_size": 32,
   "learning_rate": 2e-05,
-  "max_length": 256,
   "n_train": 879,
   "n_calibration": 401,
-  "elapsed_seconds": 489.0,
+  "n_test": 520,
+  "split_grouped_by": "scenario_id",
+  "elapsed_seconds": 495.6,
   "history": [
     {
       "epoch": 1,

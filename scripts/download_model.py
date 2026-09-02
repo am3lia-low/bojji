@@ -10,8 +10,9 @@ GitHub's 100MB hard limit, so no git-lfs -- and therefore no risk of a grader
 cloning pointer files instead of weights and hitting a confusing failure
 (``BUILD.md`` S5.4).
 
-This script fetches the *base* encoder. ``scripts/train_encoder.py`` fine-tunes it
-and writes the trained classifier to ``models/classifier/``.
+This script fetches the *base* encoder. The training notebook
+``models/01_dataset_eda_and_training.ipynb`` fine-tunes it and writes the trained
+classifier to ``models/classifier/``.
 
 Usage:
     python scripts/download_model.py
