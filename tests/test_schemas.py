@@ -373,8 +373,35 @@ def test_bucket_enum_matches_the_index() -> None:
 
 
 def test_every_escalation_reason_is_reachable() -> None:
-    """Six reasons, all reported. An unreachable one would be dead reporting."""
-    assert len(EscalationReason) == 6
+    """Every reason must be produced by the router. An unreachable one is dead
+    reporting: the metric would carry a permanently empty row.
+
+    Checked against the router's own maps rather than a count, so adding a reason
+    fails here only if nothing can actually emit it -- and the failure names the
+    orphan instead of just disagreeing about a number.
+    """
+    from triage.nodes.route import _BUCKET_REASON, _FLAG_REASON
+
+    emitted = (
+        set(_BUCKET_REASON.values())
+        | {reason for reason, _trigger in _FLAG_REASON.values()}
+        | {EscalationReason.LOW_CONFIDENCE}
+    )
+    orphans = set(EscalationReason) - emitted
+    assert not orphans, f"no code path emits: {sorted(str(r) for r in orphans)}"
+
+
+def test_every_flag_that_escalates_has_a_declared_trigger() -> None:
+    """A flag escalates only where a SOP declares its trigger, so an undeclared
+    trigger would be a detector that can never fire -- and a silent one."""
+    from triage.nodes.route import _FLAG_REASON
+    from triage.sop.index import build_index
+
+    declared = {
+        trigger for sop in build_index().indexed for trigger in sop.escalation_triggers
+    }
+    for flag, (_reason, trigger) in _FLAG_REASON.items():
+        assert trigger in declared, f"{flag} keys on {trigger!r}, which no indexed SOP declares"
 
 
 # --------------------------------------------------------------------------- #

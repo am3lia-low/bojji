@@ -1,0 +1,95 @@
+# Scenarios for the `scam_report` class.
+#
+# Situations only. The generator never sees `label`, `source_sops` or this file's
+# name -- see data/scenarios/README.md for why.
+#
+# ALWAYS ESCALATES (bucket: high_consequence).
+#
+# Time-sensitive: the writer may be mid-fraud and may already have disclosed
+# credentials or paid. The acknowledgement carries the public verification
+# facts precisely because someone still being targeted benefits from them
+# immediately.
+
+label: scam_report
+source_sops: [SOP-ESC-003]
+
+scenarios:
+  - scenario_id: SCAM-PHISH-001
+    situation: >
+      Someone received an email claiming to be from the tax authority asking
+      them to confirm their bank details, and wants to know if it is real.
+    persona: {role: employee, literacy: standard, register: anxious}
+    season: any
+    computation_requested: false
+    account_specific: false
+    variants: 24
+    notes: "Classic phishing check."
+
+  - scenario_id: SCAM-SMS-001
+    situation: >
+      A person got a text message with a link saying they are owed a refund and
+      is suspicious about it.
+    persona: {role: employee, literacy: standard, register: anxious}
+    season: noa
+    computation_requested: false
+    account_specific: false
+    variants: 24
+    notes: "Refund scam by SMS."
+
+  - scenario_id: SCAM-CALL-001
+    situation: >
+      Someone was telephoned by a person claiming to be a tax officer who
+      demanded immediate payment to avoid arrest.
+    persona: {role: retiree, literacy: imperfect, register: anxious}
+    season: any
+    computation_requested: false
+    account_specific: false
+    plant_pii: [phone]
+    variants: 21
+    notes: "Impersonation by phone."
+
+  - scenario_id: SCAM-WHATSAPP-001
+    situation: >
+      A person was contacted on a messaging app by someone claiming to work for
+      the tax authority and is unsure whether that is normal.
+    persona: {role: employee, literacy: standard, register: anxious}
+    season: any
+    computation_requested: false
+    account_specific: false
+    variants: 18
+    notes: "IRAS does not use WhatsApp."
+
+  - scenario_id: SCAM-PAID-001
+    situation: >
+      Someone already clicked a link and entered their card details before
+      realising something was wrong, and is now frightened.
+    persona: {role: employee, literacy: imperfect, register: anxious}
+    season: any
+    computation_requested: false
+    account_specific: false
+    plant_pii: [phone]
+    variants: 24
+    notes: "PRIORITY: already compromised."
+
+  - scenario_id: SCAM-SITE-001
+    situation: >
+      A person found a website that looks like the tax authority's but the
+      address seems wrong, and wants to report it.
+    persona: {role: employee, literacy: standard, register: polite}
+    season: any
+    computation_requested: false
+    account_specific: false
+    variants: 18
+    notes: "Spoofed website report."
+
+  - scenario_id: SCAM-VERIFY-001
+    situation: >
+      Someone received a genuine-looking letter and, having heard about scams,
+      wants to check it is authentic before acting on it.
+    persona: {role: retiree, literacy: standard, register: anxious}
+    season: noa
+    computation_requested: false
+    account_specific: false
+    variants: 21
+    notes: "Verification request - must not confirm authenticity."
+

@@ -1,0 +1,34 @@
+{
+  "base_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "seed": 42,
+  "epochs": 4,
+  "batch_size": 32,
+  "learning_rate": 2e-05,
+  "max_length": 256,
+  "n_train": 879,
+  "n_calibration": 401,
+  "elapsed_seconds": 489.0,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 2.3691859330449785,
+      "calibration_accuracy": 0.5685785536159601
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.7027592829295568,
+      "calibration_accuracy": 0.7231920199501247
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.1518277760062898,
+      "calibration_accuracy": 0.7356608478802993
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.9823708619390216,
+      "calibration_accuracy": 0.7281795511221946
+    }
+  ],
+  "note": "calibration_accuracy is a convergence signal, not a result. Reported numbers come from eval/run_eval.py on the test split."
+}

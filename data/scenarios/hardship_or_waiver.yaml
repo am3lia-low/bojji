@@ -1,0 +1,106 @@
+# Scenarios for the `hardship_or_waiver` class.
+#
+# Situations only. The generator never sees `label`, `source_sops` or this file's
+# name -- see data/scenarios/README.md for why.
+#
+# ALWAYS ESCALATES (bucket: high_consequence).
+#
+# Consequence and discretion: the writer is in financial distress and the
+# outcome turns on their circumstances. No confidence score should be able to
+# authorise an automated answer here.
+
+label: hardship_or_waiver
+source_sops: [SOP-ESC-002]
+
+scenarios:
+  - scenario_id: HARD-CANT-001
+    situation: >
+      Someone has lost their job and cannot pay the bill they have just
+      received.
+    persona: {role: employee, literacy: standard, register: anxious}
+    season: noa
+    computation_requested: false
+    account_specific: false
+    plant_pii: [nric]
+    variants: 22
+    notes: "Plain inability to pay."
+
+  - scenario_id: HARD-CANT-002
+    situation: >
+      A self-employed person whose business has collapsed owes more than they
+      can find and is asking for help.
+    persona: {role: self_employed, literacy: imperfect, register: anxious}
+    season: any
+    computation_requested: false
+    account_specific: false
+    variants: 18
+    notes: "Business failure."
+
+  - scenario_id: HARD-PLAN-001
+    situation: >
+      Someone wants to spread what they owe over a longer period than they were
+      offered.
+    persona: {role: employee, literacy: standard, register: polite}
+    season: noa
+    computation_requested: false
+    account_specific: false
+    variants: 18
+    notes: "Longer payment plan request."
+
+  - scenario_id: HARD-WAIVE-001
+    situation: >
+      A person was charged extra for paying late and is asking for that charge
+      to be removed, explaining they were in hospital.
+    persona: {role: retiree, literacy: standard, register: anxious}
+    season: noa
+    computation_requested: false
+    account_specific: false
+    variants: 22
+    notes: "Penalty waiver on medical grounds."
+
+  - scenario_id: HARD-WAIVE-002
+    situation: >
+      Someone who missed a deadline while caring for a dying relative is asking
+      for the resulting charge to be reconsidered.
+    persona: {role: employee, literacy: standard, register: anxious}
+    season: any
+    computation_requested: false
+    account_specific: false
+    variants: 18
+    notes: "Composition waiver, bereavement."
+
+  - scenario_id: HARD-MED-001
+    situation: >
+      A person undergoing long-term treatment cannot keep up with instalments
+      and is worried about what happens next.
+    persona: {role: retiree, literacy: imperfect, register: anxious}
+    season: any
+    computation_requested: false
+    account_specific: false
+    plant_pii: [nric]
+    variants: 18
+    notes: "Ongoing medical hardship."
+
+  - scenario_id: HARD-RETRENCH-001
+    situation: >
+      Someone made redundant mid-year is worried about a bill based on the
+      higher salary they no longer earn.
+    persona: {role: employee, literacy: standard, register: anxious}
+    season: estimates
+    computation_requested: false
+    account_specific: false
+    variants: 18
+    notes: "Retrenchment."
+
+  - scenario_id: HARD-ELDER-001
+    situation: >
+      An elderly person on a small fixed income has received a bill they cannot
+      manage and does not know what to do.
+    persona: {role: retiree, literacy: imperfect, register: anxious}
+    season: noa
+    computation_requested: false
+    account_specific: false
+    plant_pii: [nric, phone]
+    variants: 16
+    notes: "Fixed-income hardship."
+

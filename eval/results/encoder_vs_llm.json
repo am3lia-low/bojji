@@ -1,0 +1,38 @@
+{
+  "split": "test",
+  "n": 24,
+  "sampling": "stratified by class",
+  "seed": 42,
+  "encoder": {
+    "model": "minilm-l6-finetuned",
+    "n": 24,
+    "accuracy": 0.625,
+    "macro_f1": 0.5504,
+    "ece": 0.2784,
+    "mean_confidence": 0.3466,
+    "distinct_confidence_values": 24,
+    "seconds_total": 22.1,
+    "seconds_per_email": 0.921,
+    "runs": "local CPU",
+    "cost": "free",
+    "artefact_mb": 87.4,
+    "api_calls": 0
+  },
+  "llm_zeroshot": {
+    "model": "llm-zeroshot-llama-3.3-70b-versatile-k3",
+    "n": 24,
+    "accuracy": 0.0833,
+    "macro_f1": 0.0128,
+    "ece": 0.0,
+    "mean_confidence": 0.0833,
+    "distinct_confidence_values": 1,
+    "seconds_total": 78.8,
+    "seconds_per_email": 3.285,
+    "runs": "API",
+    "cost": "free tier",
+    "artefact_mb": 0,
+    "api_calls": 72,
+    "k": 3
+  },
+  "reading": "The encoder emits a continuous softmax from one local forward pass. Self-consistency at k manufactures a distribution from k API calls and can only express multiples of 1/k, so its confidence resolution is capped no matter how much data is collected. That is the operational argument for an encoder when the threshold is the product."
+}

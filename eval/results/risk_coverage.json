@@ -1,0 +1,3894 @@
+{
+  "note": "Reported per topic. An aggregate inbox figure would need a class volume mix that is unpublished and seasonal; per-topic coverage is composable and an agency can multiply through its own mix.",
+  "aurc_overall": 0.3161,
+  "overall": [
+    {
+      "multiplier": 0.2,
+      "coverage": 0.3981,
+      "risk": 0.4155,
+      "n": 520,
+      "n_automated": 207,
+      "n_wrong": 86
+    },
+    {
+      "multiplier": 0.25,
+      "coverage": 0.3981,
+      "risk": 0.4155,
+      "n": 520,
+      "n_automated": 207,
+      "n_wrong": 86
+    },
+    {
+      "multiplier": 0.3,
+      "coverage": 0.3981,
+      "risk": 0.4155,
+      "n": 520,
+      "n_automated": 207,
+      "n_wrong": 86
+    },
+    {
+      "multiplier": 0.35,
+      "coverage": 0.3981,
+      "risk": 0.4155,
+      "n": 520,
+      "n_automated": 207,
+      "n_wrong": 86
+    },
+    {
+      "multiplier": 0.4,
+      "coverage": 0.3981,
+      "risk": 0.4155,
+      "n": 520,
+      "n_automated": 207,
+      "n_wrong": 86
+    },
+    {
+      "multiplier": 0.45,
+      "coverage": 0.3923,
+      "risk": 0.4216,
+      "n": 520,
+      "n_automated": 204,
+      "n_wrong": 86
+    },
+    {
+      "multiplier": 0.5,
+      "coverage": 0.3885,
+      "risk": 0.4257,
+      "n": 520,
+      "n_automated": 202,
+      "n_wrong": 86
+    },
+    {
+      "multiplier": 0.55,
+      "coverage": 0.3788,
+      "risk": 0.4365,
+      "n": 520,
+      "n_automated": 197,
+      "n_wrong": 86
+    },
+    {
+      "multiplier": 0.6,
+      "coverage": 0.3788,
+      "risk": 0.4365,
+      "n": 520,
+      "n_automated": 197,
+      "n_wrong": 86
+    },
+    {
+      "multiplier": 0.65,
+      "coverage": 0.3673,
+      "risk": 0.4346,
+      "n": 520,
+      "n_automated": 191,
+      "n_wrong": 83
+    },
+    {
+      "multiplier": 0.7,
+      "coverage": 0.3596,
+      "risk": 0.4385,
+      "n": 520,
+      "n_automated": 187,
+      "n_wrong": 82
+    },
+    {
+      "multiplier": 0.75,
+      "coverage": 0.3462,
+      "risk": 0.4333,
+      "n": 520,
+      "n_automated": 180,
+      "n_wrong": 78
+    },
+    {
+      "multiplier": 0.8,
+      "coverage": 0.3308,
+      "risk": 0.436,
+      "n": 520,
+      "n_automated": 172,
+      "n_wrong": 75
+    },
+    {
+      "multiplier": 0.85,
+      "coverage": 0.3154,
+      "risk": 0.4207,
+      "n": 520,
+      "n_automated": 164,
+      "n_wrong": 69
+    },
+    {
+      "multiplier": 0.9,
+      "coverage": 0.3096,
+      "risk": 0.4099,
+      "n": 520,
+      "n_automated": 161,
+      "n_wrong": 66
+    },
+    {
+      "multiplier": 0.95,
+      "coverage": 0.3058,
+      "risk": 0.4151,
+      "n": 520,
+      "n_automated": 159,
+      "n_wrong": 66
+    },
+    {
+      "multiplier": 1.0,
+      "coverage": 0.3038,
+      "risk": 0.4177,
+      "n": 520,
+      "n_automated": 158,
+      "n_wrong": 66
+    },
+    {
+      "multiplier": 1.05,
+      "coverage": 0.2981,
+      "risk": 0.4129,
+      "n": 520,
+      "n_automated": 155,
+      "n_wrong": 64
+    },
+    {
+      "multiplier": 1.1,
+      "coverage": 0.2904,
+      "risk": 0.4106,
+      "n": 520,
+      "n_automated": 151,
+      "n_wrong": 62
+    },
+    {
+      "multiplier": 1.15,
+      "coverage": 0.2692,
+      "risk": 0.4071,
+      "n": 520,
+      "n_automated": 140,
+      "n_wrong": 57
+    },
+    {
+      "multiplier": 1.2,
+      "coverage": 0.2365,
+      "risk": 0.3577,
+      "n": 520,
+      "n_automated": 123,
+      "n_wrong": 44
+    },
+    {
+      "multiplier": 1.25,
+      "coverage": 0.2269,
+      "risk": 0.339,
+      "n": 520,
+      "n_automated": 118,
+      "n_wrong": 40
+    },
+    {
+      "multiplier": 1.3,
+      "coverage": 0.2115,
+      "risk": 0.3455,
+      "n": 520,
+      "n_automated": 110,
+      "n_wrong": 38
+    },
+    {
+      "multiplier": 1.35,
+      "coverage": 0.1846,
+      "risk": 0.3646,
+      "n": 520,
+      "n_automated": 96,
+      "n_wrong": 35
+    },
+    {
+      "multiplier": 1.4,
+      "coverage": 0.125,
+      "risk": 0.2769,
+      "n": 520,
+      "n_automated": 65,
+      "n_wrong": 18
+    },
+    {
+      "multiplier": 1.45,
+      "coverage": 0.0923,
+      "risk": 0.2083,
+      "n": 520,
+      "n_automated": 48,
+      "n_wrong": 10
+    },
+    {
+      "multiplier": 1.5,
+      "coverage": 0.0673,
+      "risk": 0.1714,
+      "n": 520,
+      "n_automated": 35,
+      "n_wrong": 6
+    },
+    {
+      "multiplier": 1.55,
+      "coverage": 0.0519,
+      "risk": 0.2222,
+      "n": 520,
+      "n_automated": 27,
+      "n_wrong": 6
+    },
+    {
+      "multiplier": 1.6,
+      "coverage": 0.0404,
+      "risk": 0.1905,
+      "n": 520,
+      "n_automated": 21,
+      "n_wrong": 4
+    },
+    {
+      "multiplier": 1.65,
+      "coverage": 0.0269,
+      "risk": 0.1429,
+      "n": 520,
+      "n_automated": 14,
+      "n_wrong": 2
+    },
+    {
+      "multiplier": 1.7,
+      "coverage": 0.0231,
+      "risk": 0.0833,
+      "n": 520,
+      "n_automated": 12,
+      "n_wrong": 1
+    },
+    {
+      "multiplier": 1.75,
+      "coverage": 0.0096,
+      "risk": 0.0,
+      "n": 520,
+      "n_automated": 5,
+      "n_wrong": 0
+    },
+    {
+      "multiplier": 1.8,
+      "coverage": 0.0019,
+      "risk": 0.0,
+      "n": 520,
+      "n_automated": 1,
+      "n_wrong": 0
+    },
+    {
+      "multiplier": 1.85,
+      "coverage": 0.0,
+      "risk": 0.0,
+      "n": 520,
+      "n_automated": 0,
+      "n_wrong": 0
+    },
+    {
+      "multiplier": 1.9,
+      "coverage": 0.0,
+      "risk": 0.0,
+      "n": 520,
+      "n_automated": 0,
+      "n_wrong": 0
+    },
+    {
+      "multiplier": 1.95,
+      "coverage": 0.0,
+      "risk": 0.0,
+      "n": 520,
+      "n_automated": 0,
+      "n_wrong": 0
+    },
+    {
+      "multiplier": 2.0,
+      "coverage": 0.0,
+      "risk": 0.0,
+      "n": 520,
+      "n_automated": 0,
+      "n_wrong": 0
+    }
+  ],
+  "aurc_per_topic": {
+    "account_specific": 0.9667,
+    "assessment_and_amendment": 0.0,
+    "filing": 0.526,
+    "foreign_income_dta": 0.0,
+    "hardship_or_waiver": 0.9286,
+    "oos_business_tax": 0.6926,
+    "oos_other_agency": 0.9545,
+    "payment": 0.1458,
+    "rental_income": 0.0,
+    "residency": 0.0,
+    "scam_report": 0.0,
+    "tax_reliefs": 0.2099
+  },
+  "per_topic": {
+    "account_specific": [
+      {
+        "multiplier": 0.2,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 0.25,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 0.3,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 0.35,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 0.4,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 0.45,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 0.5,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 0.55,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 0.6,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 0.65,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 0.7,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 0.75,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 0.8,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 0.85,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 0.9,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 0.95,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 1.0,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 1.05,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 1.1,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 1.15,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 1.2,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 1.25,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 1.3,
+        "coverage": 0.4054,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 15,
+        "n_wrong": 15
+      },
+      {
+        "multiplier": 1.35,
+        "coverage": 0.3514,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 13,
+        "n_wrong": 13
+      },
+      {
+        "multiplier": 1.4,
+        "coverage": 0.0811,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 3,
+        "n_wrong": 3
+      },
+      {
+        "multiplier": 1.45,
+        "coverage": 0.027,
+        "risk": 1.0,
+        "n": 37,
+        "n_automated": 1,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 1.5,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 37,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.55,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 37,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.6,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 37,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.65,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 37,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.7,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 37,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.75,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 37,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.8,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 37,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.85,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 37,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.9,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 37,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.95,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 37,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 2.0,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 37,
+        "n_automated": 0,
+        "n_wrong": 0
+      }
+    ],
+    "assessment_and_amendment": [
+      {
+        "multiplier": 0.2,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.25,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.3,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.35,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.4,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.45,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.5,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.55,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.6,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.65,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.7,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.75,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.8,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.85,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.9,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.95,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.0,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.05,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.1,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.15,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.2,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.25,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.3,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.35,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.4,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.45,
+        "coverage": 0.4286,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 21,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.5,
+        "coverage": 0.4082,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 20,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.55,
+        "coverage": 0.3673,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 18,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.6,
+        "coverage": 0.3265,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 16,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.65,
+        "coverage": 0.2449,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 12,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.7,
+        "coverage": 0.2245,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 11,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.75,
+        "coverage": 0.102,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 5,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.8,
+        "coverage": 0.0204,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 1,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.85,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.9,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.95,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 2.0,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 0,
+        "n_wrong": 0
+      }
+    ],
+    "filing": [
+      {
+        "multiplier": 0.2,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 0.25,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 0.3,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 0.35,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 0.4,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 0.45,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 0.5,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 0.55,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 0.6,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 0.65,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 0.7,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 0.75,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 0.8,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 0.85,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 0.9,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 0.95,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 1.0,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 1.05,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 1.1,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 1.15,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 1.2,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 1.25,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 1.3,
+        "coverage": 0.6458,
+        "risk": 0.3548,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 1.35,
+        "coverage": 0.6042,
+        "risk": 0.3793,
+        "n": 48,
+        "n_automated": 29,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 1.4,
+        "coverage": 0.5417,
+        "risk": 0.3462,
+        "n": 48,
+        "n_automated": 26,
+        "n_wrong": 9
+      },
+      {
+        "multiplier": 1.45,
+        "coverage": 0.4167,
+        "risk": 0.35,
+        "n": 48,
+        "n_automated": 20,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 1.5,
+        "coverage": 0.2708,
+        "risk": 0.4615,
+        "n": 48,
+        "n_automated": 13,
+        "n_wrong": 6
+      },
+      {
+        "multiplier": 1.55,
+        "coverage": 0.1667,
+        "risk": 0.75,
+        "n": 48,
+        "n_automated": 8,
+        "n_wrong": 6
+      },
+      {
+        "multiplier": 1.6,
+        "coverage": 0.1042,
+        "risk": 0.8,
+        "n": 48,
+        "n_automated": 5,
+        "n_wrong": 4
+      },
+      {
+        "multiplier": 1.65,
+        "coverage": 0.0417,
+        "risk": 1.0,
+        "n": 48,
+        "n_automated": 2,
+        "n_wrong": 2
+      },
+      {
+        "multiplier": 1.7,
+        "coverage": 0.0208,
+        "risk": 1.0,
+        "n": 48,
+        "n_automated": 1,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 1.75,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.8,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.85,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.9,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.95,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 2.0,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      }
+    ],
+    "foreign_income_dta": [
+      {
+        "multiplier": 0.2,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.25,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.3,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.35,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.4,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.45,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.5,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.55,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.6,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.65,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.7,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.75,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.8,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.85,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.9,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.95,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.0,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.05,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.1,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.15,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.2,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.25,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.3,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.35,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.4,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.45,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.5,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.55,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.6,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.65,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.7,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.75,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.8,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.85,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.9,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.95,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 2.0,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      }
+    ],
+    "hardship_or_waiver": [
+      {
+        "multiplier": 0.2,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 0.25,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 0.3,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 0.35,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 0.4,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 0.45,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 0.5,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 0.55,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 0.6,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 0.65,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 0.7,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 0.75,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 0.8,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 0.85,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 0.9,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 0.95,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 1.0,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 1.05,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 1.1,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 1.15,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 1.2,
+        "coverage": 0.3889,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 1.25,
+        "coverage": 0.3333,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 12,
+        "n_wrong": 12
+      },
+      {
+        "multiplier": 1.3,
+        "coverage": 0.3056,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 11,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 1.35,
+        "coverage": 0.3056,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 11,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 1.4,
+        "coverage": 0.1667,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 6,
+        "n_wrong": 6
+      },
+      {
+        "multiplier": 1.45,
+        "coverage": 0.0556,
+        "risk": 1.0,
+        "n": 36,
+        "n_automated": 2,
+        "n_wrong": 2
+      },
+      {
+        "multiplier": 1.5,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 36,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.55,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 36,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.6,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 36,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.65,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 36,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.7,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 36,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.75,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 36,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.8,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 36,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.85,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 36,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.9,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 36,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.95,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 36,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 2.0,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 36,
+        "n_automated": 0,
+        "n_wrong": 0
+      }
+    ],
+    "oos_business_tax": [
+      {
+        "multiplier": 0.2,
+        "coverage": 0.9792,
+        "risk": 0.3404,
+        "n": 48,
+        "n_automated": 47,
+        "n_wrong": 16
+      },
+      {
+        "multiplier": 0.25,
+        "coverage": 0.9792,
+        "risk": 0.3404,
+        "n": 48,
+        "n_automated": 47,
+        "n_wrong": 16
+      },
+      {
+        "multiplier": 0.3,
+        "coverage": 0.9792,
+        "risk": 0.3404,
+        "n": 48,
+        "n_automated": 47,
+        "n_wrong": 16
+      },
+      {
+        "multiplier": 0.35,
+        "coverage": 0.9792,
+        "risk": 0.3404,
+        "n": 48,
+        "n_automated": 47,
+        "n_wrong": 16
+      },
+      {
+        "multiplier": 0.4,
+        "coverage": 0.9792,
+        "risk": 0.3404,
+        "n": 48,
+        "n_automated": 47,
+        "n_wrong": 16
+      },
+      {
+        "multiplier": 0.45,
+        "coverage": 0.9167,
+        "risk": 0.3636,
+        "n": 48,
+        "n_automated": 44,
+        "n_wrong": 16
+      },
+      {
+        "multiplier": 0.5,
+        "coverage": 0.875,
+        "risk": 0.381,
+        "n": 48,
+        "n_automated": 42,
+        "n_wrong": 16
+      },
+      {
+        "multiplier": 0.55,
+        "coverage": 0.7708,
+        "risk": 0.4324,
+        "n": 48,
+        "n_automated": 37,
+        "n_wrong": 16
+      },
+      {
+        "multiplier": 0.6,
+        "coverage": 0.7708,
+        "risk": 0.4324,
+        "n": 48,
+        "n_automated": 37,
+        "n_wrong": 16
+      },
+      {
+        "multiplier": 0.65,
+        "coverage": 0.7083,
+        "risk": 0.4706,
+        "n": 48,
+        "n_automated": 34,
+        "n_wrong": 16
+      },
+      {
+        "multiplier": 0.7,
+        "coverage": 0.6458,
+        "risk": 0.5161,
+        "n": 48,
+        "n_automated": 31,
+        "n_wrong": 16
+      },
+      {
+        "multiplier": 0.75,
+        "coverage": 0.5833,
+        "risk": 0.5714,
+        "n": 48,
+        "n_automated": 28,
+        "n_wrong": 16
+      },
+      {
+        "multiplier": 0.8,
+        "coverage": 0.4792,
+        "risk": 0.6957,
+        "n": 48,
+        "n_automated": 23,
+        "n_wrong": 16
+      },
+      {
+        "multiplier": 0.85,
+        "coverage": 0.4375,
+        "risk": 0.7619,
+        "n": 48,
+        "n_automated": 21,
+        "n_wrong": 16
+      },
+      {
+        "multiplier": 0.9,
+        "coverage": 0.4375,
+        "risk": 0.7619,
+        "n": 48,
+        "n_automated": 21,
+        "n_wrong": 16
+      },
+      {
+        "multiplier": 0.95,
+        "coverage": 0.3958,
+        "risk": 0.8421,
+        "n": 48,
+        "n_automated": 19,
+        "n_wrong": 16
+      },
+      {
+        "multiplier": 1.0,
+        "coverage": 0.375,
+        "risk": 0.8889,
+        "n": 48,
+        "n_automated": 18,
+        "n_wrong": 16
+      },
+      {
+        "multiplier": 1.05,
+        "coverage": 0.3542,
+        "risk": 0.9412,
+        "n": 48,
+        "n_automated": 17,
+        "n_wrong": 16
+      },
+      {
+        "multiplier": 1.1,
+        "coverage": 0.3125,
+        "risk": 0.9333,
+        "n": 48,
+        "n_automated": 15,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 1.15,
+        "coverage": 0.2292,
+        "risk": 1.0,
+        "n": 48,
+        "n_automated": 11,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 1.2,
+        "coverage": 0.0417,
+        "risk": 1.0,
+        "n": 48,
+        "n_automated": 2,
+        "n_wrong": 2
+      },
+      {
+        "multiplier": 1.25,
+        "coverage": 0.0417,
+        "risk": 1.0,
+        "n": 48,
+        "n_automated": 2,
+        "n_wrong": 2
+      },
+      {
+        "multiplier": 1.3,
+        "coverage": 0.0208,
+        "risk": 1.0,
+        "n": 48,
+        "n_automated": 1,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 1.35,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.4,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.45,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.5,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.55,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.6,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.65,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.7,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.75,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.8,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.85,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.9,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.95,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 2.0,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 48,
+        "n_automated": 0,
+        "n_wrong": 0
+      }
+    ],
+    "oos_other_agency": [
+      {
+        "multiplier": 0.2,
+        "coverage": 0.5366,
+        "risk": 1.0,
+        "n": 41,
+        "n_automated": 22,
+        "n_wrong": 22
+      },
+      {
+        "multiplier": 0.25,
+        "coverage": 0.5366,
+        "risk": 1.0,
+        "n": 41,
+        "n_automated": 22,
+        "n_wrong": 22
+      },
+      {
+        "multiplier": 0.3,
+        "coverage": 0.5366,
+        "risk": 1.0,
+        "n": 41,
+        "n_automated": 22,
+        "n_wrong": 22
+      },
+      {
+        "multiplier": 0.35,
+        "coverage": 0.5366,
+        "risk": 1.0,
+        "n": 41,
+        "n_automated": 22,
+        "n_wrong": 22
+      },
+      {
+        "multiplier": 0.4,
+        "coverage": 0.5366,
+        "risk": 1.0,
+        "n": 41,
+        "n_automated": 22,
+        "n_wrong": 22
+      },
+      {
+        "multiplier": 0.45,
+        "coverage": 0.5366,
+        "risk": 1.0,
+        "n": 41,
+        "n_automated": 22,
+        "n_wrong": 22
+      },
+      {
+        "multiplier": 0.5,
+        "coverage": 0.5366,
+        "risk": 1.0,
+        "n": 41,
+        "n_automated": 22,
+        "n_wrong": 22
+      },
+      {
+        "multiplier": 0.55,
+        "coverage": 0.5366,
+        "risk": 1.0,
+        "n": 41,
+        "n_automated": 22,
+        "n_wrong": 22
+      },
+      {
+        "multiplier": 0.6,
+        "coverage": 0.5366,
+        "risk": 1.0,
+        "n": 41,
+        "n_automated": 22,
+        "n_wrong": 22
+      },
+      {
+        "multiplier": 0.65,
+        "coverage": 0.4634,
+        "risk": 1.0,
+        "n": 41,
+        "n_automated": 19,
+        "n_wrong": 19
+      },
+      {
+        "multiplier": 0.7,
+        "coverage": 0.439,
+        "risk": 1.0,
+        "n": 41,
+        "n_automated": 18,
+        "n_wrong": 18
+      },
+      {
+        "multiplier": 0.75,
+        "coverage": 0.3415,
+        "risk": 1.0,
+        "n": 41,
+        "n_automated": 14,
+        "n_wrong": 14
+      },
+      {
+        "multiplier": 0.8,
+        "coverage": 0.2683,
+        "risk": 1.0,
+        "n": 41,
+        "n_automated": 11,
+        "n_wrong": 11
+      },
+      {
+        "multiplier": 0.85,
+        "coverage": 0.122,
+        "risk": 1.0,
+        "n": 41,
+        "n_automated": 5,
+        "n_wrong": 5
+      },
+      {
+        "multiplier": 0.9,
+        "coverage": 0.0488,
+        "risk": 1.0,
+        "n": 41,
+        "n_automated": 2,
+        "n_wrong": 2
+      },
+      {
+        "multiplier": 0.95,
+        "coverage": 0.0488,
+        "risk": 1.0,
+        "n": 41,
+        "n_automated": 2,
+        "n_wrong": 2
+      },
+      {
+        "multiplier": 1.0,
+        "coverage": 0.0488,
+        "risk": 1.0,
+        "n": 41,
+        "n_automated": 2,
+        "n_wrong": 2
+      },
+      {
+        "multiplier": 1.05,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.1,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.15,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.2,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.25,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.3,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.35,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.4,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.45,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.5,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.55,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.6,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.65,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.7,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.75,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.8,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.85,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.9,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.95,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 2.0,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 41,
+        "n_automated": 0,
+        "n_wrong": 0
+      }
+    ],
+    "payment": [
+      {
+        "multiplier": 0.2,
+        "coverage": 0.1364,
+        "risk": 0.1667,
+        "n": 44,
+        "n_automated": 6,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 0.25,
+        "coverage": 0.1364,
+        "risk": 0.1667,
+        "n": 44,
+        "n_automated": 6,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 0.3,
+        "coverage": 0.1364,
+        "risk": 0.1667,
+        "n": 44,
+        "n_automated": 6,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 0.35,
+        "coverage": 0.1364,
+        "risk": 0.1667,
+        "n": 44,
+        "n_automated": 6,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 0.4,
+        "coverage": 0.1364,
+        "risk": 0.1667,
+        "n": 44,
+        "n_automated": 6,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 0.45,
+        "coverage": 0.1364,
+        "risk": 0.1667,
+        "n": 44,
+        "n_automated": 6,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 0.5,
+        "coverage": 0.1364,
+        "risk": 0.1667,
+        "n": 44,
+        "n_automated": 6,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 0.55,
+        "coverage": 0.1364,
+        "risk": 0.1667,
+        "n": 44,
+        "n_automated": 6,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 0.6,
+        "coverage": 0.1364,
+        "risk": 0.1667,
+        "n": 44,
+        "n_automated": 6,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 0.65,
+        "coverage": 0.1364,
+        "risk": 0.1667,
+        "n": 44,
+        "n_automated": 6,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 0.7,
+        "coverage": 0.1364,
+        "risk": 0.1667,
+        "n": 44,
+        "n_automated": 6,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 0.75,
+        "coverage": 0.1364,
+        "risk": 0.1667,
+        "n": 44,
+        "n_automated": 6,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 0.8,
+        "coverage": 0.1364,
+        "risk": 0.1667,
+        "n": 44,
+        "n_automated": 6,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 0.85,
+        "coverage": 0.1364,
+        "risk": 0.1667,
+        "n": 44,
+        "n_automated": 6,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 0.9,
+        "coverage": 0.1364,
+        "risk": 0.1667,
+        "n": 44,
+        "n_automated": 6,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 0.95,
+        "coverage": 0.1364,
+        "risk": 0.1667,
+        "n": 44,
+        "n_automated": 6,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 1.0,
+        "coverage": 0.1364,
+        "risk": 0.1667,
+        "n": 44,
+        "n_automated": 6,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 1.05,
+        "coverage": 0.1364,
+        "risk": 0.1667,
+        "n": 44,
+        "n_automated": 6,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 1.1,
+        "coverage": 0.1364,
+        "risk": 0.1667,
+        "n": 44,
+        "n_automated": 6,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 1.15,
+        "coverage": 0.0909,
+        "risk": 0.25,
+        "n": 44,
+        "n_automated": 4,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 1.2,
+        "coverage": 0.0682,
+        "risk": 0.3333,
+        "n": 44,
+        "n_automated": 3,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 1.25,
+        "coverage": 0.0455,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 2,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.3,
+        "coverage": 0.0227,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 1,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.35,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.4,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.45,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.5,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.55,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.6,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.65,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.7,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.75,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.8,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.85,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.9,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.95,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 2.0,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      }
+    ],
+    "rental_income": [
+      {
+        "multiplier": 0.2,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.25,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.3,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.35,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.4,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.45,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.5,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.55,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.6,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.65,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.7,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.75,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.8,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.85,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.9,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.95,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.0,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.05,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.1,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.15,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.2,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.25,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.3,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.35,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.4,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.45,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.5,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.55,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.6,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.65,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.7,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.75,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.8,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.85,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.9,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.95,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 2.0,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 40,
+        "n_automated": 0,
+        "n_wrong": 0
+      }
+    ],
+    "residency": [
+      {
+        "multiplier": 0.2,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.25,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.3,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.35,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.4,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.45,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.5,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.55,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.6,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.65,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.7,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.75,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.8,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.85,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.9,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.95,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.0,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.05,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.1,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.15,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.2,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.25,
+        "coverage": 0.6122,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 30,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.3,
+        "coverage": 0.5306,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 26,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.35,
+        "coverage": 0.3673,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 18,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.4,
+        "coverage": 0.102,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 5,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.45,
+        "coverage": 0.0204,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 1,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.5,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.55,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.6,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.65,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.7,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.75,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.8,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.85,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.9,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.95,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 2.0,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 49,
+        "n_automated": 0,
+        "n_wrong": 0
+      }
+    ],
+    "scam_report": [
+      {
+        "multiplier": 0.2,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.25,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.3,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.35,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.4,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.45,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.5,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.55,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.6,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.65,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.7,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.75,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.8,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.85,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.9,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 0.95,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.0,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.05,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.1,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.15,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.2,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.25,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.3,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.35,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.4,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.45,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.5,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.55,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.6,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.65,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.7,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.75,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.8,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.85,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.9,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.95,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 2.0,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 42,
+        "n_automated": 0,
+        "n_wrong": 0
+      }
+    ],
+    "tax_reliefs": [
+      {
+        "multiplier": 0.2,
+        "coverage": 0.4773,
+        "risk": 0.3333,
+        "n": 44,
+        "n_automated": 21,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 0.25,
+        "coverage": 0.4773,
+        "risk": 0.3333,
+        "n": 44,
+        "n_automated": 21,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 0.3,
+        "coverage": 0.4773,
+        "risk": 0.3333,
+        "n": 44,
+        "n_automated": 21,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 0.35,
+        "coverage": 0.4773,
+        "risk": 0.3333,
+        "n": 44,
+        "n_automated": 21,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 0.4,
+        "coverage": 0.4773,
+        "risk": 0.3333,
+        "n": 44,
+        "n_automated": 21,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 0.45,
+        "coverage": 0.4773,
+        "risk": 0.3333,
+        "n": 44,
+        "n_automated": 21,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 0.5,
+        "coverage": 0.4773,
+        "risk": 0.3333,
+        "n": 44,
+        "n_automated": 21,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 0.55,
+        "coverage": 0.4773,
+        "risk": 0.3333,
+        "n": 44,
+        "n_automated": 21,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 0.6,
+        "coverage": 0.4773,
+        "risk": 0.3333,
+        "n": 44,
+        "n_automated": 21,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 0.65,
+        "coverage": 0.4773,
+        "risk": 0.3333,
+        "n": 44,
+        "n_automated": 21,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 0.7,
+        "coverage": 0.4773,
+        "risk": 0.3333,
+        "n": 44,
+        "n_automated": 21,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 0.75,
+        "coverage": 0.4773,
+        "risk": 0.3333,
+        "n": 44,
+        "n_automated": 21,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 0.8,
+        "coverage": 0.4773,
+        "risk": 0.3333,
+        "n": 44,
+        "n_automated": 21,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 0.85,
+        "coverage": 0.4773,
+        "risk": 0.3333,
+        "n": 44,
+        "n_automated": 21,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 0.9,
+        "coverage": 0.4773,
+        "risk": 0.3333,
+        "n": 44,
+        "n_automated": 21,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 0.95,
+        "coverage": 0.4773,
+        "risk": 0.3333,
+        "n": 44,
+        "n_automated": 21,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 1.0,
+        "coverage": 0.4773,
+        "risk": 0.3333,
+        "n": 44,
+        "n_automated": 21,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 1.05,
+        "coverage": 0.4773,
+        "risk": 0.3333,
+        "n": 44,
+        "n_automated": 21,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 1.1,
+        "coverage": 0.4318,
+        "risk": 0.3684,
+        "n": 44,
+        "n_automated": 19,
+        "n_wrong": 7
+      },
+      {
+        "multiplier": 1.15,
+        "coverage": 0.3182,
+        "risk": 0.3571,
+        "n": 44,
+        "n_automated": 14,
+        "n_wrong": 5
+      },
+      {
+        "multiplier": 1.2,
+        "coverage": 0.1591,
+        "risk": 0.1429,
+        "n": 44,
+        "n_automated": 7,
+        "n_wrong": 1
+      },
+      {
+        "multiplier": 1.25,
+        "coverage": 0.1136,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 5,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.3,
+        "coverage": 0.0909,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 4,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.35,
+        "coverage": 0.0909,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 4,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.4,
+        "coverage": 0.0909,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 4,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.45,
+        "coverage": 0.0682,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 3,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.5,
+        "coverage": 0.0455,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 2,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.55,
+        "coverage": 0.0227,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 1,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.6,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.65,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.7,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.75,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.8,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.85,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.9,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 1.95,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      },
+      {
+        "multiplier": 2.0,
+        "coverage": 0.0,
+        "risk": 0.0,
+        "n": 44,
+        "n_automated": 0,
+        "n_wrong": 0
+      }
+    ]
+  }
+}

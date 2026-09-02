@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-09-02T07:14:37+00:00",
+  "split": "test",
+  "n": 520,
+  "seed": 42,
+  "environment": {
+    "python": "3.13.9",
+    "platform": "Windows-11-10.0.26200-SP0"
+  },
+  "models": {
+    "classifier": "minilm-l6-finetuned",
+    "calibration": {
+      "fitted": true,
+      "temperature": 0.6831,
+      "n_calibration_examples": 401
+    }
+  },
+  "thresholds": {
+    "auto_answerable": 0.5,
+    "out_of_scope": 0.5,
+    "requires_account_lookup": 1.0,
+    "high_consequence": 1.0,
+    "no_supporting_sop": 1.0
+  },
+  "calibrated_numbers_reportable": true,
+  "headline": {
+    "macro_f1_class": 0.6035,
+    "macro_f1_bucket": 0.6833,
+    "ece_before": 0.2312,
+    "ece_after": 0.1459,
+    "aurc_overall": 0.3161,
+    "must_escalate_recall": 0.8585,
+    "unsafe_automations": 29,
+    "scrub_recall": 1.0
+  },
+  "elapsed_seconds": 32.1
+}

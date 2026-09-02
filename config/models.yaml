@@ -1,0 +1,102 @@
+# MODEL REGISTRY
+#
+# Which model plays which role, where it runs, and what it costs. In config rather
+# than in code because free-tier model rosters rotate: an identifier that works
+# today may be retired next quarter, and swapping one should be a diff in this file
+# rather than a code change.
+#
+# THE SEPARATION RULES ARE THE POINT OF THIS FILE. A model must not be scored on
+# its own output, which gives three constraints (BUILD.md S6.4):
+#
+#   1. email generator  != LLM classification baseline
+#   2. drafter          != groundedness judge
+#   3. judge            != generator
+#
+# They hold today by using four different providers. If a model here is ever
+# changed, check the rules still hold before the change lands.
+#
+# RUNTIME vs BUILD-TIME. Anything marked `runtime: true` must be reachable on a
+# free tier, because the deployed system has to run on a grader's own key. Build-
+# time roles may use paid credits: their outputs (the SOP corpus, the email set,
+# the trained weights) are frozen and committed, so reproducing the results never
+# re-runs a paid step.
+
+roles:
+
+  classifier:
+    model: minilm-l6-finetuned
+    base: sentence-transformers/all-MiniLM-L6-v2
+    provider: local
+    runtime: true
+    cost: free
+    artefact: models/classifier/
+    note: >
+      The runtime classifier. Local CPU, no network, no key. Chosen over DistilBERT
+      on deployment size: ~90MB commits to plain git under GitHub's 100MB limit, so
+      a grader cloning the repository gets real weights rather than LFS pointers.
+
+  classifier_baseline:
+    model: llama-3.3-70b-versatile
+    provider: groq
+    runtime: false
+    cost: free_tier
+    env: GROQ_API_KEY
+    note: >
+      Zero-shot comparison baseline, eval-time only. Never the runtime classifier:
+      an LLM returns text, so extracting a calibratable distribution needs logprobs
+      or repeated sampling, and the encoder emits one natively (BUILD.md S9.3).
+      Turns "better calibrated" from an assertion into a measurement.
+
+  drafter:
+    model: gemini-2.0-flash
+    provider: google
+    runtime: true
+    cost: free_tier
+    env: GEMINI_API_KEY
+    override: GEMINI_MODEL
+    note: >
+      Writes the reply, grounded in the retrieved SOP. There is no template
+      fallback: a failed call escalates the item to the human queue carrying its
+      SOP, rather than degrading into a lesser reply (BUILD.md S5.8). Free-tier
+      rate limits are real and are reported as drafting availability.
+
+  judge_primary:
+    model: llama-3.3-70b-versatile
+    provider: groq
+    runtime: false
+    cost: free
+    env: GROQ_API_KEY
+    override: GROQ_MODEL
+    note: >
+      Groundedness judge. A different model family from the drafter on purpose --
+      separation rule 2. One binary question, and judge-human agreement reported,
+      which is what makes an LLM judge defensible rather than decorative.
+
+  judge_secondary:
+    model: gpt-4o
+    provider: openai
+    runtime: false
+    cost: paid
+    env: OPENAI_API_KEY
+    optional: true
+    note: >
+      Bonus second judge. Droppable if budget bites -- the Groq + human pair stands
+      on its own. Three-way agreement over the same 50 drafts makes the result
+      solid; divergence is itself reportable.
+
+  email_generator:
+    model: gpt-4o
+    provider: openai
+    runtime: false
+    cost: paid
+    env: OPENAI_API_KEY
+    note: >
+      BUILD-TIME ONLY. Wrote the 1,800-email corpus from 113 authored scenarios.
+      The output is frozen and committed, so no grader re-runs this. Different from
+      the classification baseline (rule 1) and from the judge (rule 3), so no model
+      is ever scored on text it wrote.
+
+# Anti-leakage note. The generator (OpenAI) differs from the classification
+# baseline (Groq) and from the primary judge (Groq is the judge, but it did not
+# write the emails), so no model in the evaluation path is scoring its own output.
+# The generated corpus is additionally guarded by scripts/check_leakage.py.

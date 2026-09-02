@@ -1,0 +1,170 @@
+# Scenarios for the `payment` class.
+#
+# Situations only. The generator never sees `label`, `source_sops` or this file's
+# name -- see data/scenarios/README.md for why.
+#
+# Two indexed SOPs, so within-group selection is measurable here as well:
+# GIRO mechanics (PAY-001) versus channels, penalties and refunds (PAY-002).
+
+label: payment
+source_sops: [SOP-PAY-001, SOP-PAY-002]
+
+scenarios:
+  - scenario_id: PAY-GIRO-001
+    situation: >
+      Someone wants to set up monthly instalments instead of paying everything
+      at once, and asks how to arrange it and how long it takes.
+    persona: {role: employee, literacy: standard, register: polite}
+    season: noa
+    computation_requested: false
+    account_specific: false
+    source_sops: [SOP-PAY-001]
+    variants: 15
+    notes: "eGIRO channels and setup times."
+
+  - scenario_id: PAY-GIRO-002
+    situation: >
+      A person wants to know which day of the month money will be taken from
+      their account, and what happens if that day is a public holiday.
+    persona: {role: employee, literacy: standard, register: polite}
+    season: any
+    computation_requested: false
+    account_specific: false
+    source_sops: [SOP-PAY-001]
+    variants: 13
+    notes: "6th of month; next working day."
+
+  - scenario_id: PAY-GIRO-003
+    situation: >
+      Someone is worried about what happens if there is not enough in their
+      account on the day the money is due to be taken out.
+    persona: {role: employee, literacy: standard, register: anxious}
+    season: any
+    computation_requested: false
+    account_specific: false
+    source_sops: [SOP-PAY-001]
+    variants: 12
+    notes: "Second attempt on the 20th; cancelled after 4 in a row."
+
+  - scenario_id: PAY-GIRO-004
+    situation: >
+      A person whose instalment arrangement was cancelled wants to know whether
+      they can start it again.
+    persona: {role: employee, literacy: imperfect, register: anxious}
+    season: any
+    computation_requested: false
+    account_specific: false
+    source_sops: [SOP-PAY-001]
+    variants: 10
+    notes: "Re-activate via myTax Portal."
+
+  - scenario_id: PAY-PIP-001
+    situation: >
+      Someone notices instalments starting in May based on a figure they do not
+      recognise, and wants to understand where that number comes from.
+    persona: {role: employee, literacy: standard, register: polite}
+    season: estimates
+    computation_requested: false
+    account_specific: false
+    source_sops: [SOP-PAY-001]
+    variants: 10
+    notes: "Provisional Instalment Plan from previous year's tax."
+
+  - scenario_id: PAY-DUE-001
+    situation: >
+      A person has just received their bill and wants to know by when they must
+      pay it.
+    persona: {role: employee, literacy: standard, register: polite}
+    season: noa
+    computation_requested: false
+    account_specific: false
+    source_sops: [SOP-PAY-002]
+    variants: 12
+    notes: "1 month from the date of the NOA."
+
+  - scenario_id: PAY-LATE-001
+    situation: >
+      Someone paid a few weeks after the due date and wants to know what extra
+      charge applies.
+    persona: {role: employee, literacy: standard, register: anxious}
+    season: noa
+    computation_requested: false
+    account_specific: false
+    source_sops: [SOP-PAY-002]
+    variants: 12
+    notes: "5% penalty; 1% per month after 60 days, max 12%."
+
+  - scenario_id: PAY-LATE-002
+    situation: >
+      A person has left a bill unpaid for several months and wants to know what
+      the authority can actually do about it.
+    persona: {role: self_employed, literacy: standard, register: anxious}
+    season: any
+    computation_requested: false
+    account_specific: false
+    source_sops: [SOP-PAY-002]
+    variants: 10
+    notes: "Agents appointed: bank, employer, tenant."
+
+  - scenario_id: PAY-REFUND-001
+    situation: >
+      Someone has been told they overpaid and wants to know how and when the
+      money comes back to them.
+    persona: {role: employee, literacy: standard, register: polite}
+    season: noa
+    computation_requested: false
+    account_specific: false
+    source_sops: [SOP-PAY-002]
+    variants: 12
+    notes: "GIRO/PayNow, interest after 30 days, no cheques from 2026."
+
+  - scenario_id: PAY-REFUND-002
+    situation: >
+      A person leaving Singapore permanently wants to make sure any money owed
+      to them reaches them before they go.
+    persona: {role: foreigner, literacy: standard, register: anxious}
+    season: any
+    computation_requested: false
+    account_specific: false
+    source_sops: [SOP-PAY-002]
+    variants: 10
+    notes: "PayNow, 30 days before departure."
+
+  - scenario_id: PAY-COMP-001
+    situation: >
+      Someone gives the amount on their bill and how late they are, and asks to
+      be told exactly what they now owe in total.
+    persona: {role: employee, literacy: standard, register: frustrated}
+    season: noa
+    computation_requested: true
+    account_specific: false
+    source_sops: [SOP-PAY-002]
+    variants: 12
+    notes: "Penalty arithmetic is conjunctive and time-dependent."
+
+  - scenario_id: PAY-ACCT-001
+    situation: >
+      A person's instalment did not come out of their account this month and
+      they want to know why.
+    persona: {role: employee, literacy: standard, register: frustrated}
+    season: any
+    computation_requested: false
+    account_specific: true
+    plant_pii: [nric, phone]
+    source_sops: [SOP-PAY-001]
+    variants: 12
+    notes: "Never speculate on why a specific deduction failed."
+
+  - scenario_id: PAY-ACCT-002
+    situation: >
+      Someone is waiting on money back that has not arrived and wants to know
+      where it is.
+    persona: {role: employee, literacy: imperfect, register: frustrated}
+    season: noa
+    computation_requested: false
+    account_specific: true
+    plant_pii: [nric]
+    source_sops: [SOP-PAY-002]
+    variants: 10
+    notes: "Refund status requires a lookup."
+

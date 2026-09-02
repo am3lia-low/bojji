@@ -1,0 +1,81 @@
+{
+  "n": 520,
+  "accuracy": 0.7058,
+  "macro_f1": 0.6833,
+  "macro_precision": 0.7086,
+  "macro_recall": 0.7082,
+  "per_class": [
+    {
+      "label": "auto_answerable",
+      "precision": 0.744,
+      "recall": 0.6581,
+      "f1": 0.6984,
+      "support": 234
+    },
+    {
+      "label": "requires_account_lookup",
+      "precision": 0.2564,
+      "recall": 0.5405,
+      "f1": 0.3478,
+      "support": 37
+    },
+    {
+      "label": "high_consequence",
+      "precision": 0.7692,
+      "recall": 0.7692,
+      "f1": 0.7692,
+      "support": 78
+    },
+    {
+      "label": "out_of_scope",
+      "precision": 1.0,
+      "recall": 0.573,
+      "f1": 0.7286,
+      "support": 89
+    },
+    {
+      "label": "no_supporting_sop",
+      "precision": 0.7736,
+      "recall": 1.0,
+      "f1": 0.8723,
+      "support": 82
+    }
+  ],
+  "confusion": {
+    "auto_answerable": {
+      "auto_answerable": 154,
+      "requires_account_lookup": 58,
+      "high_consequence": 18,
+      "out_of_scope": 0,
+      "no_supporting_sop": 4
+    },
+    "requires_account_lookup": {
+      "auto_answerable": 17,
+      "requires_account_lookup": 20,
+      "high_consequence": 0,
+      "out_of_scope": 0,
+      "no_supporting_sop": 0
+    },
+    "high_consequence": {
+      "auto_answerable": 18,
+      "requires_account_lookup": 0,
+      "high_consequence": 60,
+      "out_of_scope": 0,
+      "no_supporting_sop": 0
+    },
+    "out_of_scope": {
+      "auto_answerable": 18,
+      "requires_account_lookup": 0,
+      "high_consequence": 0,
+      "out_of_scope": 51,
+      "no_supporting_sop": 20
+    },
+    "no_supporting_sop": {
+      "auto_answerable": 0,
+      "requires_account_lookup": 0,
+      "high_consequence": 0,
+      "out_of_scope": 0,
+      "no_supporting_sop": 82
+    }
+  }
+}

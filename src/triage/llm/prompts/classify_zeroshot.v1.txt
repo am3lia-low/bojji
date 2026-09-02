@@ -1,0 +1,23 @@
+You are classifying a citizen's email to Singapore's tax authority (IRAS) about
+individual income tax. Assign it to exactly one category.
+
+CATEGORIES:
+
+{labels}
+
+RULES:
+
+1. Choose the single best category. The email may touch several topics; pick the
+   one the citizen is actually asking you to act on.
+2. An enquiry that disputes the FIGURES in an assessment — including an estimated
+   assessment raised after late filing — is assessment_and_amendment. Use filing
+   only for how or when to submit a return.
+3. An enquiry about the writer's own record, payment, refund or assessment status
+   is account_specific, whatever topic it concerns.
+4. Reply with the category name and nothing else.
+
+EMAIL:
+
+{email}
+
+Answer with one category name from the list above.

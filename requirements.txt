@@ -1,0 +1,50 @@
+# Runtime + build dependencies.
+#
+# Lower bounds, not exact pins: this is an application, and a grader on a
+# different Python patch release should not hit a resolver conflict. The versions
+# actually used in the reported run are recorded in eval/results/, which is what
+# reproducibility rests on.
+#
+# TORCH MUST BE THE CPU BUILD. `pip install torch` pulls CUDA wheels (~2GB) by
+# default; the runtime is CPU-only, so that payload is waste on every image pull.
+# The Dockerfile installs it explicitly from the CPU index:
+#
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+#
+# Locally, `pip install -r requirements.txt` is fine if torch is already present.
+
+# --- core runtime ------------------------------------------------------------
+pydantic>=2.6            # typed graph state, schema invariants
+pyyaml>=6.0              # SOP frontmatter, config
+
+# --- classifier --------------------------------------------------------------
+torch>=2.2               # CPU build; see note above
+transformers>=4.40       # MiniLM-L6 encoder + tokenizer
+numpy>=1.26
+
+# --- orchestration -----------------------------------------------------------
+langgraph>=0.2           # explicit nodes, shared state, traceable execution path
+
+# --- evaluation --------------------------------------------------------------
+scikit-learn>=1.4        # macro-F1, calibration curves, the TF-IDF leakage check
+pandas>=2.0              # eval tables, dataset EDA
+matplotlib>=3.8          # reliability diagrams, risk-coverage curves
+
+# --- demo --------------------------------------------------------------------
+streamlit>=1.33          # two queues, reason chips, threshold slider
+
+# --- LLM providers -----------------------------------------------------------
+# Each has one role, and no model is scored on its own output (BUILD.md S6.4).
+google-generativeai>=0.8  # Gemini: drafting (runtime, free tier)
+groq>=0.11                # Groq: groundedness judge (eval only, free tier)
+openai>=1.30              # OpenAI: email generation (build time) + bonus judge
+
+# --- notebooks ---------------------------------------------------------------
+jupyter>=1.0             # training + EDA notebook
+ipykernel>=6.29
+
+# --- development -------------------------------------------------------------
+# Also declared in pyproject.toml [project.optional-dependencies].dev
+pytest>=8.0
+ruff>=0.4
+mypy>=1.9

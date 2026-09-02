@@ -1,0 +1,27 @@
+{
+  "split": "test",
+  "n": 120,
+  "calibration": {
+    "question": "Does temperature scaling change any decision, or only the ECE?",
+    "temperature": 0.6831,
+    "ece_before": 0.1827,
+    "ece_after": 0.1935,
+    "aurc_uncalibrated": 0.1898,
+    "aurc_calibrated": 0.1963,
+    "note": "ECE says the confidence is more honest; AURC says whether that honesty changes a routing decision. They can move independently."
+  },
+  "thresholds": {
+    "question": "Do per-bucket thresholds beat one global number?",
+    "aurc_per_bucket": 0.1963,
+    "aurc_global": 0.1963,
+    "global_value_used": 0.5,
+    "note": "Only auto_answerable and out_of_scope have a threshold that bites, so this isolates the out_of_scope difference."
+  },
+  "scrub": {
+    "question": "Does removing PII cost classification accuracy?",
+    "macro_f1_scrubbed": 0.1546,
+    "macro_f1_unscrubbed": 0.1584,
+    "delta": 0.0038,
+    "note": "Not a decision under review -- the scrub is non-negotiable on privacy grounds. This quantifies a cost already accepted."
+  }
+}

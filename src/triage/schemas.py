@@ -70,6 +70,8 @@ class EscalationReason(StrEnum):
     NO_SUPPORTING_SOP = "no_supporting_sop"
     COMPUTATION_REQUESTED = "computation_requested"
     ACCOUNT_SPECIFIC_SIGNAL = "account_specific_signal"
+    FOREIGN_INCOME_SIGNAL = "foreign_income_signal"
+    SCAM_SIGNAL = "scam_signal"
     LOW_CONFIDENCE = "low_confidence"
 
 
@@ -92,6 +94,16 @@ class Flag(StrEnum):
 
     COMPUTATION_REQUESTED = "computation_requested"
     ACCOUNT_SPECIFIC_SIGNAL = "account_specific_signal"
+    #: Two MISFILE guards. Unlike the flags above, these do not mark a condition
+    #: that cuts across an otherwise-correct classification -- they catch the
+    #: classifier putting an email in the wrong class, in the one direction where
+    #: that error is unsafe. ``FOREIGN_INCOME_SIGNAL`` guards residency against
+    #: absorbing a held-out foreign-income question; ``SCAM_SIGNAL`` guards the
+    #: redirect SOPs against sending a fraud victim to another agency. Both
+    #: triggers are declared in SOP frontmatter (SOP-RES-001, SOP-RTE-002), so the
+    #: corpus already asked for them.
+    FOREIGN_INCOME_SIGNAL = "foreign_income_signal"
+    SCAM_SIGNAL = "scam_signal"
     MULTI_INTENT = "multi_intent"
 
 

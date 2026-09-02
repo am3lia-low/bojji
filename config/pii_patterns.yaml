@@ -1,0 +1,123 @@
+# PII detection patterns for the scrub node.
+#
+# Patterns live here rather than in code so the detection surface is readable in
+# one file, diffable in git, and extensible without touching src/. Each entry
+# carries a `justification:` recording why the pattern is drawn where it is —
+# these are defended in the writeup, not just executed.
+#
+# Ordering matters. Patterns are applied top to bottom, and an earlier match
+# consumes the span. Three orderings are load-bearing:
+#
+#   nric      before phone   — the seven digits inside an identifier are not a
+#                              phone number
+#   money     before postal  — a six-digit run carrying a currency marker is an
+#                              amount, not a postal code, and matching postal
+#                              first would strand the "$" outside the placeholder
+#   postal_code_bare last    — an unanchored six-digit run is the weakest signal
+#                              in the set, so every stronger pattern claims its
+#                              span first
+
+patterns:
+  - name: nric
+    placeholder: NRIC
+    regex: '\b[STFGMstfgm]\d{7}[A-Za-z]\b'
+    validator: nric_checksum
+    justification: >
+      The most sensitive identifier in scope. A checksum validator gates the
+      match, so tokens of the same shape that are not identifiers (order
+      references, case numbers) are left alone. Case-insensitive because
+      citizens type these in lower case.
+
+  - name: email
+    placeholder: EMAIL
+    regex: '\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b'
+    justification: >
+      Applied before phone and postal code. An address can contain digit runs
+      that would otherwise be consumed by the numeric patterns.
+
+  - name: phone_sg
+    placeholder: PHONE
+    regex: '(?<![\d-])(?:\+65[\s-]?)?[689]\d{3}[\s-]?\d{4}(?![\d-])'
+    justification: >
+      Singapore mobile and landline numbers are eight digits opening with 6, 8
+      or 9. The optional +65 prefix and internal space or hyphen cover the
+      common written forms. Lookarounds prevent matching inside a longer digit
+      run such as an account number.
+
+  - name: money
+    placeholder: AMOUNT
+    regex: '(?i)(?:S?\$\s?\d[\d,]*(?:\.\d{1,2})?|\b\d[\d,]*(?:\.\d{1,2})?\s*(?:SGD|dollars?|bucks)\b|\bSGD\s?\d[\d,]*(?:\.\d{1,2})?)'
+    justification: >
+      Assessed income and tax payable are financial facts about an individual.
+      Runs BEFORE the postal patterns: a currency marker ($ or a currency word)
+      disambiguates a six-digit run that would otherwise be read as a postal
+      code, and matching postal first would strand the marker outside the
+      placeholder. Any digit length is accepted, since incomes are not
+      six-digit by nature.
+
+  - name: postal_code_sg
+    placeholder: POSTAL
+    regex: '(?i)(?:\bS(?:INGAPORE)?\b[\s(]*|\bpostal(?:\s+code)?\s*:?\s*|\bs\(\s*)(?<!\d)\d{6}(?!\d)'
+    justification: >
+      Context-anchored postal codes: a Singapore or postal-code marker
+      immediately precedes the digits. This is the high-precision form and
+      carries no ambiguity with monetary or reference values.
+
+  - name: block_unit
+    placeholder: ADDRESS
+    regex: '(?i)\b(?:blk|block)\s*\d{1,4}[A-Z]?\b(?:\s*#\s*\d{1,3}\s*-\s*\d{1,4})?'
+    justification: >
+      HDB block and unit numbers. The unit portion is optional because a block
+      number alone is still locating information.
+
+  - name: unit_number
+    placeholder: ADDRESS
+    regex: '#\s*\d{1,3}\s*-\s*\d{1,4}\b'
+    justification: >
+      A bare unit number appearing without its block, which the block_unit
+      pattern would not reach.
+
+  - name: street_address
+    placeholder: ADDRESS
+    regex: '(?i)\b\d{1,4}[A-Z]?\s+(?:[A-Z][A-Za-z''-]+\s+){0,3}(?:JALAN|LORONG|BUKIT|TAMAN|AVENUE|AVE|ROAD|RD|CRESCENT|CLOSE|WALK|RISE|DRIVE|LINK|STREET|ST|LANE|PLACE|TERRACE|VIEW|GARDENS?|PARK|HEIGHTS)\b'
+    justification: >
+      Gazetteer-anchored street matching. A street-type token is required, so
+      the pattern cannot fire on arbitrary capitalised text. Named-but-untyped
+      streets are the known residual gap and are reported as such rather than
+      claimed covered.
+
+  - name: street_address_prefixed
+    placeholder: ADDRESS
+    regex: '(?i)\b(?:JALAN|LORONG|BUKIT|TAMAN)\s+[A-Z][A-Za-z''-]+(?:\s+[A-Z][A-Za-z''-]+){0,2}'
+    justification: >
+      Malay street types lead rather than trail the name (Jalan Besar, Bukit
+      Timah), so they need a separate pattern from the trailing-type form.
+
+  - name: date
+    placeholder: DATE
+    regex: '(?i)\b(?:\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{4})\b'
+    justification: >
+      Dates of birth and specific transaction dates are identifying in
+      combination. Bare years are excluded: a Year of Assessment is topical
+      content the classifier needs, not PII.
+
+  - name: postal_code_bare
+    placeholder: POSTAL
+    regex: '(?<![\d.,$])\d{6}(?![\d.,])'
+    justification: >
+      A bare six-digit run with no currency marker and no postal keyword. Kept
+      deliberately broad because over-scrubbing is the correct failure
+      direction for an identifier that localises a residence, but it runs after
+      money and after the context-anchored form, so amounts and marked postal
+      codes are already claimed. The residual false-positive class is
+      unmarked six-digit reference numbers, which is reported rather than
+      claimed fixed. The lookarounds exclude decimals and thousands-separated
+      numbers so a fragment of a larger figure is never matched.
+
+# Tokens that must never be scrubbed even where a pattern would match them.
+# These are topical vocabulary the classifier depends on.
+allowlist:
+  - '(?i)\bYA\s?20\d{2}\b'
+  - '(?i)\byear of assessment\b'
+  - '(?i)\bIRAS\b'
+  - '(?i)\bmyTax\s?Portal\b'

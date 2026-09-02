@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "citizen-triage-agent"
+version = "0.1.0"
+description = "Calibrated triage agent for citizen correspondence"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.6",
+    "pyyaml>=6.0",
+    "torch>=2.2",
+    "transformers>=4.40",
+    "numpy>=1.26",
+    "langgraph>=0.2",
+    "scikit-learn>=1.4",
+    "pandas>=2.0",
+    "matplotlib>=3.8",
+    "streamlit>=1.33",
+    "google-generativeai>=0.8",
+    "groq>=0.11",
+    "openai>=1.30",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.4",
+    "mypy>=1.9",
+    "jupyter>=1.0",
+    "ipykernel>=6.29",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests", "scripts", "eval"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+packages = ["triage"]
+mypy_path = "src"
+strict = true
