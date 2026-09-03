@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T05:25:01+00:00",
+  "generated_at": "2026-09-03T06:10:17+00:00",
   "split": "test",
   "n": 877,
   "seed": 42,
@@ -28,10 +28,10 @@
     "macro_f1_bucket": 0.9172,
     "ece_before": 0.1507,
     "ece_after": 0.1502,
-    "aurc_overall": 0.1229,
+    "aurc_overall": 0.0584,
     "must_escalate_recall": 0.9796,
     "unsafe_automations": 8,
     "scrub_recall": 1.0
   },
-  "elapsed_seconds": 37.0
+  "elapsed_seconds": 33.3
 }

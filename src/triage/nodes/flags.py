@@ -78,25 +78,48 @@ _CURRENCY_QUESTION: Final[re.Pattern[str]] = re.compile(
 
 #: Possessive framing that marks an enquiry about the writer's own record.
 #:
-#: The backstop for a known taxonomy compromise. ``account_specific`` is a class,
-#: but it is structurally a flag: the generic-versus-my-case distinction cuts
-#: across every topic, and topical vocabulary ("GIRO deduction") dominates the one
-#: or two tokens that actually carry the signal ("why did MY"). The confusion lands
-#: on the unsafe side -- a miss means auto-drafting about a real taxpayer's account
-#: -- so a cheap independent detector converts the compromise into a measured
-#: safety net (``BUILD.md`` S9.6).
+#: THE PRIMARY DETECTOR, not a backstop any more. It was written as one, while
+#: ``account_specific`` was still a class and the classifier carried the decision.
+#: That class was removed -- being account-specific is a property an enquiry has,
+#: not a topic it is about, and the two read identically -- so
+#: ``requires_account_lookup`` is now reachable ONLY through this flag, at router
+#: reason 5, before any confidence is consulted. Nothing else catches these.
+#:
+#: A miss means auto-drafting about a real taxpayer's account, so the patterns are
+#: deliberately tuned towards recall: over-escalating costs coverage and is
+#: recoverable, under-escalating is the citizen-facing failure (``BUILD.md`` S9.6).
+#:
+#: The vocabulary below is measured, not guessed. On the test split the original
+#: list caught 7 of 64 positives; the misses were dominated by three phrasings it
+#: had no entry for -- "my tax status" (34 occurrences), "my new/current/mailing
+#: address" (28) and "my records" (18) -- because the list was assembled around
+#: billing nouns when the class still existed to catch everything else.
 _ACCOUNT_PATTERNS: Final[tuple[str, ...]] = (
-    r"\bmy (noa|notice of assessment|tax bill|refund|giro|deduction|assessment"
-    r"|account|case|claim|relief|payment|return|instalment|installment)\b",
+    # Possessive + a noun naming something only this taxpayer's record holds.
+    r"\bmy (noa|notice of assessment|tax bill|bill|refund|giro|deduction|assessment"
+    r"|account|case|claim|relief|payment|return|instalment|installment"
+    r"|tax status|status|residency status|resident status|tax residency"
+    r"|records?|tax records?|correspondence|tax correspondence"
+    r"|address|new address|current address|mailing address|contact details"
+    r"|submission|filing|objection|appeal|arrangement|plan)\b",
+    # The same thing asked the other way round.
+    r"\b(status|confirmation|copy|record|details|breakdown) of my\b",
+    r"\b(confirm|verify|check|update|change|correct) (my|the) "
+    r"(tax )?(status|address|records?|details|particulars|assessment|account)\b",
+    # Something the authority did TO this writer specifically.
     r"\bwhy (was|were|did|has|have|is|are) my\b",
+    r"\b(applied|assigned|given|charged|granted|allowed|rejected) to (me|my)\b",
+    r"\bthat was applied to\b",
+    r"\bi (was|am) (charged|billed|assessed|classified|treated|placed|put)\b",
+    # Waiting on an outcome that only a lookup can report.
     r"\bwhen will i (receive|get|be)\b",
     r"\bi (still )?(have not|haven't|did not|didn't|never) (receive|received|get|got)\b",
-    r"\bstatus of my\b",
+    r"\bhas my .{0,30} been (received|processed|approved|allowed|updated|recorded)\b",
+    r"\bwhether (my|i) .{0,40}(been|was|am) (received|processed|placed|put|on)\b",
+    # Reading a figure off this taxpayer's own document.
     r"\bcheck (on )?my\b",
     r"\bmy (payment|refund|return|form|appeal|objection|application) (was|has|is|did)\b",
-    r"\bhas my .{0,30} been (received|processed|approved|allowed)\b",
-    r"\bon my (bill|statement|account|record)\b",
-    r"\bi (was|am) (charged|billed|assessed)\b",
+    r"\bon my (bill|statement|account|record|notice)\b",
 )
 
 #: Foreign-income and treaty vocabulary -- a MISFILE guard, not a topic detector.
