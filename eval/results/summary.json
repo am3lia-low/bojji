@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T02:01:53+00:00",
+  "generated_at": "2026-09-03T02:15:16+00:00",
   "split": "test",
   "n": 875,
   "seed": 42,
@@ -25,7 +25,7 @@
   "calibrated_numbers_reportable": true,
   "headline": {
     "macro_f1_class": 0.76,
-    "macro_f1_bucket": 0.7025,
+    "macro_f1_bucket": 0.8782,
     "ece_before": 0.1416,
     "ece_after": 0.1403,
     "aurc_overall": 0.1783,
@@ -33,5 +33,5 @@
     "unsafe_automations": 7,
     "scrub_recall": 1.0
   },
-  "elapsed_seconds": 41.1
+  "elapsed_seconds": 40.0
 }

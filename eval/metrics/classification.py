@@ -81,6 +81,11 @@ def classification_report(
     A class with zero support is still reported, at zero, rather than dropped: a
     silently missing row would read as "not measured" when it means "never
     predicted and never present", and those are different.
+
+    It is excluded from the macro averages, though. A structural zero -- a bucket
+    that holds no classes by design -- is a fact about the taxonomy, not a fact
+    about the model, and averaging it in understates performance on the classes
+    that were actually predicted.
     """
     if len(truth) != len(predicted):
         raise ValueError(f"length mismatch: {len(truth)} truths, {len(predicted)} predictions")
@@ -109,14 +114,27 @@ def classification_report(
             ClassMetrics(label, precision, recall, _f1(precision, recall), tp + fn)
         )
 
+    # A class with no support is REPORTED at zero but excluded from the macro
+    # average. Averaging it in measures the taxonomy's shape rather than the
+    # model's performance: `requires_account_lookup` holds no classes by design --
+    # it is reached through the account_specific flag, which the router consults
+    # before any confidence -- so it has zero support on every split, and folding a
+    # structural zero into the mean drags the score down by a fifth for a bucket
+    # nothing was ever asked to predict.
+    #
+    # The row stays in `per_class` because "never present and never predicted" and
+    # "not measured" are different things, and the reader should be able to see
+    # which one this is.
+    scored = [m for m in per_class if m.support > 0]
+    count = len(scored) or 1
+
     n = len(truth)
-    count = len(per_class) or 1
     return ClassificationReport(
         per_class=tuple(per_class),
         accuracy=sum(true_positive.values()) / n if n else 0.0,
-        macro_f1=sum(m.f1 for m in per_class) / count,
-        macro_precision=sum(m.precision for m in per_class) / count,
-        macro_recall=sum(m.recall for m in per_class) / count,
+        macro_f1=sum(m.f1 for m in scored) / count,
+        macro_precision=sum(m.precision for m in scored) / count,
+        macro_recall=sum(m.recall for m in scored) / count,
         confusion=confusion,
         n=n,
     )

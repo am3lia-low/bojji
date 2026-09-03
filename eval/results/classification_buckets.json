@@ -1,9 +1,9 @@
 {
   "n": 875,
   "accuracy": 0.9109,
-  "macro_f1": 0.7025,
-  "macro_precision": 0.703,
-  "macro_recall": 0.7038,
+  "macro_f1": 0.8782,
+  "macro_precision": 0.8787,
+  "macro_recall": 0.8797,
   "per_class": [
     {
       "label": "auto_answerable",
