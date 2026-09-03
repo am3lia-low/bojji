@@ -1,15 +1,15 @@
 {
   "n": 875,
-  "accuracy": 0.88,
-  "macro_f1": 0.6398,
-  "macro_precision": 0.6501,
-  "macro_recall": 0.6438,
+  "accuracy": 0.9109,
+  "macro_f1": 0.7025,
+  "macro_precision": 0.703,
+  "macro_recall": 0.7038,
   "per_class": [
     {
       "label": "auto_answerable",
-      "precision": 0.9119,
+      "precision": 0.9262,
       "recall": 0.9099,
-      "f1": 0.9109,
+      "f1": 0.918,
       "support": 455
     },
     {
@@ -28,16 +28,16 @@
     },
     {
       "label": "out_of_scope",
-      "precision": 0.566,
-      "recall": 0.3333,
-      "f1": 0.4196,
+      "precision": 0.7125,
+      "recall": 0.6333,
+      "f1": 0.6706,
       "support": 90
     },
     {
       "label": "no_supporting_sop",
-      "precision": 0.8663,
+      "precision": 0.9701,
       "recall": 0.9878,
-      "f1": 0.9231,
+      "f1": 0.9789,
       "support": 164
     }
   ],
@@ -64,11 +64,11 @@
       "no_supporting_sop": 0
     },
     "out_of_scope": {
-      "auto_answerable": 38,
+      "auto_answerable": 31,
       "requires_account_lookup": 0,
       "high_consequence": 0,
-      "out_of_scope": 30,
-      "no_supporting_sop": 22
+      "out_of_scope": 57,
+      "no_supporting_sop": 2
     },
     "no_supporting_sop": {
       "auto_answerable": 2,
