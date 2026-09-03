@@ -28,7 +28,7 @@ from triage.schemas import Classification
 
 @runtime_checkable
 class Classifier(Protocol):
-    """Anything that can turn an email into a distribution over the 12 classes."""
+    """Anything that can turn an email into a distribution over the taxonomy's classes."""
 
     @property
     def name(self) -> str:

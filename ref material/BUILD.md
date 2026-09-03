@@ -1027,6 +1027,300 @@ per bucket for exactly this reason.
 
 ---
 
+### 9.17 The escalation metric did not know account_specific had become a flag
+
+When ``account_specific`` was demoted from a CLASS to a per-email FLAG in the 10-class
+reshape, ``eval/metrics/escalation.py::expected_reason`` was not updated with it. It
+derives the reason an email SHOULD have escalated under from the ground truth, and it
+only ever consulted the bucket of the true class plus ``computation_requested``. It
+could therefore never return ``ACCOUNT_SPECIFIC_SIGNAL``.
+
+The consequence was a metric that reported a working component as broken:
+
+    reason                     before              after
+    account_specific_signal    P 0.000  R 0.000    P 0.771  R 0.844
+                               support 0           support 64
+                               FP 70               FP 16
+
+All 70 escalations the flag correctly made were scored as false positives against a
+support of zero. The headline numbers moved too, in the direction of honesty:
+must-escalate support 392 -> 456, recall 0.980 -> 0.961, false escalations 181 -> 127.
+The lower recall is the true one -- the earlier figure was computed over a
+denominator that excluded every account-specific email.
+
+The fix reads ``row.item.account_specific``, which the generator has been planting
+all along, and places it in the router's own precedence: bucket reasons first, then
+``account_specific``, then ``computation_requested``.
+
+**The lesson is about where a taxonomy change propagates.** The runtime was migrated
+correctly and the router never misbehaved -- the flag fired on 70 emails and every
+one of them escalated. What went stale was the EVALUATION's model of the ground
+truth, which is the layer least likely to raise an error when it drifts, because a
+metric that is wrong still returns a number. Independent confirmation is what caught
+it: measuring the flag's coverage cost directly gave 16 false positives, against the
+70 the committed results claimed.
+
+Note that ``foreign_income_signal`` still reports support 0 with 8 false positives,
+and that one is CORRECT rather than a bug of the same kind. It is a misfile guard: it
+fires when the classifier put a foreign-income email somewhere else, so there is no
+ground-truth reason for it to match -- a correctly classified foreign-income email
+escalates as ``no_supporting_sop`` instead. Its precision is measured separately in
+``flags.json`` (1.000), which is the number to quote.
+
+---
+
+### 9.16 The two thresholds are set independently, and the curve says why
+
+Thresholds were placeholders (0.5 / 0.5) until the 10-class retrain. They are now
+chosen from the risk-coverage curve on the 877-email test split, and the two that
+bite are set to DIFFERENT values because the two buckets do not behave alike:
+
+    threshold   auto_answerable            out_of_scope
+                automated  risk            automated  risk
+      0.40      290/435    0.097            84/111    0.131
+      0.50      286/435    0.094            62/111    0.016
+      0.60      262/435    0.099            40/111    0.025
+      0.70      237/435    0.097            20/111    0.000
+
+**auto_answerable is flat.** Risk holds near 0.095 across the whole range, so
+raising the cutoff removes coverage without removing error. The errors a higher
+threshold would need to catch are CONFIDENT misclassifications, which a confidence
+threshold cannot see by construction -- that is what the flags and the
+always-escalate buckets exist for. Set at 0.50, the bottom of the flat.
+
+**out_of_scope has a real knee.** Risk falls 0.131 -> 0.016 between 0.40 and 0.50,
+an eightfold reduction for 22 items. Set at 0.65, past the knee, keeping roughly a
+third of the bucket automated.
+
+The asymmetry is deliberate and worth defending: a wrong redirect is harder for a
+citizen to recover from than a wrong-but-grounded answer, because it sends them to
+an organisation that cannot help them and has no record of them. Paying coverage
+for precision is the right trade in that direction and the wrong one in the other.
+
+**The reportability flag now reads the config.** It previously read
+``scaler.fitted`` alone, which is True as soon as any temperature exists -- so a run
+could stamp ``calibrated_numbers_reportable: true`` onto a summary whose coverage
+and risk were computed under placeholder cutoffs, while ``config/thresholds.yaml``
+still said in capitals that no number under it may be reported. Whichever a reader
+believed, one file was wrong. ``run_eval.py`` now ANDs ``scaler.fitted`` with a
+check that the config declares itself fitted, and ``summary.json`` carries
+``thresholds_fitted`` separately so the two conditions are visible apart.
+
+Operating point at these thresholds, on test: **coverage 0.356, risk 0.090,
+AURC 0.061**, must-escalate recall 0.980, 8 unsafe automations out of 877.
+
+---
+
+### 9.15 Per-topic risk is grouped by TRUE class, so "risk 1.0" is not a router failure
+
+`eval/results/risk_coverage.json` reports, at the operating point:
+
+    topic                       coverage    risk     n   automated   wrong
+    account_specific             0.4054    1.0000    37      15        15
+    hardship_or_waiver           0.3889    1.0000    36      14        14
+    oos_other_agency             0.0488    1.0000    41       2         2
+
+Read quickly, those rows say the router auto-answers 40% of account-specific
+enquiries and is wrong every time -- which would contradict the invariant that
+`requires_account_lookup` and `high_consequence` always escalate.
+
+They do not say that. `run_eval.py` builds each `Outcome` as
+
+    label     = row.item.label        # the TRUE class
+    automated = decision.is_automated # from routing the PREDICTED class
+
+so a per-topic row groups by what the email **actually was**, while the routing
+decision was made on what the classifier **said it was**. The `account_specific`
+row therefore counts emails that are genuinely account-specific but were misfiled
+into an auto-answerable class -- and every such automation is wrong by construction,
+because the predicted class differs from the true one. Risk 1.0 is arithmetic, not
+a routing defect.
+
+Grouping the same run by PREDICTED class shows the invariant intact:
+
+    predicted class              n   automated
+    account_specific            78       0
+    hardship_or_waiver          36       0
+    scam_report                 42       0
+    foreign_income_dta          47       0
+    rental_income               59       0
+
+Zero automation in every always-escalate class, and zero in both held-out classes.
+The router never acted on an item it classified into one of them.
+
+**Both framings are legitimate and they answer different questions.** Grouped by
+predicted class, the number describes the ROUTER: given what the system believed,
+did it apply the right policy? Grouped by true class, it describes the SYSTEM as a
+citizen experiences it: I sent an account enquiry, what happened to it? The second
+is the one an agency should care about, and keeping it is correct -- an escalation
+policy that is perfect on correctly-classified items and silent about misfiles
+would be measuring the wrong thing.
+
+What must change is the presentation, not the metric. Reporting "risk 1.0" beside a
+row labelled `account_specific` invites exactly the misreading above, and the
+writeup cannot afford a reader concluding the safety invariant is broken when it is
+provably not. Three fixes, in order of value:
+
+1. State in the results narrative that per-topic rows are keyed on TRUE class and
+   that risk on always-escalate topics is a **classifier misfile rate**, not a
+   routing error rate.
+2. Report the by-predicted-class automation table alongside it, since that is the
+   direct evidence the escalation invariant holds end to end on real data.
+3. Consider renaming the per-topic risk field to something like
+   `misroute_risk_by_true_class`, so the JSON is self-describing to a grader who
+   never reads the narrative.
+
+Note also that `Outcome.correct` is `predicted == true label` -- CLASS equality, not
+bucket equality. An email misfiled from `filing` to `payment` counts as wrong even
+though both are auto-answerable and the reply policy is the same. That is the
+conservative choice and the right one, but it means per-topic risk slightly
+overstates citizen-visible harm, and the writeup should say so rather than leave a
+reader to discover it.
+
+---
+
+### 9.14 The scam flag's 0.976 recall is a test-split artefact
+
+`ARCHITECTURE_AUDIT` section 2.9 reports the scam misfile guard at precision 1.000,
+recall 0.976 on the test split and treats that as the guard's performance. Measured
+across all three splits, the test figure is the outlier:
+
+    split          precision   recall   support   missed scenarios
+    test             1.000      0.976      42     SCAM-SITE-001 (1)
+    calibration      1.000      0.692      39     SCAM-CALL-001 (8), SCAM-WHATSAPP-001 (4)
+    train            1.000      0.739      69     SCAM-VERIFY-001 (12), SCAM-PAID-001 (6)
+
+Precision is genuinely 1.000 everywhere -- zero false positives on all 1,800 emails
+-- so the guard still costs no coverage. But recall is **0.793 corpus-wide (119/150)**,
+not 0.976. **31 of 150 scam emails match no pattern at all**, across 5 of the 7
+scenarios.
+
+The reason the test split looks clean is scenario assignment, not detector quality.
+`scam_report` has only **7 scenarios**, and the grouped split puts SCAM-SMS-001 and
+SCAM-SITE-001 in test while the two hardest situations (SCAM-CALL-001,
+SCAM-VERIFY-001) land in calibration and train. The test split simply did not draw
+the phrasings the patterns miss. This is S9.11a's warning again: a per-class figure
+resting on 2 test scenarios describes those 2 situations, not the class.
+
+**What the misses have in common** is the substance of the finding. The patterns key
+on a *label* the writer supplies -- "scam", "phishing", "suspicious", "is this
+legitimate". The missed emails describe the *event* instead, and never name it:
+
+    "i got a call this morning from a man who said he was from the tax office and
+     said i needed to pay him immediately or I would be arrested ... he told me to
+     call back on this number and pay straight away"
+
+That is a textbook impersonation report containing no scam vocabulary whatsoever.
+The writer is frightened and describing what happened; naming it as fraud is the
+conclusion they are writing in to ask for. **A distressed citizen is the least
+likely author to supply the keyword**, which makes this failure mode correlated with
+exactly the cases that matter most.
+
+The event-shaped signal is available and unused: an unsolicited contact channel
+(call, SMS, WhatsApp) plus a payment or credential demand plus urgency or an arrest
+threat. That is a different pattern family from the current list, not a longer
+version of it.
+
+Consequences, in order:
+
+1. **The number to report is 0.793 corpus-wide, not 0.976.** Quoting the test figure
+   would be reporting the easiest 2 of 7 situations as though they were the class.
+2. The guard remains worth keeping exactly as argued -- precision 1.000 means it
+   costs nothing, and 119 caught misfiles is 119 fraud victims not redirected to
+   another agency. The claim needs weakening, not the mechanism.
+3. Correctly-classified scam emails still escalate via the `high_consequence`
+   bucket regardless of this flag, which never consults it. The flag matters only
+   for MISFILES, so its recall bounds the residual risk rather than the primary
+   path -- worth stating plainly so 0.793 is not read as "20% of fraud reports are
+   auto-answered".
+
+---
+
+### 9.13 The temperature is fitted on 27 situations, and the splits disagree
+
+Two facts about the fitted temperature that the calibration section did not
+anticipate, both measured rather than argued.
+
+**The fit optimises a different quantity from the one the router reads.**
+`scripts/fit_calibration.py::_confidences` takes `max(p)` over the five buckets.
+`triage.nodes.calibrate.calibrate` returns `p[predicted]`, where the predicted
+bucket follows the predicted CLASS rather than the argmax -- which is S9.x's
+deliberate and correct choice, pinned by
+`test_rollup_follows_the_class_not_the_argmax_bucket`. The two quantities differ
+whenever the class-bucket and the argmax-bucket disagree, which on the calibration
+split is **38 of 401 emails (9.5%)**, mean gap 0.109. So the NLL objective the
+temperature minimises is not scored on the number the threshold is compared
+against.
+
+Measured cost on the test split, reproducing `eval/results/calibration.json`
+exactly (0.2312 -> 0.1459):
+
+    quantity                             ECE raw   ECE at T=0.6831
+    max(p)     [what the fit optimises]   0.2039        0.1216
+    p[pred]    [what the router uses]     0.2312        0.1459
+
+The reported figures are the second row, so **the committed numbers are the honest
+ones** -- `run_eval.py` reads `BucketScore.confidence` and is correct. The defect is
+confined to the fit: the temperature was chosen against `max(p)` and then applied
+to `p[pred]`.
+
+**Refitting on the router's quantity does NOT improve the reported ECE.** This was
+the expected easy win and it is not available. Sweeping T on the calibration split
+against `p[pred]` selects T = 0.27, whose test ECE is **0.2668 -- worse than the
+0.1459 the current temperature achieves.** The two splits disagree about the
+optimum:
+
+    T        calibration ECE    test ECE
+    0.27          0.1640         0.2668
+    0.50          0.1821         0.1784
+    0.6831        0.2344         0.1459   <- committed
+    1.00          0.3390         0.2312
+
+**The reason is that the calibration split is easier than the test split**, and by
+a wide margin, at almost identical mean confidence:
+
+    split          n     scenarios   bucket accuracy   mean confidence
+    calibration   401       27           0.8429            0.6085
+    test          520       34           0.7058            0.5739
+
+A 13.7-point accuracy gap at matched confidence is exactly the condition under
+which a temperature fitted on one split mis-serves the other. There is no leakage
+-- scenario overlap between every pair of splits is zero, verified -- so this is
+not a bug in `make_splits.py`. It is S9.11a's warning arriving at the calibration
+layer: **the temperature is fitted on 27 situations, not on 401 independent
+examples.**
+
+Bootstrapping the fit over scenarios (the real unit of independence, 60 resamples)
+puts the uncertainty in the open:
+
+    fitted T: median 0.677, 90% interval [0.456, 0.836]
+
+The committed 0.6831 sits at the median, so it is not a fluke -- but a parameter
+with that interval should not be reported to four decimal places as though it were
+determined. **What the writeup can claim** is that temperature scaling reduces ECE
+on the held-out split (0.2312 -> 0.1459, a 36.9% reduction), which is true, measured
+on data the temperature never saw, and the honest form of the contribution. **What
+it cannot claim** is that 0.6831 is the right temperature for this system in
+general, or that the calibration split's ECE is evidence about the test split.
+
+Two consequences for the work:
+
+1. `_confidences` should be corrected to score `p[predicted]` so the fit and its
+   application are the same transformation, as the module docstring already claims.
+   This is a correctness fix, not a metric improvement -- expect the reported ECE to
+   move little or to worsen slightly, and report it either way.
+2. The direction that would actually improve calibration is more SITUATIONS in the
+   calibration split, not more emails. That is S11's first future improvement, and
+   this is a second independent argument for it.
+
+One further note, correcting S5.5's premise: the fitted temperature SHARPENS
+(T < 1) rather than flattens. Raw softmax over 12 classes is overconfident, but the
+12->5 rollup sums probability mass scattered across several classes within one
+bucket, and the summed bucket score is therefore UNDER-confident. The rollup, not
+the network, sets the direction of the correction.
+
+---
+
 ### 9.12 The free-tier claim is argued, not executed
 
 `tests/test_runtime_is_free.py` was removed. It had scanned `src/` imports to prove
@@ -1103,7 +1397,65 @@ Two ways to widen it, in order of value:
 - Fine-tuning a drafting model on officer-approved replies once such a corpus exists
 - Fully local generation, removing the external API dependency
 - Multilingual support (Chinese, Malay, Tamil)
-- NER-based PII detection for free-text addresses
+- **An LLM for scam detection, because lexical patterns structurally cannot do it.**
+  The scam flag is a misfile guard over regex, and its recall is **0.793 corpus-wide
+  (119/150)** -- not the 0.976 the test split alone suggests, which is an artefact of
+  `scam_report` having only 7 scenarios and the two hardest landing outside test.
+
+  The 31 missed emails share a property that no pattern list fixes: **they describe
+  the event and never name it.** The patterns key on a label the writer supplies
+  ("scam", "phishing", "suspicious", "is this legitimate"); the misses read like
+
+      "i got a call this morning from a man who said he was from the tax office and
+       said i needed to pay him immediately or I would be arrested"
+
+  That is a textbook impersonation report containing no scam vocabulary at all. The
+  writer is frightened and recounting what happened -- naming it as fraud is the
+  conclusion they are writing in to ask for. **The most distressed citizen is the
+  least likely to supply the keyword**, so the failure mode correlates with the cases
+  that matter most.
+
+  Event-shaped patterns were prototyped (unsolicited channel + arrest or legal
+  threat + payment or credential demand). They recover 5 emails for **0.827 recall at
+  precision 1.000**, and one tempting pattern -- `pay (immediately|right now|...)` --
+  had to be dropped because it fires on genuine payment-deadline enquiries, costing
+  4 false positives. That is the whole shape of the problem in one line: the signal
+  that separates a scam from a payment question is *who is demanding and why*, which
+  is semantics, not vocabulary. The remaining ~26 misses are bare narrative with no
+  threat language whatsoever, and no regex reaches them.
+
+  **An LLM is the right instrument here**, and unusually the cost argument favours it:
+  the classification is a single yes/no on a short text, the class is rare (150 of
+  1,800), and it need only run as a second opinion on emails the encoder did NOT
+  route to `scam_report` -- so the spend is bounded and small. The precision-1.000
+  regex stays as the cheap first pass; the model covers the semantic tail. This is
+  the one place in the pipeline where a generative model earns its unreliability,
+  because the failure direction is asymmetric: a false positive escalates one
+  answerable email, a false negative auto-answers a fraud victim.
+
+  Until that exists, the honest framing for the writeup is that **scam detection is
+  the weakest guarantee in the system**: ~79% of fraud reports carry a lexical
+  signal, escalation is certain for those that do, and correctly-classified reports
+  escalate on the `high_consequence` bucket regardless -- so the residual exposure is
+  misfiled-and-unworded reports, not one in five fraud victims.
+
+- **An offline PII model in place of the regex set.** `config/pii_patterns.yaml`
+  is deliberately a placeholder for this. A local NER model would catch the
+  shapes a pattern set cannot enumerate -- free-text addresses with no street-type
+  token, unusual name forms, and identifiers written in ways the corpus never
+  showed. The regex set is not a partial version of that model: it is the
+  correct choice under the current constraints, because it is readable,
+  diffable, testable per pattern, and adds no runtime dependency or inference
+  cost to the one path that gates every external call. Detection lives in
+  config rather than code precisely so the swap is a change of implementation
+  behind `Scrubber`, not a change to the pipeline.
+
+  The residual gap the regex set leaves is stated rather than closed: an
+  address carrying neither a block number nor a street-type token is
+  unreachable by a gazetteer-anchored pattern, and the trade in the other
+  direction is real too -- a leading Malay street type cannot distinguish
+  "Jalan Besar station" from a residential "Jalan Membina". Both are
+  documented in `tests/test_scrubber.py` rather than claimed fixed.
 - Mailbox integration, with its privacy implications
 - Extension to other tax types with their own seasonal cycles
 - Human-in-the-loop A/B evaluation in a live inbox

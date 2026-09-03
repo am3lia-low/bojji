@@ -15,6 +15,7 @@ escalate_if:
   - account_specific
   - amount_computation_requested
   - hardship_or_waiver_request
+  - scam_report
 references:
   - https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/receive-tax-bill-pay-tax-check-refunds/understanding-my-tax-assessment
   - https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/receive-tax-bill-pay-tax-check-refunds/making-changes-after-filing-receiving-tax-bill

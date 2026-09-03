@@ -15,6 +15,7 @@ escalate_if:
   - account_specific
   - amount_computation_requested
   - foreign_income_dta
+  - scam_report
 references:
   - https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-residency-and-tax-rates/individual-income-tax-rates
   - https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-residency-and-tax-rates/apply-for-certificate-of-residence

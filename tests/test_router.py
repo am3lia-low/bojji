@@ -355,7 +355,7 @@ def test_scam_signal_escalates_every_auto_answerable_class(index, cls: str) -> N
     The flag is computed from text alone and is independent of the predicted class,
     but the router honours it only where a RETRIEVED SOP declares it -- so declaring
     it in frontmatter is what makes it bite. That is the corpus-as-policy seam
-    working: no code change, no retrain, and the 12-class label set is untouched.
+    working: no code change, no retrain, and the label set is untouched.
     """
     decision = decide(
         index, cls, Bucket.AUTO_ANSWERABLE, 0.99, frozenset({Flag.SCAM_SIGNAL}),

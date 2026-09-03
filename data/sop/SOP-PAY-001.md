@@ -15,6 +15,7 @@ escalate_if:
   - account_specific
   - hardship_or_waiver_request
   - amount_computation_requested
+  - scam_report
 references:
   - https://www.iras.gov.sg/quick-links/payments/giro-individual-income-tax
 last_reviewed: 2026-09-01

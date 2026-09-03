@@ -1,19 +1,19 @@
 {
   "note": "Reported per reason. The headline is recall on must-escalate cases: a false escalation costs coverage and is recoverable, a false auto-reply is the citizen-facing failure.",
   "n": 877,
-  "must_escalate_recall": 0.9796,
-  "must_escalate_support": 392,
-  "unsafe_automations": 8,
-  "false_escalations": 145,
+  "must_escalate_recall": 0.9605,
+  "must_escalate_support": 456,
+  "unsafe_automations": 18,
+  "false_escalations": 127,
   "per_reason": [
     {
       "reason": "account_specific_signal",
-      "precision": 0.0,
-      "recall": 0.0,
-      "support": 0,
-      "true_positive": 0,
-      "false_positive": 70,
-      "false_negative": 0
+      "precision": 0.7714,
+      "recall": 0.8438,
+      "support": 64,
+      "true_positive": 54,
+      "false_positive": 16,
+      "false_negative": 10
     },
     {
       "reason": "computation_requested",

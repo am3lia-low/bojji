@@ -45,13 +45,22 @@ def expected_reason(
     bucket_of: Mapping[str, str],
     *,
     computation_requested: bool = False,
+    account_specific: bool = False,
 ) -> EscalationReason | None:
     """The reason this email should have escalated under, or None if it is actionable.
 
     Derived from the ground truth the generator recorded, in the router's own
-    precedence order: the structural bucket reasons outrank the flags, because an
-    ``account_specific`` email escalates for that reason whether or not it also asks
-    for a computation.
+    precedence order: the structural bucket reasons outrank the flags, and
+    ``account_specific`` outranks ``computation_requested`` exactly as
+    ``triage.nodes.route`` orders them.
+
+    ``account_specific`` is a per-email property rather than a class. Being about
+    the writer's own record cuts across every topic -- "how do instalments work" and
+    "what is the status of my instalment plan" differ by one possessive -- so the
+    generator plants it as a flag on emails of any class, and the router escalates
+    on it before any confidence is read. Omitting it here scored all 70 of its real
+    escalations as false positives against a support of zero, which reported the
+    flag at precision 0.000 while it was working correctly.
 
     ``low_confidence`` is deliberately never expected. It is a property of the
     model's uncertainty rather than of the email, so an item escalated for it is
@@ -61,6 +70,8 @@ def expected_reason(
     bucket = Bucket(bucket_of.get(true_label, Bucket.NO_SUPPORTING_SOP.value))
     if bucket in _BUCKET_REASON:
         return _BUCKET_REASON[bucket]
+    if account_specific:
+        return EscalationReason.ACCOUNT_SPECIFIC_SIGNAL
     if computation_requested:
         return EscalationReason.COMPUTATION_REQUESTED
     return None

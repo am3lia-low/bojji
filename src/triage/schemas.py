@@ -14,8 +14,8 @@ a metric. Six values, closed.
 
 **A redirect is an automated action, not an escalation.** ``out_of_scope`` classes
 auto-reply with a redirect, and that counts toward coverage under the no-back-door
-policy (S5.6). Modelling it as an escalation would understate coverage on two of
-twelve classes.
+policy (S5.6). Modelling it as an escalation would understate coverage on the
+whole out-of-scope class.
 
 **Drafting failure is separated from routing.** ``auto_reply_intended`` records
 what the router decided; ``draft_status`` records what the drafter managed. A
@@ -32,7 +32,7 @@ from typing import Annotated, Self
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 #: Tolerance on a softmax summing to 1.0. Wide enough for float error accumulated
-#: over 12 classes plus a temperature division, tight enough that a genuinely
+#: across the class set plus a temperature division, tight enough that a genuinely
 #: malformed distribution -- a truncated dict, or scores that were never softmaxed
 #: -- still fails.
 _PROB_SUM_TOLERANCE: float = 1e-3
@@ -235,7 +235,7 @@ class Classification(BaseModel):
 
 
 class BucketScore(BaseModel):
-    """The distribution rolled up from 12 classes into 5 buckets.
+    """The distribution rolled up from the class set into 5 buckets.
 
     Calibration and thresholds live at this level, not at class level: at 1,800
     emails a bucket carries ~108 test examples against ~45 for a class, and a

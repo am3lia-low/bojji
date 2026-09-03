@@ -65,10 +65,25 @@ def test_labels_match_the_taxonomy(labels: list[str], taxonomy_classes: list[str
     """The classifier's label set is exactly the taxonomy's class set.
 
     A label the taxonomy does not define falls through ``bucket_of.get(...)`` to
-    ``no_supporting_sop`` and escalates every email in that class, which presents
-    as a weak class rather than as a broken contract.
+    ``no_supporting_sop``, so every email the model puts in that class escalates as
+    unanswerable. That presents as a weak class or as depressed coverage, not as an
+    error -- which is why it is asserted here rather than left to be noticed.
+
+    This test is EXPECTED to fail between a taxonomy change and the retrain that
+    follows it. That window is exactly when the failure is worth seeing: the shipped
+    weights predict a class set the corpus no longer maps, and every number produced
+    in the meantime is measured against a stale label space.
     """
-    assert labels == taxonomy_classes
+    stale = sorted(set(labels) - set(taxonomy_classes))
+    missing = sorted(set(taxonomy_classes) - set(labels))
+    assert labels == taxonomy_classes, (
+        f"the shipped classifier predicts {len(labels)} classes but the taxonomy "
+        f"declares {len(taxonomy_classes)}.\n"
+        f"  predicted but no longer in the taxonomy: {stale or '-'}\n"
+        f"  in the taxonomy but never predicted:     {missing or '-'}\n"
+        "Retrain so labels.json matches config/taxonomy.yaml, or regenerate the "
+        "taxonomy if the SOP corpus is what changed."
+    )
 
 
 def test_label_count_matches_the_head_width(labels: list[str]) -> None:

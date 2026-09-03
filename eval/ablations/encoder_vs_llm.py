@@ -75,8 +75,19 @@ def stratified(rows: tuple[Labelled, ...], n: int, seed: int) -> list[Labelled]:
     return picked[:n]
 
 
-def evaluate(classifier: Any, texts: list[str], truth: list[str]) -> dict[str, Any]:
-    """Run a classifier over the sample and score it on every axis."""
+def evaluate(
+    classifier: Any, texts: list[str], truth: list[str], labels: tuple[str, ...]
+) -> dict[str, Any]:
+    """Run a classifier over the sample and score it on every axis.
+
+    ``labels`` is the FIXED class set, and passing it is what makes the two
+    models comparable. With the label set left to be derived from the data, each
+    report averages over only the classes that appear in its own truth-plus-
+    predictions union -- and the two models predict different classes on a small
+    stratified sample. The macro denominators then differ, so the two macro-F1
+    figures are averages over different numbers of classes and cannot be placed
+    side by side. Measured discrepancy on identical predictions: 0.1111.
+    """
     started = time.time()
     predictions = classifier.predict_batch(texts)
     elapsed = time.time() - started
@@ -84,7 +95,7 @@ def evaluate(classifier: Any, texts: list[str], truth: list[str]) -> dict[str, A
     predicted = [p.label for p in predictions]
     confidences = [p.confidence for p in predictions]
     correct = [p == t for p, t in zip(predicted, truth, strict=True)]
-    report = classification_report(truth, predicted)
+    report = classification_report(truth, predicted, labels=labels)
 
     return {
         "model": classifier.name,
@@ -120,7 +131,8 @@ def main() -> int:
 
     encoder = EncoderClassifier()
     print("  encoder ...")
-    encoder_result = evaluate(encoder, texts, truth)
+    labels = tuple(encoder.labels)
+    encoder_result = evaluate(encoder, texts, truth, labels)
 
     llm_result: dict[str, Any]
     try:
@@ -129,7 +141,7 @@ def main() -> int:
 
         baseline = build_zeroshot(tuple(encoder.labels), args.samples, GroqClient())
         print(f"  llm zero-shot (k={args.samples}, {args.n * args.samples} calls) ...")
-        llm_result = evaluate(baseline, texts, truth)
+        llm_result = evaluate(baseline, texts, truth, labels)
     except Exception as exc:  # noqa: BLE001 -- an absent key is a skip, not a failure
         llm_result = {"skipped": True, "reason": str(exc)[:200]}
 

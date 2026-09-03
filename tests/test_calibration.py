@@ -28,13 +28,21 @@ from triage.models.calibration import (
 from triage.nodes.calibrate import calibrate, rollup
 from triage.schemas import Bucket, Classification
 
+#: A stand-in class -> bucket map, mirroring the real taxonomy's shape.
+#:
+#: ``requires_account_lookup`` is reachable here through a class so that the
+#: rollup's follow-the-class property can be exercised at all. In the live
+#: taxonomy that bucket has no class -- being account-specific is a property an
+#: enquiry has rather than a topic it is about, so the condition is carried by the
+#: ``account_specific`` FLAG and the router escalates on it before any confidence
+#: is read. The rollup logic under test is identical either way.
 BUCKET_OF = {
     "filing": "auto_answerable",
     "payment": "auto_answerable",
     "residency": "auto_answerable",
-    "account_specific": "requires_account_lookup",
+    "account_lookup_topic": "requires_account_lookup",
     "hardship_or_waiver": "high_consequence",
-    "oos_business_tax": "out_of_scope",
+    "oos_redirect": "out_of_scope",
 }
 
 
@@ -57,8 +65,8 @@ def test_rollup_sums_within_bucket():
     """Three auto-answerable classes at 0.2 each is a 0.6 auto-answerable bucket."""
     result = classification({
         "filing": 0.2, "payment": 0.2, "residency": 0.2,
-        "account_specific": 0.4,
-    }, label="account_specific")
+        "account_lookup_topic": 0.4,
+    }, label="account_lookup_topic")
 
     bucket, summed = rollup(result, BUCKET_OF)
 
@@ -70,14 +78,14 @@ def test_rollup_sums_within_bucket():
 def test_rollup_follows_the_class_not_the_argmax_bucket():
     """The distinguishing case: the class's bucket is NOT the largest bucket.
 
-    Predicted class is ``account_specific`` at 0.4, but the auto-answerable bucket
+    Predicted class is ``account_lookup_topic`` at 0.4, but the auto-answerable bucket
     sums to 0.6. Following the argmax bucket here would auto-reply to an enquiry
     about a taxpayer's own record -- the exact failure the design exists to prevent.
     """
     result = classification({
         "filing": 0.2, "payment": 0.2, "residency": 0.2,
-        "account_specific": 0.4,
-    }, label="account_specific")
+        "account_lookup_topic": 0.4,
+    }, label="account_lookup_topic")
 
     bucket, summed = rollup(result, BUCKET_OF)
 
@@ -86,7 +94,7 @@ def test_rollup_follows_the_class_not_the_argmax_bucket():
 
 
 def test_rollup_sums_to_one():
-    result = classification({"filing": 0.5, "account_specific": 0.3, "hardship_or_waiver": 0.2})
+    result = classification({"filing": 0.5, "account_lookup_topic": 0.3, "hardship_or_waiver": 0.2})
     _, summed = rollup(result, BUCKET_OF)
 
     assert sum(summed.values()) == pytest.approx(1.0)
@@ -107,7 +115,7 @@ def test_unknown_class_rolls_into_no_supporting_sop():
 
 def test_unfitted_scaler_leaves_calibrated_none():
     """The pipeline runs before calibration exists; a placeholder must be visible."""
-    result = classification({"filing": 0.7, "account_specific": 0.3})
+    result = classification({"filing": 0.7, "account_lookup_topic": 0.3})
     bucket, summed = rollup(result, BUCKET_OF)
 
     score = calibrate(bucket, summed, TemperatureScaler())
@@ -117,7 +125,7 @@ def test_unfitted_scaler_leaves_calibrated_none():
 
 
 def test_identity_temperature_is_a_no_op():
-    result = classification({"filing": 0.7, "account_specific": 0.3})
+    result = classification({"filing": 0.7, "account_lookup_topic": 0.3})
     bucket, summed = rollup(result, BUCKET_OF)
 
     score = calibrate(
@@ -131,9 +139,9 @@ def test_identity_temperature_is_a_no_op():
 def test_scaling_never_changes_the_predicted_bucket(temperature):
     """Monotonic: accuracy is identical before and after. The core claim."""
     result = classification({
-        "filing": 0.3, "payment": 0.1, "account_specific": 0.35,
-        "hardship_or_waiver": 0.15, "oos_business_tax": 0.1,
-    }, label="account_specific")
+        "filing": 0.3, "payment": 0.1, "account_lookup_topic": 0.35,
+        "hardship_or_waiver": 0.15, "oos_redirect": 0.1,
+    }, label="account_lookup_topic")
     bucket, summed = rollup(result, BUCKET_OF)
 
     score = calibrate(bucket, summed, TemperatureScaler(temperature=temperature, fitted=True))
@@ -142,7 +150,7 @@ def test_scaling_never_changes_the_predicted_bucket(temperature):
 
 
 def test_temperature_above_one_flattens():
-    result = classification({"filing": 0.8, "account_specific": 0.2})
+    result = classification({"filing": 0.8, "account_lookup_topic": 0.2})
     bucket, summed = rollup(result, BUCKET_OF)
 
     hot = calibrate(bucket, summed, TemperatureScaler(temperature=2.0, fitted=True))
@@ -152,7 +160,7 @@ def test_temperature_above_one_flattens():
 
 def test_temperature_below_one_sharpens():
     """The direction the fitted value actually took, because the rollup underconfidences."""
-    result = classification({"filing": 0.8, "account_specific": 0.2})
+    result = classification({"filing": 0.8, "account_lookup_topic": 0.2})
     bucket, summed = rollup(result, BUCKET_OF)
 
     cold = calibrate(bucket, summed, TemperatureScaler(temperature=0.5, fitted=True))
@@ -162,7 +170,7 @@ def test_temperature_below_one_sharpens():
 
 def test_calibrated_confidence_stays_a_probability():
     for temperature in (0.1, 0.5, 1.0, 3.0, 10.0):
-        result = classification({"filing": 0.99, "account_specific": 0.01})
+        result = classification({"filing": 0.99, "account_lookup_topic": 0.01})
         bucket, summed = rollup(result, BUCKET_OF)
         score = calibrate(bucket, summed, TemperatureScaler(temperature=temperature, fitted=True))
 
@@ -234,7 +242,7 @@ def _taxonomy_buckets() -> dict[str, str]:
     """class -> bucket, read from config rather than from the SOP index.
 
     The index derives its map from INDEXED SOP frontmatter, so the two held-out
-    classes are absent from it by design. The taxonomy declares all twelve, which
+    classes are absent from it by design. The taxonomy declares every class, which
     is what makes it the right reference for "did every class land where the
     policy says it should".
     """
@@ -342,7 +350,7 @@ def test_fit_scores_the_quantity_the_router_reads():
     of the predicted CLASS, which is not always the argmax. The temperature was
     therefore chosen against a number the router never reads.
 
-    The case below is the one the rollup design exists to handle: ``account_specific``
+    The case below is the one the rollup design exists to handle: ``account_lookup_topic``
     at 0.40 is the predicted class, but three auto-answerable classes at 0.20 each
     give ``auto_answerable`` 0.60 of bucket mass. ``max`` would report 0.60 for a
     decision actually made at 0.40.
@@ -351,8 +359,8 @@ def test_fit_scores_the_quantity_the_router_reads():
 
     result = classification({
         "filing": 0.2, "payment": 0.2, "residency": 0.2,
-        "account_specific": 0.4,
-    }, label="account_specific")
+        "account_lookup_topic": 0.4,
+    }, label="account_lookup_topic")
     bucket, summed = rollup(result, BUCKET_OF)
 
     order = list(Bucket)

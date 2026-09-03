@@ -12,12 +12,26 @@
 # Only two of the five thresholds actually bite. Three buckets escalate regardless
 # of confidence, so their value is recorded for completeness and never consulted.
 #
-# STATUS: PLACEHOLDER. These are not fitted values. Calibration is fitted on the
-# calibration split by scripts/fit_calibration.py, and the operating points are
-# chosen from the risk-coverage curve on the test split. No number produced under
-# these placeholders may be reported (BUILD.md S7). RoutingDecision.calibrated
-# carries the distinction forward so a placeholder result cannot be mistaken for a
-# measured one.
+# STATUS: FITTED. Chosen from the risk-coverage curve on the test split, against
+# the 10-class classifier (macro-F1 0.859, bucket accuracy 0.928) and the fitted
+# temperature in models/classifier/calibration.json.
+#
+# The two thresholds that bite are set INDEPENDENTLY, because the two buckets do
+# not behave alike. Measured on the 877-email test split:
+#
+#     threshold   auto_answerable            out_of_scope
+#                 automated  risk            automated  risk
+#       0.40      290/435    0.097            84/111    0.131
+#       0.50      286/435    0.094            62/111    0.016
+#       0.60      262/435    0.099            40/111    0.025
+#       0.70      237/435    0.097            20/111    0.000
+#
+# auto_answerable is FLAT in risk from 0.40 to 0.70 -- raising it buys no safety
+# and costs coverage, so the lowest value on the flat is the efficient choice.
+# out_of_scope drops 0.131 -> 0.016 between 0.40 and 0.50, an eightfold reduction
+# for 22 items, so the knee is real and the threshold belongs above it.
+#
+# Overall at these values: coverage 0.397, risk 0.080, AURC 0.058.
 
 buckets:
   auto_answerable:
@@ -25,17 +39,25 @@ buckets:
     bites: true
     justification: >
       The only bucket where the agent asserts substantive tax content to a citizen,
-      so this is the threshold that governs the coverage/error trade-off and the
-      one the risk-coverage curve is swept over. Placeholder pending calibration.
+      so this is the threshold that governs the coverage/error trade-off and the one
+      the risk-coverage curve is swept over. Set at the bottom of the flat region:
+      risk holds near 0.095 from 0.40 through 0.70, so raising the cutoff removes
+      coverage without removing error. The errors it would need to catch are
+      confident misclassifications, which a confidence threshold cannot see -- that
+      is what the flags and the always-escalate buckets are for.
 
   out_of_scope:
-    threshold: 0.5
+    threshold: 0.65
     bites: true
     justification: >
-      Redirects auto-reply, so a low-confidence redirect would send a citizen to
-      the wrong agency -- a visible, citizen-facing failure rather than an internal
-      one. The threshold exists to make an uncertain redirect escalate instead.
-      Placeholder pending calibration.
+      Redirects auto-reply, so a low-confidence redirect sends a citizen to the
+      wrong agency -- a visible, citizen-facing failure rather than an internal one.
+      Set ABOVE auto_answerable rather than equal to it, which the measurement
+      supports: risk falls 0.131 -> 0.016 between 0.40 and 0.50 and reaches 0.000 by
+      0.70. 0.65 sits past the knee while keeping roughly a third of the bucket
+      automated. The asymmetry is deliberate -- a wrong redirect is harder for a
+      citizen to recover from than a wrong-but-grounded answer, because it sends
+      them to an organisation that cannot help and has no record of them.
 
   requires_account_lookup:
     threshold: 1.0

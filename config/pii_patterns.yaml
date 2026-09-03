@@ -57,11 +57,44 @@ patterns:
 
   - name: postal_code_sg
     placeholder: POSTAL
-    regex: '(?i)(?:\bS(?:INGAPORE)?\b[\s(]*|\bpostal(?:\s+code)?\s*:?\s*|\bs\(\s*)(?<!\d)\d{6}(?!\d)'
+    regex: '(?i)(?:\bS(?:INGAPORE)?\b[\s(]*|\bpost(?:al)?\s*code\s*:?\s*|\bpostal\s*:?\s*|\bs\(\s*)(?<!\d)\d{6}(?!\d)'
     justification: >
       Context-anchored postal codes: a Singapore or postal-code marker
       immediately precedes the digits. This is the high-precision form and
       carries no ambiguity with monetary or reference values.
+
+      The marker alternation covers "postcode", "post code" and "postal code"
+      as well as bare "postal". The one-word spelling was missing and is the
+      one the generated corpus actually uses, so nine of sixteen planted
+      postcodes were reachable only by the bare pattern -- which was itself
+      rejecting them (see postal_code_bare).
+
+  - name: block_street_unit
+    placeholder: ADDRESS
+    regex: '(?i)\b(?:blk|block)\s*\d{1,4}[A-Z]?\b(?:\s+(?:(?:[A-Z][A-Za-z''-]+\s+){1,3}(?:AVENUE|AVE|ROAD|RD|CRESCENT|CLOSE|WALK|RISE|DRIVE|LINK|STREET|ST|LANE|PLACE|TERRACE|VIEW|GARDENS?|PARK|HEIGHTS|WAY)\b(?:\s+\d{1,3})?|(?:JALAN|LORONG|BUKIT|TAMAN)\s+[A-Z][A-Za-z''-]+(?:\s+[A-Z][A-Za-z''-]+){0,2}))?(?:\s*#\s*\d{1,3}\s*-\s*\d{1,4})?'
+    justification: >
+      A full HDB address claimed as ONE span: block, street and unit together.
+      Runs BEFORE block_unit, and that ordering is load-bearing. block_unit
+      matches only "Blk 857" and consumes the span, which left the street name
+      ("Tampines Street 21") stranded between two placeholders with no pattern
+      able to reach it -- the leading house number that street_address requires
+      had already been taken. Every planted address in the corpus is this shape,
+      so the leak was total for the address type while scrub recall still read
+      1.0000: the metric asks whether the WHOLE planted string survives verbatim,
+      and a partly-scrubbed address does not.
+
+      The street segment is optional, so this pattern strictly supersedes
+      block_unit rather than competing with it. Its two branches are ordered
+      trailing-type first: "Bukit Batok Ave 3" carries both a leading type
+      (Bukit) and a trailing one (Ave), and the leading branch would stop at
+      "Bukit Batok" and strand "Ave 3".
+
+      Deliberately anchored on the block token. A standalone street pattern was
+      prototyped and rejected: the gazetteer's English members (WAY, LINK, VIEW,
+      PLACE, ST) are ordinary words, and it fired on 80+ non-address phrases
+      across the corpus ("is there any way", "clicked the link"), scrubbing the
+      topical text the classifier reads. Anchored on the block it matches 16
+      spans corpus-wide, all 16 of them planted addresses, zero false positives.
 
   - name: block_unit
     placeholder: ADDRESS
@@ -103,7 +136,7 @@ patterns:
 
   - name: postal_code_bare
     placeholder: POSTAL
-    regex: '(?<![\d.,$])\d{6}(?![\d.,])'
+    regex: '(?<![\d.,$])\d{6}(?![\d.,]?\d)'
     justification: >
       A bare six-digit run with no currency marker and no postal keyword. Kept
       deliberately broad because over-scrubbing is the correct failure
@@ -113,6 +146,15 @@ patterns:
       unmarked six-digit reference numbers, which is reported rather than
       claimed fixed. The lookarounds exclude decimals and thousands-separated
       numbers so a fragment of a larger figure is never matched.
+
+      The trailing lookahead is (?![\d.,]?\d) rather than (?![\d.,]). Its job is
+      to reject a six-digit run that CONTINUES into a larger number -- a decimal
+      or a thousands-separated figure -- so what disqualifies a match is a
+      separator FOLLOWED BY ANOTHER DIGIT. The earlier form rejected any
+      trailing "." or ",", which meant an ordinary sentence-ending postcode
+      ("postcode 648913.") was skipped while the same value written with a "?"
+      was caught. That asymmetry silently dropped nine of sixteen planted
+      postcodes.
 
 # Tokens that must never be scrubbed even where a pattern would match them.
 # These are topical vocabulary the classifier depends on.

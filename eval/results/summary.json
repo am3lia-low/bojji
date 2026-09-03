@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T06:10:17+00:00",
+  "generated_at": "2026-09-03T11:10:45+00:00",
   "split": "test",
   "n": 877,
   "seed": 42,
@@ -17,21 +17,22 @@
   },
   "thresholds": {
     "auto_answerable": 0.5,
-    "out_of_scope": 0.5,
+    "out_of_scope": 0.65,
     "requires_account_lookup": 1.0,
     "high_consequence": 1.0,
     "no_supporting_sop": 1.0
   },
+  "thresholds_fitted": true,
   "calibrated_numbers_reportable": true,
   "headline": {
     "macro_f1_class": 0.8593,
     "macro_f1_bucket": 0.9172,
     "ece_before": 0.1507,
     "ece_after": 0.1502,
-    "aurc_overall": 0.0584,
-    "must_escalate_recall": 0.9796,
-    "unsafe_automations": 8,
+    "aurc_overall": 0.0613,
+    "must_escalate_recall": 0.9605,
+    "unsafe_automations": 18,
     "scrub_recall": 1.0
   },
-  "elapsed_seconds": 33.3
+  "elapsed_seconds": 38.0
 }

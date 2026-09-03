@@ -73,10 +73,22 @@ def key_status() -> dict[str, bool]:
 
     Printed by entrypoints so a run states up front what it can and cannot do --
     an eval that silently skipped the judge is worse than one that said so.
+
+    The numbered Gemini variables are optional fallbacks. Free-tier drafting quota
+    is a daily budget, so an exhausted key stays exhausted for hours; a second key
+    lets a sweep or a demo carry on rather than stopping. Absent ones are reported
+    False rather than omitted, so the status line shows how much headroom a run
+    actually has.
     """
     return {
         name: bool(os.environ.get(name))
-        for name in ("GEMINI_API_KEY", "GROQ_API_KEY", "OPENAI_API_KEY")
+        for name in (
+            "GEMINI_API_KEY",
+            "GEMINI_API_KEY_2",
+            "GEMINI_API_KEY_3",
+            "GROQ_API_KEY",
+            "OPENAI_API_KEY",
+        )
     }
 
 

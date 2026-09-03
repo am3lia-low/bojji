@@ -37,7 +37,7 @@ class ModelNotTrainedError(RuntimeError):
 
 
 class EncoderClassifier:
-    """Fine-tuned MiniLM-L6 over the 12-class taxonomy.
+    """Fine-tuned MiniLM-L6 over the corpus-derived taxonomy.
 
     Weights, tokenizer and label order load together. The label order is persisted
     rather than re-derived: the linear head's output index maps positionally onto

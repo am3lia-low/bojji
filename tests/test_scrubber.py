@@ -8,6 +8,8 @@ are known and reported rather than fixed.
 
 from __future__ import annotations
 
+import re
+
 import pytest
 
 from triage.pii.nric import expected_check_letter, is_valid_nric
@@ -280,3 +282,133 @@ def test_known_gap_untyped_street_is_not_detected(scrubber: Scrubber) -> None:
     """
     result = scrubber.scrub("I stay at Pasir Panjang near the market")
     assert result.vault == {}
+
+
+# --------------------------------------------------------------------------- #
+# Full-address spans
+# --------------------------------------------------------------------------- #
+
+CORPUS_ADDRESSES = (
+    "Blk 857 Tampines Street 21 #04-029",
+    "Blk 88 Lorong Chuan #23-172",
+    "Blk 673 Bukit Batok Ave 3 #09-188",
+    "Blk 745 Ang Mo Kio Ave 10 #10-022",
+    "Blk 695 Jalan Membina #06-156",
+    "Blk 123 Bedok North Ave 1 #05-06",
+)
+
+
+@pytest.mark.parametrize("address", CORPUS_ADDRESSES)
+def test_full_address_is_one_placeholder(scrubber: Scrubber, address: str) -> None:
+    """Block, street and unit are claimed as a single span.
+
+    Regression test. ``block_unit`` previously matched only "Blk 857" and consumed
+    the span, stranding the street name between two placeholders: the leading house
+    number ``street_address`` requires had already been taken, so nothing could
+    reach "Tampines Street 21". Every planted address in the corpus is this shape,
+    so the street name leaked on all of them.
+    """
+    result = scrubber.scrub(f"I live at {address}.")
+    assert result.text == "I live at [ADDRESS_1]."
+    assert result.vault == {"[ADDRESS_1]": address}
+
+
+@pytest.mark.parametrize("address", CORPUS_ADDRESSES)
+def test_street_name_does_not_survive_scrubbing(scrubber: Scrubber, address: str) -> None:
+    """The locating part of the address must not remain in the scrubbed text.
+
+    Guards the failure that scrub recall could not see: the metric asks whether the
+    WHOLE planted value survives verbatim, so a partly-scrubbed address scored as
+    detected while the street name was still readable.
+    """
+    street = address.split(" ", 2)[2].split("#")[0].strip()
+    scrubbed = scrubber.scrub(f"My address is {address}, please update it.").text
+    assert street.lower() not in scrubbed.lower()
+
+
+@pytest.mark.parametrize(
+    "ordinary",
+    [
+        "Is there any way to appeal?",
+        "I clicked the link in the email.",
+        "Please advise on the best way forward.",
+        "My block of flats was reassessed.",
+    ],
+)
+def test_ordinary_prose_is_not_scrubbed_as_an_address(
+    scrubber: Scrubber, ordinary: str
+) -> None:
+    """The address pattern is anchored on a block token for exactly this reason.
+
+    A standalone street pattern was prototyped and rejected: the gazetteer's English
+    members (WAY, LINK, VIEW, PLACE, ST) are ordinary words, and it fired on 80+
+    non-address phrases across the corpus, scrubbing the text the classifier reads.
+    """
+    assert scrubber.scrub(ordinary).text == ordinary
+
+
+@pytest.mark.parametrize(
+    "public",
+    [
+        "Can I visit the IRAS office at Revenue House?",
+        "I went to the Orchard Road branch.",
+        "The office on Robinson Road handles this.",
+        "I dropped it off at Tampines Regional Library.",
+        "Is your Bedok branch open on Saturday?",
+        "The seminar was held at Marina Bay Sands.",
+        "I attended the talk at Suntec City.",
+    ],
+)
+def test_public_landmarks_are_not_scrubbed(scrubber: Scrubber, public: str) -> None:
+    """A public building or branch is not a residence and must survive.
+
+    Over-scrubbing is not free: these strings are topical content the classifier
+    reads, and replacing them with [ADDRESS_n] removes signal without protecting
+    anyone. Measured on the generated corpus, ADDRESS placeholders that do not
+    correspond to a planted address number zero.
+    """
+    assert scrubber.scrub(public).text == public
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "My address is Blk 88 Lorong Chuan #23-172, postcode 648913.",
+        "Blk 457 Bukit Batok Ave 3 #10-181, postcode 324993. Could you update it?",
+        "Blk 564 Bukit Batok Ave 3 #24-017, postcode: 668507, and my NRIC follows.",
+        "Blk 141 Tampines Street 21 #04-147, Singapore 655178?",
+        "The post code 590110. Please confirm.",
+    ],
+)
+def test_postcode_scrubbed_regardless_of_trailing_punctuation(
+    scrubber: Scrubber, text: str
+) -> None:
+    """A sentence-ending postcode must scrub the same as a question-ending one.
+
+    Regression test for a silent 0.4375 recall on the postcode type. Two gaps
+    combined: the context-anchored pattern did not know the one-word spelling
+    "postcode" (which is what the corpus writes), and the bare pattern's
+    lookahead ``(?![\d.,])`` rejected any trailing "." or "," -- so the same
+    value leaked after a full stop and scrubbed after a question mark.
+    """
+    assert not re.search(r"(?<!\d)\d{6}(?!\d)", scrubber.scrub(text).text)
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "I owe $123456.78 this year",
+        "a refund of 234567 dollars",
+        "the figure 1,234,567 appears on the notice",
+    ],
+)
+def test_digit_run_inside_a_larger_number_is_not_a_postcode(
+    scrubber: Scrubber, text: str
+) -> None:
+    """The relaxed lookahead must still reject fragments of a larger figure.
+
+    ``(?![\d.,]?\d)`` disqualifies a separator FOLLOWED BY A DIGIT, which is what
+    "this run continues into a bigger number" actually looks like -- while leaving
+    ordinary sentence punctuation alone.
+    """
+    assert "[POSTAL_1]" not in scrubber.scrub(text).text

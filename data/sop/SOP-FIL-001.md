@@ -15,6 +15,7 @@ escalate_if:
   - account_specific
   - amount_computation_requested
   - hardship_or_waiver_request
+  - scam_report
 references:
   - https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/understanding-my-income-tax-filing/individuals-required-to-file-tax
   - https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/understanding-my-income-tax-filing/e-filing-your-income-tax-return

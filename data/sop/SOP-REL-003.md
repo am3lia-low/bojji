@@ -14,6 +14,7 @@ auto_reply_permitted: true
 escalate_if:
   - account_specific
   - amount_computation_requested
+  - scam_report
 references:
   - https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-reliefs-rebates-and-deductions/tax-reliefs/central-provident-fund(cpf)-relief-for-employees
   - https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/special-tax-schemes/srs-contributions

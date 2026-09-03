@@ -19,15 +19,15 @@ pyyaml>=6.0              # SOP frontmatter, config
 
 # --- classifier --------------------------------------------------------------
 torch>=2.2               # CPU build; see note above
-transformers>=4.40       # MiniLM-L6 encoder + tokenizer
-numpy>=1.26
+transformers>=5.0        # MiniLM-L6 encoder + tokenizer
+numpy>=2.0
 
 # --- orchestration -----------------------------------------------------------
-langgraph>=0.2           # explicit nodes, shared state, traceable execution path
+langgraph>=1.0           # explicit nodes, shared state, traceable execution path
 
 # --- evaluation --------------------------------------------------------------
 scikit-learn>=1.4        # macro-F1, calibration curves, the TF-IDF leakage check
-pandas>=2.0              # eval tables, dataset EDA
+pandas>=3.0              # eval tables, dataset EDA
 matplotlib>=3.8          # reliability diagrams, risk-coverage curves
 
 # --- demo --------------------------------------------------------------------
@@ -37,7 +37,7 @@ streamlit>=1.33          # two queues, reason chips, threshold slider
 # Each has one role, and no model is scored on its own output (BUILD.md S6.4).
 google-generativeai>=0.8  # Gemini: drafting (runtime, free tier)
 groq>=0.11                # Groq: groundedness judge (eval only, free tier)
-openai>=1.30              # OpenAI: email generation (build time) + bonus judge
+openai>=3.0               # OpenAI: email generation (build time) + bonus judge
 
 # --- notebooks ---------------------------------------------------------------
 jupyter>=1.0             # training + EDA notebook
@@ -47,4 +47,4 @@ ipykernel>=6.29
 # Also declared in pyproject.toml [project.optional-dependencies].dev
 pytest>=8.0
 ruff>=0.4
-mypy>=1.9
+mypy>=2.0

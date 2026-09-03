@@ -98,15 +98,24 @@ def parse_citations(text: str, valid: frozenset[str]) -> tuple[str, tuple[str, .
     Returns the reply with the line removed and the SOP ids claimed, filtered to
     those actually supplied. A model naming a SOP it was never given is recorded as
     citing nothing rather than as citing a document that does not exist.
+
+    **The LAST citation line wins, and every one of them is stripped.** More than one
+    can appear: a citizen quoting a previous reply back at IRAS puts one in the
+    quoted text, and a verbose model sometimes emits two. Taking the first would
+    record a SOP the drafter did not ground on -- corrupting the grounding metric
+    (``BUILD.md`` S9.2) -- and removing only the matched line would ship the other
+    one, an internal SOP identifier, to a citizen.
     """
-    match = _CITED_RE.search(text)
-    if match is None:
+    matches = list(_CITED_RE.finditer(text))
+    if not matches:
         return text.strip(), ()
 
     cited = tuple(
-        sop_id for sop_id in _SOP_ID_RE.findall(match["ids"].upper()) if sop_id in valid
+        sop_id
+        for sop_id in _SOP_ID_RE.findall(matches[-1]["ids"].upper())
+        if sop_id in valid
     )
-    return (text[: match.start()] + text[match.end():]).strip(), cited
+    return _CITED_RE.sub("", text).strip(), cited
 
 
 def _failed(

@@ -1,11 +1,11 @@
-"""Rollup and calibration -- 12 class probabilities into one bucket confidence.
+"""Rollup and calibration -- class probabilities into one bucket confidence.
 
 RUNTIME. This is the node the contribution runs through.
 
 Two steps, deliberately in one node because they are one transformation of one
 distribution:
 
-1. **Rollup.** The 12 class probabilities are summed within their routing bucket,
+1. **Rollup.** The class probabilities are summed within their routing bucket,
    giving a distribution over 5. The predicted bucket is the one containing the
    predicted class -- NOT the argmax of the summed distribution. Those differ, and
    the difference matters: the SOP lookup, the drafter and the grounding metric all
@@ -24,7 +24,7 @@ policy applies either way. Thresholding the class probability would escalate it 
 lose coverage for no safety gain. This is the whole reason calibration sits at
 bucket level (``sop_design.md`` S3).
 
-**Applying temperature to summed probabilities, not raw logits.** The 12 class
+**Applying temperature to summed probabilities, not raw logits.** The class
 logits do not sum into 5 bucket logits -- summation happens in probability space,
 after the softmax. So the bucket distribution is mapped back to log space
 (``log p``) and the temperature applied there, which is the same monotonic
@@ -54,7 +54,7 @@ def rollup(
     """Sum the class distribution into buckets.
 
     Args:
-        classification: The 12-class distribution.
+        classification: The full class distribution.
         bucket_of: class -> bucket, derived from SOP frontmatter by
             :class:`triage.sop.index.SOPIndex`.
 

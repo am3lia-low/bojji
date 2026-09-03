@@ -1,4 +1,4 @@
-"""Classify node -- email text to a distribution over the 12 classes.
+"""Classify node -- email text to a distribution over the taxonomy's classes.
 
 RUNTIME.
 

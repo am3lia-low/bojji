@@ -25,6 +25,30 @@ from __future__ import annotations
 from collections import defaultdict
 from dataclasses import dataclass
 
+#: How many leading and trailing characters of a missed value survive masking.
+#: Enough to recognise the SHAPE that escaped detection -- prefix letter, length,
+#: check character -- without recording the value itself.
+_MASK_KEEP: int = 2
+
+
+def mask(value: str) -> str:
+    """Reduce a missed PII value to its shape.
+
+    ``S0433218J`` becomes ``S0*****8J``: the diagnostic question is "what shape got
+    past the patterns", and the shape survives masking while the identifier does not.
+
+    This module measures PII containment, and its output is written to
+    ``eval/results/scrub_recall.json``, which is committed to git by design. Storing
+    raw values would make the one module responsible for containment the only module
+    that writes identifiers to disk. The list is empty today only because recall is
+    1.0; the first miss would commit an identifier, so the masking is applied at the
+    point of capture rather than at serialisation.
+    """
+    text = str(value)
+    if len(text) <= _MASK_KEEP * 2:
+        return "*" * len(text)
+    return f"{text[:_MASK_KEEP]}{'*' * (len(text) - _MASK_KEEP * 2)}{text[-_MASK_KEEP:]}"
+
 
 @dataclass(frozen=True)
 class TypeRecall:
@@ -33,7 +57,7 @@ class TypeRecall:
     pii_type: str
     detected: int
     planted: int
-    missed_examples: tuple[str, ...] = ()
+    missed_shapes: tuple[str, ...] = ()
 
     @property
     def recall(self) -> float:
@@ -46,7 +70,7 @@ class TypeRecall:
             "detected": self.detected,
             "missed": self.planted - self.detected,
             "recall": round(self.recall, 4),
-            "missed_examples": list(self.missed_examples),
+            "missed_shapes": list(self.missed_shapes),
         }
 
 
@@ -108,7 +132,7 @@ def scrub_report(
             if str(value).lower() in haystack:
                 leaked_here = True
                 if len(missed_by_type[pii_type]) < max_examples:
-                    missed_by_type[pii_type].append(str(value))
+                    missed_by_type[pii_type].append(mask(value))
             else:
                 detected_by_type[pii_type] += 1
         if leaked_here:
@@ -119,7 +143,7 @@ def scrub_report(
             pii_type=pii_type,
             detected=detected_by_type[pii_type],
             planted=planted_by_type[pii_type],
-            missed_examples=tuple(missed_by_type[pii_type]),
+            missed_shapes=tuple(missed_by_type[pii_type]),
         )
         for pii_type in sorted(planted_by_type)
     )
@@ -132,4 +156,4 @@ def scrub_report(
     )
 
 
-__all__ = ["ScrubReport", "TypeRecall", "scrub_report"]
+__all__ = ["ScrubReport", "TypeRecall", "mask", "scrub_report"]

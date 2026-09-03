@@ -174,6 +174,33 @@ def route_at(
     return results
 
 
+
+def _thresholds_are_fitted() -> bool:
+    """Whether config/thresholds.yaml declares itself fitted rather than placeholder.
+
+    The reportability flag previously read ``scaler.fitted`` alone, which is True as
+    soon as a temperature exists -- so a run could stamp
+    ``calibrated_numbers_reportable: true`` onto a summary whose coverage and risk
+    were computed under placeholder 0.5 cutoffs, while the config that produced them
+    still said in capitals that no number under it may be reported. Whichever a
+    reader believed, one of the two files was wrong.
+
+    The flag now reads the config, so it cannot claim more than the configuration
+    supports (``BUILD.md`` S7).
+    """
+    import yaml
+
+    path = ROOT / "config" / "thresholds.yaml"
+    if not path.exists():
+        return False
+    text = path.read_text(encoding="utf-8")
+    if "STATUS: PLACEHOLDER" in text:
+        return False
+    doc = yaml.safe_load(text) or {}
+    buckets = doc.get("buckets") or {}
+    return bool(buckets) and "STATUS: FITTED" in text
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--split", default="test", help="which split to report on")
@@ -259,6 +286,7 @@ def main() -> int:
             expected_reason(
                 row.item.label, bucket_of,
                 computation_requested=row.item.computation_requested,
+                account_specific=row.item.account_specific,
             )
             for row, _ in operating
         ],
@@ -328,7 +356,8 @@ def main() -> int:
             },
         },
         "thresholds": thresholds,
-        "calibrated_numbers_reportable": scaler.fitted,
+        "thresholds_fitted": _thresholds_are_fitted(),
+        "calibrated_numbers_reportable": scaler.fitted and _thresholds_are_fitted(),
         "headline": {
             "macro_f1_class": round(report_class.macro_f1, 4),
             "macro_f1_bucket": round(report_bucket.macro_f1, 4),
@@ -361,7 +390,7 @@ def main() -> int:
 
     # ---- console ----------------------------------------------------------
     print(f"\n{'=' * 66}\nRESULTS — split={args.split}  n={len(rows)}\n{'=' * 66}")
-    print(f"  macro-F1 (12 classes)       {report_class.macro_f1:.4f}")
+    print(f"  macro-F1 ({len(classifier.labels)} classes)       {report_class.macro_f1:.4f}")
     print(f"  macro-F1 (5 buckets)        {report_bucket.macro_f1:.4f}")
     print(f"  bucket accuracy             {report_bucket.accuracy:.4f}")
     if worst := report_class.worst:

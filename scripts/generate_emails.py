@@ -19,9 +19,9 @@ near-perfect score means a giveaway token exists and the corpus is rebuilt.
 output:
 
     generation   OpenAI gpt-4o          <- here; build time, paid
-    baseline     Groq llama-3.3-70b      <- must differ from the generator
+    baseline     Groq qwen3.8-27b        <- must differ from the generator
     drafting     Gemini                  <- runtime, free tier
-    judge        Groq llama-3.3-70b      <- must differ from the drafter
+    judge        Groq qwen3.8-27b        <- must differ from the drafter
 
 Groq appears twice without breaking the rule: the baseline CLASSIFIES EMAILS and
 the judge SCORES DRAFTS, so neither is ever scored on its own output. Groq wrote

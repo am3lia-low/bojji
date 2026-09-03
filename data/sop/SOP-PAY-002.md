@@ -15,6 +15,7 @@ escalate_if:
   - account_specific
   - hardship_or_waiver_request
   - amount_computation_requested
+  - scam_report
 references:
   - https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/receive-tax-bill-pay-tax-check-refunds/late-payment-or-non-payment-of-individual-income-tax
   - https://www.iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/receive-tax-bill-pay-tax-check-refunds/how-to-pay

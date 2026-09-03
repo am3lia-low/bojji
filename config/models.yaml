@@ -48,7 +48,7 @@ roles:
       Turns "better calibrated" from an assertion into a measurement.
 
   drafter:
-    model: gemini-2.0-flash
+    model: gemini-3.6-flash
     provider: google
     runtime: true
     cost: free_tier
@@ -75,11 +75,22 @@ roles:
       judge-human agreement reported, which is what makes an LLM judge defensible
       rather than decorative.
 
-      ROSTER ROTATION IS REAL, NOT HYPOTHETICAL. This project originally pinned
-      `llama-3.3-70b-versatile`; Groq withdrew it mid-build and every call began
-      returning 404. The failure was silent in effect -- dropped samples fell back
-      to a uniform distribution rather than crashing -- which is why the model
-      identifier is recorded in eval/results/ alongside every number.
+      ROSTER ROTATION IS REAL, NOT HYPOTHETICAL, AND IT HAPPENED TWICE. This
+      project originally pinned `llama-3.3-70b-versatile`; Groq withdrew it
+      mid-build and every call began returning 404. Separately, the drafter was
+      pinned to `gemini-2.0-flash` until Google retired it -- every drafting call
+      returned 404 and no auto-reply could be produced at all until the pin moved
+      to `gemini-3.6-flash`. Two providers, two retirements, one build.
+
+      THE TWO FAILED DIFFERENTLY, AND THAT IS THE LESSON. The Groq withdrawal was
+      silent in effect: dropped samples fell back to a uniform distribution rather
+      than crashing, so the numbers were quietly wrong. The Gemini retirement was
+      loud and safe: drafting has an explicit failure path, so each item escalated
+      to the human queue carrying its SOP and the error was recorded on the state.
+      A pinned identifier that disappears is a certainty on a free tier, so what
+      matters is whether the failure is visible -- which is why the model
+      identifier is recorded in eval/results/ alongside every number, and why the
+      drafter has no template fallback that would mask the outage.
 
   judge_secondary:
     model: gpt-4o
