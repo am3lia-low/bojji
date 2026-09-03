@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-09-03T02:15:16+00:00",
+  "generated_at": "2026-09-03T04:02:37+00:00",
   "split": "test",
-  "n": 875,
+  "n": 877,
   "seed": 42,
   "environment": {
     "python": "3.14.0",
@@ -11,8 +11,8 @@
     "classifier": "minilm-l6-finetuned",
     "calibration": {
       "fitted": true,
-      "temperature": 0.9949,
-      "n_calibration_examples": 644
+      "temperature": 1.0307,
+      "n_calibration_examples": 646
     }
   },
   "thresholds": {
@@ -24,14 +24,14 @@
   },
   "calibrated_numbers_reportable": true,
   "headline": {
-    "macro_f1_class": 0.76,
-    "macro_f1_bucket": 0.8782,
-    "ece_before": 0.1416,
-    "ece_after": 0.1403,
-    "aurc_overall": 0.1783,
-    "must_escalate_recall": 0.9822,
-    "unsafe_automations": 7,
+    "macro_f1_class": 0.8254,
+    "macro_f1_bucket": 0.871,
+    "ece_before": 0.1132,
+    "ece_after": 0.1212,
+    "aurc_overall": 0.119,
+    "must_escalate_recall": 0.9694,
+    "unsafe_automations": 12,
     "scrub_recall": 1.0
   },
-  "elapsed_seconds": 40.0
+  "elapsed_seconds": 35.9
 }

@@ -1,10 +1,10 @@
 {
-  "n": 875,
-  "temperature": 0.9949,
-  "ece_before": 0.1416,
-  "ece_after": 0.1403,
-  "ece_improvement": 0.0013,
-  "direction": "sharpened",
+  "n": 877,
+  "temperature": 1.0307,
+  "ece_before": 0.1132,
+  "ece_after": 0.1212,
+  "ece_improvement": -0.008,
+  "direction": "flattened",
   "bins_before": [
     {
       "lower": 0.0,
@@ -26,65 +26,65 @@
       "lower": 0.2,
       "upper": 0.3,
       "count": 6,
-      "mean_confidence": 0.2603,
-      "accuracy": 0.6667,
-      "gap": -0.4063
+      "mean_confidence": 0.2616,
+      "accuracy": 0.3333,
+      "gap": -0.0717
     },
     {
       "lower": 0.3,
       "upper": 0.4,
-      "count": 22,
-      "mean_confidence": 0.3665,
-      "accuracy": 0.8182,
-      "gap": -0.4517
+      "count": 21,
+      "mean_confidence": 0.3542,
+      "accuracy": 0.6667,
+      "gap": -0.3125
     },
     {
       "lower": 0.4,
       "upper": 0.5,
-      "count": 56,
-      "mean_confidence": 0.4543,
-      "accuracy": 0.7321,
-      "gap": -0.2778
+      "count": 47,
+      "mean_confidence": 0.458,
+      "accuracy": 0.4681,
+      "gap": -0.01
     },
     {
       "lower": 0.5,
       "upper": 0.6,
-      "count": 92,
-      "mean_confidence": 0.5528,
-      "accuracy": 0.8152,
-      "gap": -0.2624
+      "count": 91,
+      "mean_confidence": 0.5506,
+      "accuracy": 0.5824,
+      "gap": -0.0318
     },
     {
       "lower": 0.6,
       "upper": 0.7,
-      "count": 126,
-      "mean_confidence": 0.6472,
-      "accuracy": 0.7619,
-      "gap": -0.1147
+      "count": 85,
+      "mean_confidence": 0.6455,
+      "accuracy": 0.8471,
+      "gap": -0.2015
     },
     {
       "lower": 0.7,
       "upper": 0.8,
-      "count": 104,
-      "mean_confidence": 0.7501,
-      "accuracy": 0.9327,
-      "gap": -0.1826
+      "count": 126,
+      "mean_confidence": 0.7537,
+      "accuracy": 0.9206,
+      "gap": -0.1669
     },
     {
       "lower": 0.8,
       "upper": 0.9,
-      "count": 154,
-      "mean_confidence": 0.8628,
-      "accuracy": 0.9805,
-      "gap": -0.1178
+      "count": 225,
+      "mean_confidence": 0.855,
+      "accuracy": 1.0,
+      "gap": -0.145
     },
     {
       "lower": 0.9,
       "upper": 1.0,
-      "count": 315,
-      "mean_confidence": 0.9357,
+      "count": 276,
+      "mean_confidence": 0.9343,
       "accuracy": 1.0,
-      "gap": -0.0643
+      "gap": -0.0657
     }
   ],
   "bins_after": [
@@ -107,66 +107,66 @@
     {
       "lower": 0.2,
       "upper": 0.3,
-      "count": 6,
-      "mean_confidence": 0.2603,
-      "accuracy": 0.6667,
-      "gap": -0.4064
+      "count": 7,
+      "mean_confidence": 0.2671,
+      "accuracy": 0.4286,
+      "gap": -0.1615
     },
     {
       "lower": 0.3,
       "upper": 0.4,
-      "count": 22,
-      "mean_confidence": 0.3669,
-      "accuracy": 0.8182,
-      "gap": -0.4513
+      "count": 20,
+      "mean_confidence": 0.3552,
+      "accuracy": 0.65,
+      "gap": -0.2948
     },
     {
       "lower": 0.4,
       "upper": 0.5,
-      "count": 55,
-      "mean_confidence": 0.4542,
-      "accuracy": 0.7273,
-      "gap": -0.2731
+      "count": 50,
+      "mean_confidence": 0.4566,
+      "accuracy": 0.46,
+      "gap": -0.0034
     },
     {
       "lower": 0.5,
       "upper": 0.6,
-      "count": 90,
-      "mean_confidence": 0.5518,
-      "accuracy": 0.8111,
-      "gap": -0.2593
+      "count": 98,
+      "mean_confidence": 0.551,
+      "accuracy": 0.602,
+      "gap": -0.051
     },
     {
       "lower": 0.6,
       "upper": 0.7,
-      "count": 128,
-      "mean_confidence": 0.6472,
-      "accuracy": 0.7656,
-      "gap": -0.1184
+      "count": 85,
+      "mean_confidence": 0.6481,
+      "accuracy": 0.8706,
+      "gap": -0.2225
     },
     {
       "lower": 0.7,
       "upper": 0.8,
-      "count": 103,
-      "mean_confidence": 0.7505,
-      "accuracy": 0.932,
-      "gap": -0.1815
+      "count": 139,
+      "mean_confidence": 0.7552,
+      "accuracy": 0.9353,
+      "gap": -0.18
     },
     {
       "lower": 0.8,
       "upper": 0.9,
-      "count": 153,
-      "mean_confidence": 0.8628,
-      "accuracy": 0.9804,
-      "gap": -0.1176
+      "count": 232,
+      "mean_confidence": 0.8566,
+      "accuracy": 1.0,
+      "gap": -0.1434
     },
     {
       "lower": 0.9,
       "upper": 1.0,
-      "count": 318,
-      "mean_confidence": 0.9365,
+      "count": 246,
+      "mean_confidence": 0.9314,
       "accuracy": 1.0,
-      "gap": -0.0635
+      "gap": -0.0686
     }
   ]
 }

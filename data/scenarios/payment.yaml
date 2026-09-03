@@ -23,7 +23,7 @@ scenarios:
     season: noa
     computation_requested: false
     account_specific: false
-    variants: 21
+    variants: 27
     notes: eGIRO channels and setup times.
 
   - scenario_id: PAY-GIRO-002
@@ -33,7 +33,7 @@ scenarios:
     season: any
     computation_requested: false
     account_specific: false
-    variants: 18
+    variants: 22
     notes: 6th of month; next working day.
 
   - scenario_id: PAY-GIRO-003
@@ -43,7 +43,7 @@ scenarios:
     season: any
     computation_requested: false
     account_specific: false
-    variants: 17
+    variants: 21
     notes: Second attempt on the 20th; cancelled after 4 in a row.
 
   - scenario_id: PAY-GIRO-004
@@ -53,7 +53,7 @@ scenarios:
     season: any
     computation_requested: false
     account_specific: false
-    variants: 14
+    variants: 17
     notes: Re-activate via myTax Portal.
 
   - scenario_id: PAY-PIP-001
@@ -63,18 +63,8 @@ scenarios:
     season: estimates
     computation_requested: false
     account_specific: false
-    variants: 14
-    notes: Provisional Instalment Plan from previous year's tax.
-
-  - scenario_id: PAY-DUE-001
-    situation: >
-      A person has just received their bill and wants to know by when they must pay it.
-    persona: {role: employee, literacy: standard, register: polite}
-    season: noa
-    computation_requested: false
-    account_specific: false
     variants: 17
-    notes: 1 month from the date of the NOA.
+    notes: Provisional Instalment Plan from previous year's tax.
 
   - scenario_id: PAY-LATE-001
     situation: >
@@ -83,7 +73,7 @@ scenarios:
     season: noa
     computation_requested: false
     account_specific: false
-    variants: 17
+    variants: 21
     notes: 5% penalty; 1% per month after 60 days, max 12%.
 
   - scenario_id: PAY-LATE-002
@@ -93,7 +83,7 @@ scenarios:
     season: any
     computation_requested: false
     account_specific: false
-    variants: 14
+    variants: 17
     notes: >
       Agents appointed: bank, employer, tenant.
 
@@ -104,7 +94,7 @@ scenarios:
     season: noa
     computation_requested: false
     account_specific: false
-    variants: 17
+    variants: 21
     notes: GIRO/PayNow, interest after 30 days, no cheques from 2026.
 
   - scenario_id: PAY-REFUND-002
@@ -114,18 +104,8 @@ scenarios:
     season: any
     computation_requested: false
     account_specific: false
-    variants: 14
-    notes: PayNow, 30 days before departure.
-
-  - scenario_id: PAY-COMP-001
-    situation: >
-      Someone gives the amount on their bill and how late they are, and asks to be told exactly what they now owe in total.
-    persona: {role: employee, literacy: standard, register: frustrated}
-    season: noa
-    computation_requested: true
-    account_specific: false
     variants: 17
-    notes: Penalty arithmetic is conjunctive and time-dependent.
+    notes: PayNow, 30 days before departure.
 
   - scenario_id: PAY-ACCT-001
     situation: >
@@ -135,7 +115,7 @@ scenarios:
     computation_requested: false
     account_specific: true
     plant_pii: [nric, phone]
-    variants: 17
+    variants: 21
     notes: Never speculate on why a specific deduction failed.
 
   - scenario_id: PAY-ACCT-002
@@ -146,7 +126,7 @@ scenarios:
     computation_requested: false
     account_specific: true
     plant_pii: [nric]
-    variants: 14
+    variants: 17
     notes: Refund status requires a lookup.
 
   - scenario_id: ACCT-REFUND-001
@@ -158,7 +138,7 @@ scenarios:
     computation_requested: false
     account_specific: true
     plant_pii: [nric, phone]
-    variants: 32
+    variants: 41
     notes: >
       Was its own class. Topic is a refund; the flag carries the
       account-specific part.
@@ -172,17 +152,6 @@ scenarios:
     computation_requested: false
     account_specific: true
     plant_pii: [nric]
-    variants: 32
+    variants: 41
     notes: Was its own class. Topic is an instalment arrangement.
 
-  - scenario_id: ACCT-HIST-001
-    situation: >
-      Someone needs a record of what they paid over the last few years for a loan
-      application.
-    persona: {role: employee, literacy: standard, register: polite}
-    season: any
-    computation_requested: false
-    account_specific: true
-    plant_pii: [nric]
-    variants: 25
-    notes: Was its own class. Topic is payment history.

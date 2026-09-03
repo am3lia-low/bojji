@@ -5,31 +5,31 @@
   "max_length": 256,
   "batch_size": 32,
   "learning_rate": 2e-05,
-  "n_train": 1481,
-  "n_calibration": 644,
-  "n_test": 875,
+  "n_train": 1477,
+  "n_calibration": 646,
+  "n_test": 877,
   "split_grouped_by": "scenario_id",
-  "elapsed_seconds": 821.0,
+  "elapsed_seconds": 670.8,
   "history": [
     {
       "epoch": 1,
-      "train_loss": 2.0505388011323644,
-      "calibration_accuracy": 0.4813664596273292
+      "train_loss": 2.051917646793609,
+      "calibration_accuracy": 0.5123839009287926
     },
     {
       "epoch": 2,
-      "train_loss": 0.8852146052299662,
-      "calibration_accuracy": 0.5791925465838509
+      "train_loss": 0.8945226441038415,
+      "calibration_accuracy": 0.6563467492260062
     },
     {
       "epoch": 3,
-      "train_loss": 0.36398291048851417,
-      "calibration_accuracy": 0.6987577639751553
+      "train_loss": 0.3265763543387677,
+      "calibration_accuracy": 0.6253869969040248
     },
     {
       "epoch": 4,
-      "train_loss": 0.24815123797731198,
-      "calibration_accuracy": 0.7049689440993789
+      "train_loss": 0.21537102283315457,
+      "calibration_accuracy": 0.6269349845201239
     }
   ],
   "note": "calibration_accuracy is a convergence signal, not a result. Reported numbers come from eval/run_eval.py on the test split."

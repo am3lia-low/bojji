@@ -1,13 +1,29 @@
 {
   "note": "Measured against values the generator planted, by checking the value is absent from the scrubbed text. Free-text addresses without a street-type token are the known residual gap.",
   "overall_recall": 1.0,
-  "planted": 68,
-  "detected": 68,
+  "planted": 99,
+  "detected": 99,
   "by_type": [
     {
+      "type": "address",
+      "planted": 23,
+      "detected": 23,
+      "missed": 0,
+      "recall": 1.0,
+      "missed_shapes": []
+    },
+    {
       "type": "nric",
-      "planted": 68,
-      "detected": 68,
+      "planted": 53,
+      "detected": 53,
+      "missed": 0,
+      "recall": 1.0,
+      "missed_shapes": []
+    },
+    {
+      "type": "postcode",
+      "planted": 23,
+      "detected": 23,
       "missed": 0,
       "recall": 1.0,
       "missed_shapes": []

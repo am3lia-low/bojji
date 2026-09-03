@@ -25,7 +25,7 @@ scenarios:
     season: noa
     computation_requested: false
     account_specific: false
-    variants: 34
+    variants: 31
     notes: Original / Amended / Additional / Estimated.
 
   - scenario_id: ASM-TYPE-002
@@ -35,18 +35,24 @@ scenarios:
     season: noa
     computation_requested: false
     account_specific: false
-    variants: 28
+    variants: 25
     notes: NOA (Additional) after withdrawal of reliefs.
 
   - scenario_id: ASM-AMEND-001
     situation: >
-      Someone spotted that a claim they were entitled to is missing from their bill and wants to know how to get it corrected.
+      Someone believes the notice they received does not reflect something they
+      told the authority, and wants to know the procedure for having the notice
+      itself revised, and by when they must ask.
     persona: {role: employee, literacy: standard, register: polite}
     season: noa
     computation_requested: false
     account_specific: false
-    variants: 33
-    notes: Amend Tax Bill within 30 days.
+    variants: 30
+    notes: >
+      Sharpened: the previous wording led with a missing claim, which is
+      relief vocabulary, and 32 of 33 went to `tax_reliefs`. The
+      distinguishing fact is the amendment PROCEDURE and its deadline, not
+      what the claim was for.
 
   - scenario_id: ASM-AMEND-002
     situation: >
@@ -55,7 +61,7 @@ scenarios:
     season: noa
     computation_requested: false
     account_specific: false
-    variants: 28
+    variants: 25
     notes: 30 days from the date on the bill.
 
   - scenario_id: ASM-PAY-001
@@ -65,7 +71,7 @@ scenarios:
     season: noa
     computation_requested: false
     account_specific: false
-    variants: 33
+    variants: 30
     notes: >
       THE TRAP: payment is NOT deferred by an objection.
 
@@ -76,7 +82,7 @@ scenarios:
     season: noa
     computation_requested: false
     account_specific: false
-    variants: 24
+    variants: 22
     notes: Year of Assessment vs preceding calendar year.
 
   - scenario_id: ASM-EST-001
@@ -86,7 +92,7 @@ scenarios:
     season: noa
     computation_requested: false
     account_specific: false
-    variants: 28
+    variants: 25
     notes: >
       TIE-BREAK CASE: disputing an estimated NOA is THIS class.
 
@@ -97,7 +103,7 @@ scenarios:
     season: noa
     computation_requested: true
     account_specific: false
-    variants: 24
+    variants: 22
     notes: Recomputation request.
 
   - scenario_id: ASM-ACCT-001
@@ -108,7 +114,7 @@ scenarios:
     computation_requested: false
     account_specific: true
     plant_pii: [nric]
-    variants: 28
+    variants: 25
     notes: Objection status requires a lookup.
 
   - scenario_id: ACCT-NOA-001
@@ -120,5 +126,37 @@ scenarios:
     computation_requested: false
     account_specific: true
     plant_pii: [nric]
-    variants: 40
+    variants: 35
     notes: Was its own class. Topic is the content of an assessment.
+
+  - scenario_id: ASM-DUE-001
+    situation: >
+      A person has just received their notice and wants to confirm by when they
+      must settle it, asking where on the notice that date is stated and what the
+      other dates printed beside it refer to.
+    persona: {role: employee, literacy: standard, register: polite}
+    season: noa
+    computation_requested: false
+    account_specific: false
+    variants: 15
+    notes: >
+      Moved from `payment`. The question IS about when to pay -- that is kept,
+      not written out -- but the notice states its own due date on its face, so
+      it is answered by reading the document. An earlier rewrite dropped the
+      payment question entirely and made this class artificially easy at
+      `filing`'s expense. Previously scored 0.00 under `payment`: every email
+      opened by naming the bill, and the model called it assessment.
+
+  - scenario_id: ASM-COMP-002
+    situation: >
+      Someone gives the amount on their bill and how late they are, and asks to be told exactly what they now owe in total.
+    persona: {role: employee, literacy: standard, register: frustrated}
+    season: noa
+    computation_requested: true
+    account_specific: false
+    variants: 15
+    notes: >
+      Moved from `payment`. Recomputing a balance is out of scope for
+      every SOP here -- `computation_requested` escalates it at router
+      reason 4 before confidence is read -- so the class only decides
+      which queue it lands in, and the figures come off the notice.
