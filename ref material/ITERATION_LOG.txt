@@ -1,6 +1,6 @@
 ================================================================================
 ITERATION LOG -- classifier, corpus and taxonomy
-Session of 2026-09-02/03. Commits c373e10..685acbc.
+Session of 2026-09-02/03. Commits c373e10..6c3597c.
 ================================================================================
 
 Every number below is from eval/run_eval.py on the held-out test split, and is
@@ -23,8 +23,9 @@ HEADLINE
   bucket accuracy       0.696    0.928    +0.232
   bucket macro-F1       0.640    0.917    +0.277
   ECE (uncalibrated)    0.311    0.151    -0.160
-  AURC                  0.181    0.123    -0.058
+  AURC                  0.181    0.058    -0.123
   must-escalate recall  0.982    0.980       --
+  acct-specific flag R   0.263    0.844    +0.581
   scrub recall          1.000    1.000       --
 
   Corpus  1,800 emails / 12 classes  ->  3,000 emails / 10 classes
