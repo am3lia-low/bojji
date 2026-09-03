@@ -247,6 +247,53 @@ RESULT  114 emails regenerated, 0 failures.
 
 
 ================================================================================
+ITERATION 9 -- account_specific: a backstop left carrying the load  [6c3597c]
+================================================================================
+FOUND   The account_specific flag caught 7 of 64 positives on the test split --
+        P/R 0.171 / 0.109 -- and every miss is an auto-reply about a real
+        taxpayer's record. This was a SAFETY path failing, not a metric.
+
+        The cause was iteration 4. _ACCOUNT_PATTERNS had been written as a
+        BACKSTOP while `account_specific` was still a class: the classifier
+        carried the decision, and the flag only had to catch what it missed.
+        Removing the class made requires_account_lookup reachable ONLY through
+        this flag, at router reason 5, and nothing widened it for that load.
+        The docstring still read "``account_specific`` is a class".
+
+        The misses were dominated by three phrasings the list had no entry for,
+        because it had been assembled around billing nouns:
+
+          "my tax status"                       34 occurrences
+          "my new / current / mailing address"  28
+          "my records"                          18
+
+        30 of the 64 positives were RES-ACCT-001, every one of them asking to
+        confirm "my tax status" -- a noun the pattern list never had.
+
+DECIDED Widen the patterns, tuned towards RECALL: over-escalating costs coverage
+        and is recoverable, under-escalating is the citizen-facing failure.
+        Added the missing nouns, the reversed forms ("confirmation of my status",
+        "the status that was applied to me"), and the outcome-waiting forms.
+        Rewrote the docstring to say it is the primary detector.
+
+RESULT  account_specific flag  P/R  0.171 / 0.109  ->  0.495 / 0.844
+        AURC                        0.1229         ->  0.0584
+        risk <= 5% coverage         7.6%           ->  16.1%
+        risk <= 10% coverage        0.0%           ->  41.8%
+
+        False positives 34 -> 55, which is the intended trade. 28 of those sit
+        in buckets that always escalate anyway, so they are free; the 27 that
+        actually cost coverage are 4.9% of auto-eligible email.
+
+        Classification untouched -- same weights, bucket accuracy still 0.9282.
+
+NOTE    A general lesson worth carrying: when a component is demoted or removed,
+        every OTHER component that was sized against it needs re-sizing. The
+        flag's pattern list was correct for a world where the classifier shared
+        the work, and silently wrong the moment it did not.
+
+
+================================================================================
 FINAL STATE -- test split, n=877
 ================================================================================
 BUCKET            P       R      F1      n        CLASS                F1     n
@@ -262,58 +309,57 @@ BUCKET            P       R      F1      n        CLASS                F1     n
   class accuracy    0.8529                         filing            0.703    91
   class macro-F1    0.8593
 
-  temperature 0.998   ECE 0.1507 -> 0.1502   AURC 0.1229
+  temperature 0.998   ECE 0.1507 -> 0.1502   AURC 0.0584
   must-escalate recall 0.9796 (n=392)   unsafe automations 8
-  scrub recall 1.0000 (99/99 planted)
+  false escalations 145   scrub recall 1.0000 (99/99 planted)
+
+  RISK-COVERAGE (the curve config/thresholds.yaml should be set from)
+    risk <=  5%  ->  coverage 16.1%   (multiplier 1.70)
+    risk <= 10%  ->  coverage 41.8%   (multiplier 0.85)
+    risk <= 20%  ->  coverage 43.9%   (multiplier 0.20)
 
   FLAGS                    P       R      F1
     scam_signal          1.000   0.952   0.976
     foreign_income       1.000   0.833   0.909
     computation_req      0.698   0.898   0.786
-    account_specific     0.171   0.109   0.133   <-- see OPEN 2
+    account_specific     0.495   0.844   0.624   (was 0.171 / 0.109)
 
 
 ================================================================================
 OPEN ITEMS
 ================================================================================
-1  config/thresholds.yaml is still marked PLACEHOLDER. Its own header says the
-   operating points should come from the risk-coverage sweep on the test split.
-   That curve now exists (AURC 0.1229; risk <= 5% at 7.6% coverage). Until it is
-   set, no threshold-dependent number should be quoted as final.
+1  config/thresholds.yaml is still marked PLACEHOLDER, and is now the single
+   highest-value open item. Its own header says the operating points should come
+   from the risk-coverage sweep on the test split. That curve is much better than
+   it was at the start of the session:
 
-2  RESOLVED [6c3597c] -- account_specific flag widened.
-   Was P/R 0.171 / 0.109, catching 7 of 64. _ACCOUNT_PATTERNS had been written
-   as a BACKSTOP while account_specific was still a class; iteration 4 removed
-   the class and made it the PRIMARY detector without widening it. The misses
-   were dominated by three phrasings the list had no entry for, because it was
-   assembled around billing nouns: "my tax status" (34), "my new/current/mailing
-   address" (28), "my records" (18). Added those plus the reversed forms
-   ("confirmation of my status", "the status that was applied to me").
+     risk <=  5%  ->  16.1% coverage      (was 0.0%)
+     risk <= 10%  ->  41.8% coverage      (was 0.0%)
 
-     account_specific flag  P/R  0.171 / 0.109  ->  0.495 / 0.844
-     AURC                        0.1229         ->  0.0584
-     risk <= 5% coverage         7.6%           ->  16.1%
-     risk <= 10% coverage        0.0%           ->  41.8%
+   Until the thresholds are set from it, no threshold-dependent number -- the
+   coverage figures above included -- should be quoted as final.
 
-   False positives 34 -> 55, deliberately: 28 sit in buckets that always
-   escalate anyway (free), and the 27 that cost coverage are 4.9% of
-   auto-eligible email. Classification untouched.
+2  8 unsafe automations remain (should escalate, would auto-reply) against a
+   must-escalate recall of 0.980. Worth reading all 8 individually before any
+   claim about safety is published: at this volume they are inspectable, and an
+   aggregate recall figure hides what kind of email each one was.
 
 3  filing keeps the lowest class F1 (0.703), now from precision (0.595) rather
    than recall (0.857). It absorbs residual residency and assessment ambiguity,
    but those stay inside auto_answerable, so routing is unaffected. Optional.
 
-4  8 unsafe automations remain (should escalate, would auto-reply) against a
-   must-escalate recall of 0.980. Worth reading the 8 individually before any
-   claim about safety is published.
-
-5  Two pre-existing failures in tests/test_router.py
+4  Two pre-existing failures in tests/test_router.py
    (test_scam_signal_escalates_every_auto_answerable_class) from parallel
    scam_report work. They fail at HEAD independently of this session's changes.
 
-6  ref material/BUILD.md was deliberately NOT updated during this session. It
+5  ref material/BUILD.md was deliberately NOT updated during this session. It
    still describes the 12-class taxonomy, scripts/train_encoder.py and
-   scripts/fit_calibration.py, all of which are gone. It needs a pass.
+   scripts/fit_calibration.py, all of which are gone, and S9.6 still describes
+   the account_specific flag as a backstop to a class. It needs a full pass.
+
+6  The downstream code has not been reviewed against the 10-class taxonomy.
+   src/ and eval/ were kept working throughout, but app/ and anything reading
+   class names directly should be checked.
 
 
 ================================================================================
@@ -333,6 +379,11 @@ The productive loop was the same every time:
 
 What never helped: reaching for a bigger model, or for an LLM. Both were
 measured rather than assumed, and both lost.
+
+Iteration 9 is the exception that proves the rule: the only defect all
+session that was NOT in the corpus was one this work introduced, by removing
+a class without re-sizing the flag that had been its backstop. When a
+component is demoted, re-measure everything that was sized against it.
 
 One metric caution that recurred: CLASS accuracy is not the objective. 127 of
 234 class errors at one point were invisible downstream -- same bucket, same
