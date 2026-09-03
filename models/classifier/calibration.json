@@ -1,9 +1,9 @@
 {
-  "temperature": 1.0306954383850098,
+  "temperature": 0.9980331659317017,
   "fitted": true,
   "n_examples": 646,
-  "ece_before": 0.05590683124247198,
-  "ece_after": 0.04669174912679662,
+  "ece_before": 0.05761610424682154,
+  "ece_after": 0.05766009596506336,
   "method": "temperature_scaling",
   "note": "Fitted on the calibration split, reported on test. Monotonic, so accuracy is unchanged -- only confidence is corrected."
 }

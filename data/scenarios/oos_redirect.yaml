@@ -125,8 +125,8 @@ scenarios:
   # --- business and corporate ----------------------------------------------
   - scenario_id: OOSB-SOLE-001
     situation: >
-      Someone running a small business on their own wants to know how to declare
-      what the business earned.
+      Someone whose registered trade is their only source of income wants to know how
+      the business declares its takings and costs for the trade itself.
     persona: {role: self_employed, literacy: standard, register: polite}
     season: filing
     computation_requested: false
@@ -169,7 +169,8 @@ scenarios:
 
   - scenario_id: OOSB-RECORD-001
     situation: >
-      Someone selling online wants to know what records they are expected to keep.
+      Someone running a registered online retail business wants to know what books
+      and accounts the business itself is required to keep for its trade.
     persona: {role: self_employed, literacy: imperfect, register: polite}
     season: any
     computation_requested: false
@@ -179,8 +180,8 @@ scenarios:
 
   - scenario_id: OOSB-MIXED-001
     situation: >
-      A person with both a salaried job and a small side business is unsure how
-      the two fit together on one form.
+      A person who draws a salary and also runs a registered business is unsure which
+      of the two sets of obligations covers the business side.
     persona: {role: self_employed, literacy: standard, register: anxious}
     season: filing
     computation_requested: false

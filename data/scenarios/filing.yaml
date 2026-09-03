@@ -19,7 +19,9 @@ scenarios:
 
   - scenario_id: FIL-OBLIG-001
     situation: >
-      Someone started their first job partway through last year and is unsure whether the amount they earned means they need to submit anything to the tax authority at all.
+      Someone started their first salaried job partway through last year, has only
+      ever been paid by that one employer, and is unsure whether earnings that small
+      mean they must submit a personal return at all.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
@@ -30,7 +32,9 @@ scenarios:
 
   - scenario_id: FIL-OBLIG-002
     situation: >
-      A person earns a small amount on the side from freelance design work, alongside a salaried job, and wonders if that side income changes their obligations.
+      A person who is paid a salary by one employer also received a small one-off
+      payment for helping at a weekend event, and wonders whether that extra amount
+      changes what they personally have to declare.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false
@@ -163,7 +167,9 @@ scenarios:
 
   - scenario_id: FIL-ACCT-002
     situation: >
-      A person wants to know whether they personally have been placed on the automatic arrangement this year, having heard about it from a colleague.
+      A person heard from a colleague that some salaried staff are excused from
+      submitting a return, and wants to know whether they personally have been put
+      on that arrangement for this year.
     persona: {role: employee, literacy: standard, register: polite}
     season: filing
     computation_requested: false

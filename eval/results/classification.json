@@ -1,50 +1,50 @@
 {
   "n": 877,
-  "accuracy": 0.8141,
-  "macro_f1": 0.8254,
-  "macro_precision": 0.8473,
-  "macro_recall": 0.8186,
+  "accuracy": 0.8529,
+  "macro_f1": 0.8593,
+  "macro_precision": 0.8765,
+  "macro_recall": 0.8567,
   "per_class": [
     {
       "label": "assessment_and_amendment",
       "precision": 1.0,
-      "recall": 0.7717,
-      "f1": 0.8712,
+      "recall": 0.8261,
+      "f1": 0.9048,
       "support": 92
     },
     {
       "label": "filing",
-      "precision": 0.4959,
-      "recall": 0.6703,
-      "f1": 0.5701,
+      "precision": 0.5954,
+      "recall": 0.8571,
+      "f1": 0.7027,
       "support": 91
     },
     {
       "label": "foreign_income_dta",
-      "precision": 0.8049,
-      "recall": 0.7857,
-      "f1": 0.7952,
+      "precision": 0.8161,
+      "recall": 0.8452,
+      "f1": 0.8304,
       "support": 84
     },
     {
       "label": "hardship_or_waiver",
-      "precision": 0.963,
-      "recall": 0.9512,
-      "f1": 0.9571,
+      "precision": 0.9875,
+      "recall": 0.9634,
+      "f1": 0.9753,
       "support": 82
     },
     {
       "label": "oos_redirect",
-      "precision": 0.625,
-      "recall": 0.8333,
-      "f1": 0.7143,
+      "precision": 0.7568,
+      "recall": 0.9333,
+      "f1": 0.8358,
       "support": 90
     },
     {
       "label": "payment",
-      "precision": 0.8243,
-      "recall": 0.7093,
-      "f1": 0.7625,
+      "precision": 0.8451,
+      "recall": 0.6977,
+      "f1": 0.7643,
       "support": 86
     },
     {
@@ -56,9 +56,9 @@
     },
     {
       "label": "residency",
-      "precision": 0.76,
-      "recall": 0.7755,
-      "f1": 0.7677,
+      "precision": 0.7957,
+      "recall": 0.7551,
+      "f1": 0.7749,
       "support": 98
     },
     {
@@ -70,20 +70,20 @@
     },
     {
       "label": "tax_reliefs",
-      "precision": 1.0,
+      "precision": 0.9688,
       "recall": 0.6889,
-      "f1": 0.8158,
+      "f1": 0.8052,
       "support": 90
     }
   ],
   "confusion": {
     "assessment_and_amendment": {
-      "assessment_and_amendment": 71,
-      "filing": 19,
+      "assessment_and_amendment": 76,
+      "filing": 16,
       "foreign_income_dta": 0,
       "hardship_or_waiver": 0,
       "oos_redirect": 0,
-      "payment": 2,
+      "payment": 0,
       "rental_income": 0,
       "residency": 0,
       "scam_report": 0,
@@ -91,25 +91,25 @@
     },
     "filing": {
       "assessment_and_amendment": 0,
-      "filing": 61,
+      "filing": 78,
       "foreign_income_dta": 0,
-      "hardship_or_waiver": 3,
-      "oos_redirect": 27,
+      "hardship_or_waiver": 1,
+      "oos_redirect": 11,
       "payment": 0,
       "rental_income": 0,
-      "residency": 0,
+      "residency": 1,
       "scam_report": 0,
       "tax_reliefs": 0
     },
     "foreign_income_dta": {
       "assessment_and_amendment": 0,
       "filing": 0,
-      "foreign_income_dta": 66,
+      "foreign_income_dta": 71,
       "hardship_or_waiver": 0,
       "oos_redirect": 0,
       "payment": 0,
       "rental_income": 0,
-      "residency": 18,
+      "residency": 13,
       "scam_report": 0,
       "tax_reliefs": 0
     },
@@ -117,8 +117,8 @@
       "assessment_and_amendment": 0,
       "filing": 0,
       "foreign_income_dta": 0,
-      "hardship_or_waiver": 78,
-      "oos_redirect": 4,
+      "hardship_or_waiver": 79,
+      "oos_redirect": 3,
       "payment": 0,
       "rental_income": 0,
       "residency": 0,
@@ -127,23 +127,23 @@
     },
     "oos_redirect": {
       "assessment_and_amendment": 0,
-      "filing": 10,
+      "filing": 0,
       "foreign_income_dta": 0,
       "hardship_or_waiver": 0,
-      "oos_redirect": 75,
+      "oos_redirect": 84,
       "payment": 0,
       "rental_income": 0,
-      "residency": 5,
+      "residency": 4,
       "scam_report": 0,
-      "tax_reliefs": 0
+      "tax_reliefs": 2
     },
     "payment": {
       "assessment_and_amendment": 0,
-      "filing": 8,
+      "filing": 9,
       "foreign_income_dta": 16,
       "hardship_or_waiver": 0,
       "oos_redirect": 0,
-      "payment": 61,
+      "payment": 60,
       "rental_income": 0,
       "residency": 1,
       "scam_report": 0,
@@ -163,13 +163,13 @@
     },
     "residency": {
       "assessment_and_amendment": 0,
-      "filing": 22,
+      "filing": 24,
       "foreign_income_dta": 0,
       "hardship_or_waiver": 0,
       "oos_redirect": 0,
       "payment": 0,
       "rental_income": 0,
-      "residency": 76,
+      "residency": 74,
       "scam_report": 0,
       "tax_reliefs": 0
     },
@@ -187,10 +187,10 @@
     },
     "tax_reliefs": {
       "assessment_and_amendment": 0,
-      "filing": 3,
+      "filing": 4,
       "foreign_income_dta": 0,
       "hardship_or_waiver": 0,
-      "oos_redirect": 14,
+      "oos_redirect": 13,
       "payment": 11,
       "rental_income": 0,
       "residency": 0,

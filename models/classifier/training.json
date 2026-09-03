@@ -9,27 +9,27 @@
   "n_calibration": 646,
   "n_test": 877,
   "split_grouped_by": "scenario_id",
-  "elapsed_seconds": 670.8,
+  "elapsed_seconds": 661.8,
   "history": [
     {
       "epoch": 1,
-      "train_loss": 2.051917646793609,
-      "calibration_accuracy": 0.5123839009287926
+      "train_loss": 2.058927589274467,
+      "calibration_accuracy": 0.47987616099071206
     },
     {
       "epoch": 2,
-      "train_loss": 0.8945226441038415,
-      "calibration_accuracy": 0.6563467492260062
+      "train_loss": 0.8886176626733009,
+      "calibration_accuracy": 0.6795665634674922
     },
     {
       "epoch": 3,
-      "train_loss": 0.3265763543387677,
-      "calibration_accuracy": 0.6253869969040248
+      "train_loss": 0.3350893629992262,
+      "calibration_accuracy": 0.6331269349845201
     },
     {
       "epoch": 4,
-      "train_loss": 0.21537102283315457,
-      "calibration_accuracy": 0.6269349845201239
+      "train_loss": 0.2229258043968931,
+      "calibration_accuracy": 0.6424148606811145
     }
   ],
   "note": "calibration_accuracy is a convergence signal, not a result. Reported numbers come from eval/run_eval.py on the test split."

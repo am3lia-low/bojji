@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T04:02:37+00:00",
+  "generated_at": "2026-09-03T05:25:01+00:00",
   "split": "test",
   "n": 877,
   "seed": 42,
@@ -11,7 +11,7 @@
     "classifier": "minilm-l6-finetuned",
     "calibration": {
       "fitted": true,
-      "temperature": 1.0307,
+      "temperature": 0.998,
       "n_calibration_examples": 646
     }
   },
@@ -24,14 +24,14 @@
   },
   "calibrated_numbers_reportable": true,
   "headline": {
-    "macro_f1_class": 0.8254,
-    "macro_f1_bucket": 0.871,
-    "ece_before": 0.1132,
-    "ece_after": 0.1212,
-    "aurc_overall": 0.119,
-    "must_escalate_recall": 0.9694,
-    "unsafe_automations": 12,
+    "macro_f1_class": 0.8593,
+    "macro_f1_bucket": 0.9172,
+    "ece_before": 0.1507,
+    "ece_after": 0.1502,
+    "aurc_overall": 0.1229,
+    "must_escalate_recall": 0.9796,
+    "unsafe_automations": 8,
     "scrub_recall": 1.0
   },
-  "elapsed_seconds": 35.9
+  "elapsed_seconds": 37.0
 }
