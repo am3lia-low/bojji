@@ -34,14 +34,18 @@ scenarios:
   # --- another agency entirely ---------------------------------------------
   - scenario_id: OOSA-CPF-001
     situation: >
-      Someone wants to know how much is being put into their retirement account
-      each month and whether the rate has changed.
+      Someone wants to know how much their employer is putting into their
+      retirement savings scheme each month, and who they should ask to correct
+      it if the amount looks wrong.
     persona: {role: employee, literacy: standard, register: polite}
     season: any
     computation_requested: false
     account_specific: false
     variants: 24
-    notes: CPF contribution rates -> CPF Board. Near REL-003.
+    notes: >
+      CPF contribution rates -> CPF Board. Anchored on the contribution
+      and who administers it. The previous version sat beside CPF relief,
+      which IS an IRAS matter, so the emails read as tax_reliefs.
 
   - scenario_id: OOSA-CPF-002
     situation: >
@@ -67,14 +71,19 @@ scenarios:
 
   - scenario_id: OOSA-IR21-001
     situation: >
-      An employer wants to know what they must do before a foreign employee
-      leaves the country.
-    persona: {role: employee, literacy: standard, register: polite}
+      An employer is arranging the departure of a foreign staff member and
+      wants to know what the company itself must file, and whether it has to
+      withhold the person's final salary until that is settled.
+    persona: {role: self_employed, literacy: standard, register: polite}
     season: any
     computation_requested: false
     account_specific: false
     variants: 22
-    notes: Tax clearance IR21 -> employer obligation.
+    notes: >
+      Tax clearance IR21 -> employer obligation. The writer is the
+      EMPLOYER: the previous version paired an employer situation with an
+      employee persona, and the generator wrote from the departing
+      worker's view, which reads as a residency question.
 
   # --- another tax type -----------------------------------------------------
   - scenario_id: OOSA-GST-001
@@ -101,14 +110,17 @@ scenarios:
 
   - scenario_id: OOSA-STAMP-001
     situation: >
-      Someone buying a property wants to know what duty is payable on the
-      purchase.
+      Someone is about to sign for a flat and wants to know what one-off duty
+      falls due on the transaction itself, and who collects it.
     persona: {role: employee, literacy: standard, register: polite}
     season: any
     computation_requested: false
     account_specific: false
     variants: 21
-    notes: Stamp duty -> different tax type.
+    notes: >
+      Stamp duty -> different tax type, different collector. Anchored on
+      the TRANSACTION rather than the property, which previously read as
+      rental_income.
 
   # --- business and corporate ----------------------------------------------
   - scenario_id: OOSB-SOLE-001
