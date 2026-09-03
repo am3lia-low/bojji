@@ -280,23 +280,23 @@ OPEN ITEMS
    That curve now exists (AURC 0.1229; risk <= 5% at 7.6% coverage). Until it is
    set, no threshold-dependent number should be quoted as final.
 
-2  account_specific flag P/R 0.171 / 0.109 -- weak, and it now carries ALL the
-   escalation weight for requires_account_lookup since that bucket has no
-   classes. 57 of 64 account-specific emails are missed by the flag. This is the
-   highest-value open item: it is a safety path, not a metric.
+2  RESOLVED [6c3597c] -- account_specific flag widened.
+   Was P/R 0.171 / 0.109, catching 7 of 64. _ACCOUNT_PATTERNS had been written
+   as a BACKSTOP while account_specific was still a class; iteration 4 removed
+   the class and made it the PRIMARY detector without widening it. The misses
+   were dominated by three phrasings the list had no entry for, because it was
+   assembled around billing nouns: "my tax status" (34), "my new/current/mailing
+   address" (28), "my records" (18). Added those plus the reversed forms
+   ("confirmation of my status", "the status that was applied to me").
 
-   ROOT CAUSE IDENTIFIED, NOT YET FIXED. src/triage/nodes/flags.py:81 still
-   reads "``account_specific`` is a class", and _ACCOUNT_PATTERNS was written as
-   a BACKSTOP for that class -- a second line of defence for when the classifier
-   misfiled an email. Iteration 4 removed the class, so the backstop is now the
-   PRIMARY detector, and it was never designed for that load. The 64 positives
-   in the test split sit entirely in filing (34) and residency (30), which is
-   where the regenerated account-specific scenarios landed.
-   Fixing this means widening _ACCOUNT_PATTERNS to catch possessive constructions
-   ("my instalment", "the status of my refund", "has my return been received")
-   and re-measuring precision, since a wider pattern will over-escalate. Do this
-   BEFORE quoting any coverage number, because every false negative here is an
-   auto-reply about a real taxpayer's record.
+     account_specific flag  P/R  0.171 / 0.109  ->  0.495 / 0.844
+     AURC                        0.1229         ->  0.0584
+     risk <= 5% coverage         7.6%           ->  16.1%
+     risk <= 10% coverage        0.0%           ->  41.8%
+
+   False positives 34 -> 55, deliberately: 28 sit in buckets that always
+   escalate anyway (free), and the 27 that cost coverage are 4.9% of
+   auto-eligible email. Classification untouched.
 
 3  filing keeps the lowest class F1 (0.703), now from precision (0.595) rather
    than recall (0.857). It absorbs residual residency and assessment ambiguity,
