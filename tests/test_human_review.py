@@ -12,6 +12,7 @@ from eval.human_review import (
     evidence_hash,
     prepare_review,
     score_reviews,
+    sync_manifest_judgments,
 )
 
 TEST_EVIDENCE_HASH = evidence_hash("email", "SOP-FIL-001", "sop", "draft")
@@ -116,6 +117,43 @@ def test_prepare_review_is_blind_and_spreadsheet_safe(tmp_path: Path) -> None:
     assert "email_id" not in rows[0]
     assert rows[0]["citizen_email_redacted"].startswith("'=")
     assert rows[0]["reviewer_id"] == "reviewer_a"
+
+
+def test_sync_judge_preserves_review_csv_and_evidence(tmp_path: Path) -> None:
+    drafts_path = tmp_path / "drafts.json"
+    manifest_path = tmp_path / "manifest.json"
+    review_path = tmp_path / "review.csv"
+    item = draft("email-1")
+    item["judge_verdict"] = None
+    item["judge_reason"] = None
+    item["judge_model"] = None
+    write_drafts(drafts_path, [item])
+    prepare_review(
+        drafts_path,
+        manifest_path,
+        review_path,
+        reviewer_id="reviewer_a",
+    )
+    original_csv = review_path.read_bytes()
+    original_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+    item["judge_verdict"] = "UNGROUNDED"
+    item["judge_reason"] = "Unsupported deadline."
+    item["judge_model"] = "new-judge"
+    write_drafts(drafts_path, [item])
+    document = json.loads(drafts_path.read_text(encoding="utf-8"))
+    document["judge_model"] = "new-judge"
+    drafts_path.write_text(json.dumps(document), encoding="utf-8")
+
+    result = sync_manifest_judgments(drafts_path, manifest_path)
+
+    updated = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert review_path.read_bytes() == original_csv
+    assert updated["items"][0]["evidence_sha256"] == (
+        original_manifest["items"][0]["evidence_sha256"]
+    )
+    assert updated["items"][0]["judge_verdict"] == "UNGROUNDED"
+    assert result["judge_model"] == "new-judge"
 
 
 def test_complete_report_scores_safety_critical_judge_recall(tmp_path: Path) -> None:

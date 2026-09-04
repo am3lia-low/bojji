@@ -22,6 +22,7 @@ import csv
 import hashlib
 import json
 import math
+import os
 import random
 import sys
 from collections import Counter, defaultdict
@@ -260,6 +261,55 @@ def prepare_review(
         "reviewer_id": reviewer_id,
         "n_items": len(selected),
         "output": str(output_path),
+        "manifest": str(manifest_path),
+    }
+
+
+def sync_manifest_judgments(
+    drafts_path: Path,
+    manifest_path: Path,
+) -> dict[str, int | str]:
+    """Refresh hidden judge fields without changing reviewer evidence or IDs."""
+    if not manifest_path.exists():
+        raise FileNotFoundError(manifest_path)
+
+    draft_document, drafts = _load_drafts(drafts_path)
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    index = build_index()
+    draft_by_email = {str(draft["email_id"]): draft for draft in drafts}
+
+    for item in manifest.get("items", []):
+        email_id = str(item.get("email_id", ""))
+        if email_id not in draft_by_email:
+            raise ValueError(f"manifest email is missing from drafts.json: {email_id}")
+        draft = draft_by_email[email_id]
+        current_hash = _review_evidence(draft, index)["evidence_sha256"]
+        if current_hash != item.get("evidence_sha256"):
+            raise ValueError(
+                f"review evidence changed for {item.get('item_id')}; existing ratings "
+                "cannot be joined safely"
+            )
+        item["judge_verdict"] = draft.get("judge_verdict")
+        item["judge_reason"] = draft.get("judge_reason")
+        item["judge_model"] = draft.get("judge_model")
+
+    source = manifest.setdefault("source", {})
+    source["sha256"] = hashlib.sha256(drafts_path.read_bytes()).hexdigest()
+    source["drafter_model"] = draft_document.get("drafter_model")
+    source["judge_model"] = draft_document.get("judge_model")
+    manifest["judge_synced_at"] = datetime.now(UTC).isoformat(timespec="seconds")
+
+    temporary = manifest_path.with_suffix(f"{manifest_path.suffix}.tmp")
+    temporary.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    os.replace(temporary, manifest_path)
+    judged = sum(
+        item.get("judge_verdict") in {"GROUNDED", "UNGROUNDED"}
+        for item in manifest.get("items", [])
+    )
+    return {
+        "n_items": len(manifest.get("items", [])),
+        "n_judged": judged,
+        "judge_model": str(source.get("judge_model") or ""),
         "manifest": str(manifest_path),
     }
 
@@ -780,6 +830,13 @@ def _parser() -> argparse.ArgumentParser:
     score.add_argument(
         "--markdown-output", type=Path, default=DEFAULT_MARKDOWN_REPORT
     )
+
+    sync = commands.add_parser(
+        "sync-judge",
+        help="refresh hidden manifest judge fields without changing review evidence",
+    )
+    sync.add_argument("--drafts", type=Path, default=DEFAULT_DRAFTS)
+    sync.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
     return parser
 
 
@@ -794,6 +851,11 @@ def main() -> int:
             seed=args.seed,
             overlap_only=args.overlap_only,
         )
+        print(json.dumps(result, indent=2))
+        return 0
+
+    if args.command == "sync-judge":
+        result = sync_manifest_judgments(args.drafts, args.manifest)
         print(json.dumps(result, indent=2))
         return 0
 
@@ -822,4 +884,5 @@ __all__ = [
     "prepare_review",
     "render_markdown_report",
     "score_reviews",
+    "sync_manifest_judgments",
 ]

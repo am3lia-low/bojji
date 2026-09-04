@@ -137,9 +137,11 @@ def resume_missing_judgments(
         missing_or_stale = missing_or_stale[:max_items]
 
     payload["judge_model"] = client.model_name
+    attempted_items: list[dict[str, Any]] = []
     for position, item in enumerate(missing_or_stale, 1):
         if position > 1 and delay_seconds > 0:
             time.sleep(delay_seconds)
+        attempted_items.append(item)
         result = judge_groundedness_detailed(_record(item), index, client)
         item["judge_verdict"] = result.verdict
         item["judge_reason"] = result.reason
@@ -147,6 +149,11 @@ def resume_missing_judgments(
         item["judge_failure_reason"] = result.failure_reason
         _write_json_atomic(drafts_path, payload)
         print(f"  resumed judge {position}/{len(missing_or_stale)}")
+        if result.failure_reason == "rate_limit":
+            # The provider's rolling token window can be much longer than a
+            # per-request backoff. Stop after the first 429 so the remaining
+            # items stay resumable instead of spending requests that cannot pass.
+            break
 
     _refresh_report(report, items, client.model_name)
     _write_json_atomic(report_path, report)
@@ -157,11 +164,11 @@ def resume_missing_judgments(
     )
     attempted_remaining = sum(
         not _has_current_judgment(item, client.model_name)
-        for item in missing_or_stale
+        for item in attempted_items
     )
     return {
-        "attempted": len(missing_or_stale),
-        "resolved": len(missing_or_stale) - attempted_remaining,
+        "attempted": len(attempted_items),
+        "resolved": len(attempted_items) - attempted_remaining,
         "remaining": remaining,
         "judge": report["judge"],
     }

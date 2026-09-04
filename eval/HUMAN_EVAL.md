@@ -71,6 +71,14 @@ python eval/resume_judge.py
    If the free-tier window is already exhausted, rerun the command later; completed
    current-model verdicts are skipped. Use `--max-items 1` for a single-call check.
 
+   If reviewer CSVs were prepared before judging finished, refresh only the hidden
+   manifest labels afterward. This verifies that none of the reviewer evidence
+   changed:
+
+```bash
+python eval/human_review.py sync-judge
+```
+
 3. Create blinded sheets:
 
 ```bash
