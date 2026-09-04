@@ -1,7 +1,249 @@
 {
-  "status": "not_run",
-  "reason": "The live sample produced 24 successful drafts, but independent human ratings have not been collected.",
-  "claims_permitted": false,
-  "protocol": "eval/HUMAN_EVAL.md",
-  "next_step": "Prepare blinded reviewer sheets, collect independent ratings, adjudicate disagreements, and run the scorer."
+  "generated_at": "2026-09-04T09:51:50+00:00",
+  "status": "complete",
+  "source": {
+    "path": "eval/results/drafts.json",
+    "sha256": "8a6df5aeb183aeeb231553933ec448f824d4470b170d03be1a42720bcdcc05dc",
+    "drafter_model": "gemini-3.6-flash",
+    "judge_model": "groq/compound-mini",
+    "draft_prompt": "draft_reply.v1.txt",
+    "judge_prompt": "judge_groundedness.v2.txt",
+    "judge_version": "2025-08-16"
+  },
+  "protocol": {
+    "primary_review": "all successful drafts",
+    "double_review_target": 0,
+    "double_review_rule": "max(20 items, 30% of successful drafts), capped at n",
+    "selection_seed": 42,
+    "blinding": "Reviewer sheets omit judge verdicts, model predictions, confidence, ground-truth labels, and source email IDs.",
+    "review_mode": "single_reviewer",
+    "configured_double_review_target": 20
+  },
+  "coverage": {
+    "review_mode": "single_reviewer",
+    "successful_drafts": 24,
+    "judge_verdicts": 24,
+    "human_reference_labels": 24,
+    "reviewers": [
+      "reviewer_a"
+    ],
+    "double_reviewed": 0,
+    "double_review_target": 0,
+    "independent_rating_notes_required": false,
+    "normalized_overall_pass": true,
+    "unresolved": [],
+    "complete_conditions": {
+      "all_successful_drafts_judged": true,
+      "all_successful_drafts_human_reviewed": true,
+      "no_unresolved_fields": true,
+      "one_reviewer_present": true
+    }
+  },
+  "human_quality": {
+    "groundedness": {
+      "successes": 24,
+      "n": 24,
+      "rate": 1.0,
+      "lower": 0.862,
+      "upper": 1.0
+    },
+    "correct_next_step": {
+      "successes": 24,
+      "n": 24,
+      "rate": 1.0,
+      "lower": 0.862,
+      "upper": 1.0
+    },
+    "safety_privacy": {
+      "successes": 24,
+      "n": 24,
+      "rate": 1.0,
+      "lower": 0.862,
+      "upper": 1.0
+    },
+    "completeness": {
+      "successes": 24,
+      "n": 24,
+      "rate": 1.0,
+      "lower": 0.862,
+      "upper": 1.0
+    },
+    "tone": {
+      "successes": 18,
+      "n": 24,
+      "rate": 0.75,
+      "lower": 0.551,
+      "upper": 0.88
+    },
+    "overall_acceptability": {
+      "successes": 23,
+      "n": 24,
+      "rate": 0.9583,
+      "lower": 0.7976,
+      "upper": 0.9926
+    }
+  },
+  "human_quality_by_route": {
+    "auto_reply": {
+      "n": 10,
+      "groundedness": {
+        "successes": 10,
+        "n": 10,
+        "rate": 1.0,
+        "lower": 0.7225,
+        "upper": 1.0
+      },
+      "correct_next_step": {
+        "successes": 10,
+        "n": 10,
+        "rate": 1.0,
+        "lower": 0.7225,
+        "upper": 1.0
+      },
+      "safety_privacy": {
+        "successes": 10,
+        "n": 10,
+        "rate": 1.0,
+        "lower": 0.7225,
+        "upper": 1.0
+      },
+      "completeness": {
+        "successes": 10,
+        "n": 10,
+        "rate": 1.0,
+        "lower": 0.7225,
+        "upper": 1.0
+      },
+      "tone": {
+        "successes": 9,
+        "n": 10,
+        "rate": 0.9,
+        "lower": 0.5958,
+        "upper": 0.9821
+      },
+      "overall_acceptability": {
+        "successes": 10,
+        "n": 10,
+        "rate": 1.0,
+        "lower": 0.7225,
+        "upper": 1.0
+      }
+    },
+    "redirect": {
+      "n": 14,
+      "groundedness": {
+        "successes": 14,
+        "n": 14,
+        "rate": 1.0,
+        "lower": 0.7847,
+        "upper": 1.0
+      },
+      "correct_next_step": {
+        "successes": 14,
+        "n": 14,
+        "rate": 1.0,
+        "lower": 0.7847,
+        "upper": 1.0
+      },
+      "safety_privacy": {
+        "successes": 14,
+        "n": 14,
+        "rate": 1.0,
+        "lower": 0.7847,
+        "upper": 1.0
+      },
+      "completeness": {
+        "successes": 14,
+        "n": 14,
+        "rate": 1.0,
+        "lower": 0.7847,
+        "upper": 1.0
+      },
+      "tone": {
+        "successes": 9,
+        "n": 14,
+        "rate": 0.6429,
+        "lower": 0.3876,
+        "upper": 0.8366
+      },
+      "overall_acceptability": {
+        "successes": 13,
+        "n": 14,
+        "rate": 0.9286,
+        "lower": 0.6853,
+        "upper": 0.9873
+      }
+    }
+  },
+  "inter_human_reliability": [],
+  "judge_human_groundedness": {
+    "successes": 22,
+    "n": 24,
+    "rate": 0.9167,
+    "lower": 0.7415,
+    "upper": 0.9768,
+    "cohen_kappa": null,
+    "confusion_rows_reference_columns_comparison": {
+      "GROUNDED": {
+        "GROUNDED": 22,
+        "UNGROUNDED": 2
+      },
+      "UNGROUNDED": {
+        "GROUNDED": 0,
+        "UNGROUNDED": 0
+      }
+    },
+    "human_ungrounded": 0,
+    "judge_ungrounded": 2,
+    "ungrounded_recall": null,
+    "ungrounded_precision": 0.0,
+    "note": "Human labels are the reference. Ungrounded recall is the safety-critical quantity: it is the share of human-identified unsupported drafts the judge also catches.",
+    "by_route": {
+      "auto_reply": {
+        "successes": 8,
+        "n": 10,
+        "rate": 0.8,
+        "lower": 0.4902,
+        "upper": 0.9433,
+        "cohen_kappa": null,
+        "confusion_rows_reference_columns_comparison": {
+          "GROUNDED": {
+            "GROUNDED": 8,
+            "UNGROUNDED": 2
+          },
+          "UNGROUNDED": {
+            "GROUNDED": 0,
+            "UNGROUNDED": 0
+          }
+        }
+      },
+      "redirect": {
+        "successes": 14,
+        "n": 14,
+        "rate": 1.0,
+        "lower": 0.7847,
+        "upper": 1.0,
+        "cohen_kappa": null,
+        "confusion_rows_reference_columns_comparison": {
+          "GROUNDED": {
+            "GROUNDED": 14,
+            "UNGROUNDED": 0
+          },
+          "UNGROUNDED": {
+            "GROUNDED": 0,
+            "UNGROUNDED": 0
+          }
+        }
+      }
+    }
+  },
+  "interpretation": "One resolved human rating set is the reference for draft quality and judge comparison. Inter-human reliability is not measured. Wilson intervals show denominator uncertainty for the observed sample rates.",
+  "limitations": [
+    "Human review uses synthetic correspondence and authored SOPs, not real inbox mail.",
+    "Agreement validates this judge prompt and sample, not arbitrary future prompts.",
+    "A sample with no human-identified ungrounded draft cannot estimate judge recall.",
+    "One reviewer supplied the human reference, so individual rating bias and inter-human reliability are not measured.",
+    "The rating sheet did not include notes for every negative label, so some item-level rationale is unavailable.",
+    "Positive PASS values in the overall-acceptability column were normalized to the rubric's equivalent ACCEPT label."
+  ]
 }

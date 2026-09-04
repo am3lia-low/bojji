@@ -14,6 +14,8 @@ from __future__ import annotations
 
 import html
 import json
+import logging
+import os
 import sys
 import time
 from pathlib import Path
@@ -29,6 +31,33 @@ from triage.env import load_env  # noqa: E402
 
 load_env()
 
+
+def _configure_console_logger() -> logging.Logger:
+    """Create one rerun-safe logger for terminal-visible workflow events."""
+    logger = logging.getLogger("citizen_triage.streamlit")
+    level_name = os.getenv("TRIAGE_LOG_LEVEL", "INFO").upper()
+    level = getattr(logging, level_name, logging.INFO)
+    logger.setLevel(level)
+    logger.propagate = False
+
+    handler_name = "citizen-triage-console"
+    if not any(handler.get_name() == handler_name for handler in logger.handlers):
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.set_name(handler_name)
+        console_handler.setFormatter(
+            logging.Formatter(
+                "%(asctime)s | %(levelname)-8s | citizen-triage | %(message)s",
+                datefmt="%Y-%m-%d %H:%M:%S",
+            )
+        )
+        logger.addHandler(console_handler)
+    for handler in logger.handlers:
+        handler.setLevel(level)
+    return logger
+
+
+LOGGER = _configure_console_logger()
+
 from eval.dataset import Labelled, split  # noqa: E402
 
 from triage.schemas import (  # noqa: E402
@@ -41,9 +70,9 @@ from triage.schemas import (  # noqa: E402
 
 RESULTS = ROOT / "eval" / "results"
 DEMO_INBOX = ROOT / "data" / "demo_inbox.json"
-DEMO_INBOX_VERSION = 4
+DEMO_INBOX_VERSION = 5
 DEFAULT_SPLIT = "test"
-DEFAULT_LIMIT = 20
+DEFAULT_LIMIT = 10
 DEFAULT_MULTIPLIER = 1.0
 PROCESSING_BATCH_SIZE = 8
 
@@ -59,16 +88,66 @@ st.set_page_config(
 _APP_CSS = """
 <style>
 :root {
-    --workspace-blue: #2563eb;
-    --workspace-blue-soft: rgba(37, 99, 235, 0.11);
-    --workspace-border: rgba(128, 128, 128, 0.22);
+    --workspace-blue: #176f9c;
+    --workspace-blue-mid: #4b98bd;
+    --workspace-blue-soft: #e3f2f9;
+    --workspace-blue-pale: #f1f8fb;
+    --workspace-grey-050: #f7f9fa;
+    --workspace-grey-100: #edf1f3;
+    --workspace-grey-200: #d6e0e5;
+    --workspace-grey-500: #687985;
+    --workspace-ink: #263640;
+    --workspace-border: #d3dee4;
+    --workspace-surface: #ffffff;
     --outlook-font: "Aptos", "Segoe UI", Calibri, Arial, sans-serif;
 }
 
 /* This workflow has no secondary control surface. */
 [data-testid="stSidebar"], [data-testid="collapsedControl"] { display: none; }
-div.block-container { max-width: 1500px; padding-top: 1.65rem; padding-bottom: 3rem; }
+div[data-testid="stAppViewContainer"] {
+    background:
+        linear-gradient(180deg, #e2f1f8 0, #eef5f8 175px, var(--workspace-grey-050) 360px);
+    border-top: 5px solid var(--workspace-blue);
+}
+div.block-container {
+    max-width: 1500px;
+    padding-top: 1.65rem;
+    padding-bottom: 3rem;
+}
 header[data-testid="stHeader"] { background: transparent; }
+h1, h2, h3 { color: var(--workspace-ink); }
+h1 { letter-spacing: -0.025em; }
+[data-testid="stCaptionContainer"] { color: var(--workspace-grey-500); }
+
+/* Buttons use the restrained blue of the service palette. */
+button[kind="primary"] {
+    background: var(--workspace-blue) !important;
+    border-color: var(--workspace-blue) !important;
+    box-shadow: 0 2px 6px rgba(23, 111, 156, 0.18);
+}
+button[kind="primary"]:hover {
+    background: #125f87 !important;
+    border-color: #125f87 !important;
+}
+div[class*="st-key-process-emails"] button {
+    min-height: 3rem;
+    font-size: 1.08rem !important;
+    font-weight: 700 !important;
+}
+div[class*="st-key-process-emails"] button p {
+    font-size: 1.08rem !important;
+    font-weight: 700 !important;
+}
+button[kind="secondary"] {
+    background: var(--workspace-surface) !important;
+    border-color: var(--workspace-grey-200) !important;
+    color: var(--workspace-ink) !important;
+}
+button[kind="secondary"]:hover {
+    background: var(--workspace-blue-pale) !important;
+    border-color: var(--workspace-blue-mid) !important;
+    color: var(--workspace-blue) !important;
+}
 
 /* A radio group gives the list true single-row semantics. Its circular selector
    is hidden because the selected-row tint is the affordance, as in Outlook. */
@@ -79,6 +158,8 @@ div[class*="st-key-result-message-list"] div[role="radiogroup"] {
     max-height: 615px;
     overflow-y: auto;
     gap: 0;
+    background: var(--workspace-surface);
+    box-shadow: 0 3px 12px rgba(49, 75, 90, 0.05);
     font-family: var(--outlook-font);
 }
 div[class*="st-key-inbox-message-list"] label[data-baseweb="radio"],
@@ -100,7 +181,7 @@ div[class*="st-key-result-message-list"] label[data-baseweb="radio"] > div:first
 }
 div[class*="st-key-inbox-message-list"] label[data-baseweb="radio"]:hover,
 div[class*="st-key-result-message-list"] label[data-baseweb="radio"]:hover {
-    background: rgba(128, 128, 128, 0.09);
+    background: var(--workspace-blue-pale);
 }
 div[class*="st-key-inbox-message-list"] label[data-baseweb="radio"]:has(input:checked),
 div[class*="st-key-result-message-list"] label[data-baseweb="radio"]:has(input:checked) {
@@ -110,15 +191,15 @@ div[class*="st-key-result-message-list"] label[data-baseweb="radio"]:has(input:c
 div[class*="st-key-inbox-message-list"] label p,
 div[class*="st-key-result-message-list"] label p {
     font-family: var(--outlook-font);
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 650;
-    line-height: 1.25;
+    line-height: 1.3;
 }
 div[class*="st-key-inbox-message-list"] label small,
 div[class*="st-key-result-message-list"] label small {
     font-family: var(--outlook-font);
-    font-size: 0.76rem;
-    line-height: 1.3;
+    font-size: 0.84rem;
+    line-height: 1.35;
     opacity: 0.72;
 }
 
@@ -132,12 +213,12 @@ div[class*="st-key-result-message-list"] label small {
 .workflow-step {
     padding: 9px 12px;
     border-bottom: 3px solid var(--workspace-border);
-    color: rgba(128, 128, 128, 0.9);
+    color: var(--workspace-grey-500);
     font-size: 0.78rem;
     font-weight: 650;
 }
 .workflow-step.active { border-color: var(--workspace-blue); color: var(--workspace-blue); }
-.workflow-step.done { border-color: #16a34a; color: inherit; }
+.workflow-step.done { border-color: var(--workspace-blue-mid); color: var(--workspace-ink); }
 .workflow-number {
     display: inline-flex;
     width: 1.35rem;
@@ -146,24 +227,31 @@ div[class*="st-key-result-message-list"] label small {
     align-items: center;
     justify-content: center;
     margin-right: 0.4rem;
-    background: rgba(128, 128, 128, 0.13);
+    background: var(--workspace-grey-100);
 }
 .workflow-step.active .workflow-number { background: var(--workspace-blue); color: white; }
-.workflow-step.done .workflow-number { background: #16a34a; color: white; }
+.workflow-step.done .workflow-number { background: var(--workspace-blue-mid); color: white; }
 
 div[data-testid="stMetric"] {
     border: 1px solid var(--workspace-border);
     border-radius: 10px;
     padding: 11px 14px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 3px 12px rgba(49, 75, 90, 0.05);
 }
 div[data-testid="stMetricValue"] { font-size: 1.5rem !important; }
-div[data-testid="stMetricLabel"] { font-size: 0.76rem !important; opacity: 0.75; }
+div[data-testid="stMetricLabel"] {
+    color: var(--workspace-grey-500);
+    font-size: 0.76rem !important;
+}
 
 .mail-pane {
     border: 1px solid var(--workspace-border);
     border-radius: 10px;
     padding: 18px 20px;
     min-height: 230px;
+    background: var(--workspace-surface);
+    box-shadow: 0 3px 12px rgba(49, 75, 90, 0.05);
     font-family: var(--outlook-font);
 }
 .mail-body {
@@ -173,13 +261,14 @@ div[data-testid="stMetricLabel"] { font-size: 0.76rem !important; opacity: 0.75;
     font-size: 11pt;
 }
 .mail-subject {
+    color: var(--workspace-ink);
     font-family: var(--outlook-font);
     font-size: 1.38rem;
     font-weight: 680;
     line-height: 1.3;
 }
 .mail-meta {
-    color: #737983;
+    color: var(--workspace-grey-500);
     font-family: var(--outlook-font);
     font-size: 0.8rem;
     margin: 3px 0 18px;
@@ -190,7 +279,8 @@ div[data-testid="stMetricLabel"] { font-size: 0.76rem !important; opacity: 0.75;
     border-radius: 10px;
     height: 430px;
     overflow-y: auto;
-    background: rgba(128, 128, 128, 0.025);
+    background: var(--workspace-surface);
+    box-shadow: 0 3px 12px rgba(49, 75, 90, 0.05);
 }
 .processing-row {
     padding: 9px 12px;
@@ -199,8 +289,9 @@ div[data-testid="stMetricLabel"] { font-size: 0.76rem !important; opacity: 0.75;
     line-height: 1.35;
 }
 .processing-row:last-child { border-bottom: 0; }
-.processing-subject { font-size: 0.83rem; font-weight: 650; }
-.processing-meta { font-size: 0.72rem; opacity: 0.68; margin-top: 2px; }
+.processing-row:nth-child(even) { background: var(--workspace-blue-pale); }
+.processing-subject { font-size: 0.94rem; font-weight: 650; }
+.processing-meta { font-size: 0.8rem; opacity: 0.72; margin-top: 3px; }
 .empty-list { padding: 34px 16px; text-align: center; opacity: 0.6; }
 
 /* The original email should look readable, not like a disabled form control. */
@@ -208,10 +299,20 @@ div[data-testid="stMetricLabel"] { font-size: 0.76rem !important; opacity: 0.75;
 
 /* Generated reply text uses the same typography as an Outlook compose window. */
 div[class*="st-key-draft-text-"] textarea {
+    background: var(--workspace-surface) !important;
+    border-color: var(--workspace-border) !important;
     font-family: var(--outlook-font) !important;
     font-size: 11pt !important;
     line-height: 1.5 !important;
 }
+
+/* Keep supporting evidence and alerts visually within the same service palette. */
+div[data-testid="stExpander"] {
+    background: rgba(255, 255, 255, 0.88);
+    border-color: var(--workspace-border);
+}
+div[data-testid="stAlert"] { border-radius: 9px; }
+hr { border-color: var(--workspace-grey-200) !important; }
 
 @media (max-width: 900px) {
     .workflow-steps { grid-template-columns: 1fr; }
@@ -236,6 +337,7 @@ def _mailbox(split_name: str, limit: int) -> tuple[Labelled, ...]:
     Runtime classification still receives only each email; no stored outcome or
     ground-truth label is supplied to the classifier or router.
     """
+    LOGGER.info("Loading inbox | split=%s requested_messages=%d", split_name, limit)
     rows = split(split_name)
     if split_name == DEFAULT_SPLIT and DEMO_INBOX.exists():
         payload = json.loads(DEMO_INBOX.read_text(encoding="utf-8"))
@@ -243,24 +345,46 @@ def _mailbox(split_name: str, limit: int) -> tuple[Labelled, ...]:
         by_id = {item.email.id: item for item in rows}
         selected = [by_id[email_id] for email_id in ids if email_id in by_id]
         if len(selected) >= min(limit, len(rows)):
+            LOGGER.info(
+                "Inbox ready | source=demo_manifest version=%s messages=%d",
+                payload.get("version", "unknown"),
+                min(limit, len(selected)),
+            )
             return tuple(selected[:limit])
 
     # A missing or stale manifest must leave the demo usable, even if less balanced.
-    return tuple(sorted(rows, key=lambda item: item.email.received_at, reverse=True)[:limit])
+    fallback = tuple(sorted(rows, key=lambda item: item.email.received_at, reverse=True)[:limit])
+    LOGGER.warning(
+        "Inbox ready using fallback selection | split=%s messages=%d",
+        split_name,
+        len(fallback),
+    )
+    return fallback
 
 
 @st.cache_resource(show_spinner=False)
 def _index() -> Any:
     from triage.sop.index import build_index
 
-    return build_index()
+    LOGGER.info("Loading supporting-procedure index")
+    started = time.perf_counter()
+    index = build_index()
+    LOGGER.info(
+        "Supporting-procedure index ready | procedures=%d elapsed_seconds=%.2f",
+        len(index.by_id),
+        time.perf_counter() - started,
+    )
+    return index
 
 
 @st.cache_resource(show_spinner=False)
 def _scrubber() -> Any:
     from triage.pii.scrubber import Scrubber
 
-    return Scrubber()
+    LOGGER.info("Loading local privacy scrubber")
+    scrubber = Scrubber()
+    LOGGER.info("Local privacy scrubber ready")
+    return scrubber
 
 
 @st.cache_resource(show_spinner=False)
@@ -269,16 +393,27 @@ def _classifier() -> Any:
     # after the officer explicitly starts processing.
     from triage.models.encoder import EncoderClassifier
 
-    return EncoderClassifier()
+    LOGGER.info("Initializing local classifier")
+    started = time.perf_counter()
+    classifier = EncoderClassifier()
+    LOGGER.info(
+        "Local classifier initialized; weights load on first inference | elapsed_seconds=%.2f",
+        time.perf_counter() - started,
+    )
+    return classifier
 
 
 @st.cache_resource(show_spinner=False)
 def _draft_client() -> Any | None:
     from triage.llm.client import GeminiClient, LLMError
 
+    LOGGER.info("Initializing external drafting client")
     try:
-        return GeminiClient()
-    except LLMError:
+        client = GeminiClient()
+        LOGGER.info("External drafting client ready")
+        return client
+    except LLMError as exc:
+        LOGGER.warning("External drafting client unavailable | reason=%s", type(exc).__name__)
         return None
 
 
@@ -379,7 +514,16 @@ def _stage() -> Stage:
     return cast(Stage, value if value in ("inbox", "processing", "results") else "inbox")
 
 
+def _log_stage_transition(stage: Stage) -> None:
+    """Log stage changes once per browser session instead of on every rerun."""
+    if st.session_state.get("terminal_log_stage") == stage:
+        return
+    st.session_state["terminal_log_stage"] = stage
+    LOGGER.info("Workflow stage entered | stage=%s", stage)
+
+
 def _begin_processing() -> None:
+    LOGGER.info("Processing requested by user | messages=%d", DEFAULT_LIMIT)
     st.session_state["workflow_stage"] = "processing"
     st.session_state["processed_states"] = []
     st.session_state["processing_error"] = None
@@ -392,6 +536,7 @@ def _begin_processing() -> None:
 
 
 def _reset_workflow() -> None:
+    LOGGER.info("Workflow reset requested by user")
     st.session_state["workflow_stage"] = "inbox"
     st.session_state["processed_states"] = []
     st.session_state["processing_error"] = None
@@ -503,10 +648,11 @@ def _render_inbox(items: tuple[Labelled, ...]) -> None:
         )
     with action_col:
         st.button(
-            f"Process {len(items)} emails",
+            "Process emails",
             type="primary",
             use_container_width=True,
             on_click=_begin_processing,
+            key="process-emails",
         )
         st.caption("Eligible routes are drafted live when a Gemini key is configured.")
 
@@ -595,6 +741,12 @@ def _render_processing(items: tuple[Labelled, ...]) -> None:
     _render_stage_bar("processing")
 
     states: list[TriageState] = list(st.session_state.get("processed_states", []))
+    processing_started = time.perf_counter()
+    LOGGER.info(
+        "Processing pass started | messages=%d already_classified=%d",
+        len(items),
+        len(states),
+    )
     progress_bar = st.progress(0, text="Preparing the local classifier…")
     count_slot = st.empty()
     outstanding_col, processed_col = st.columns(2, gap="large")
@@ -620,21 +772,48 @@ def _render_processing(items: tuple[Labelled, ...]) -> None:
         while len(states) < len(items):
             start = len(states)
             stop = min(start + PROCESSING_BATCH_SIZE, len(items))
+            batch_number = start // PROCESSING_BATCH_SIZE + 1
+            batch_total = (len(items) + PROCESSING_BATCH_SIZE - 1) // PROCESSING_BATCH_SIZE
+            LOGGER.info(
+                "Classification batch started | batch=%d/%d messages=%d range=%d-%d",
+                batch_number,
+                batch_total,
+                stop - start,
+                start + 1,
+                stop,
+            )
+            batch_started = time.perf_counter()
             progress_bar.progress(
                 int(75 * start / max(len(items), 1)),
                 text=f"Classifying messages {start + 1}–{stop} of {len(items)}…",
             )
-            states.extend(
-                _classify_chunk(
-                    DEFAULT_SPLIT,
-                    DEFAULT_LIMIT,
-                    start,
-                    stop,
-                    DEFAULT_MULTIPLIER,
-                    DEMO_INBOX_VERSION,
-                )
+            batch_states = _classify_chunk(
+                DEFAULT_SPLIT,
+                DEFAULT_LIMIT,
+                start,
+                stop,
+                DEFAULT_MULTIPLIER,
+                DEMO_INBOX_VERSION,
             )
+            states.extend(batch_states)
             st.session_state["processed_states"] = states
+            automated_in_batch = sum(
+                state.decision is not None and state.decision.is_automated
+                for state in batch_states
+            )
+            redacted_in_batch = sum(
+                state.scrub.redacted_count for state in batch_states if state.scrub is not None
+            )
+            LOGGER.info(
+                "Classification batch completed | batch=%d/%d automated=%d escalated=%d "
+                "redacted_values=%d elapsed_seconds=%.2f",
+                batch_number,
+                batch_total,
+                automated_in_batch,
+                len(batch_states) - automated_in_batch,
+                redacted_in_batch,
+                time.perf_counter() - batch_started,
+            )
             repaint(
                 f"Classified {stop} of {len(items)} messages",
                 0.75 * stop / max(len(items), 1),
@@ -649,13 +828,49 @@ def _render_processing(items: tuple[Labelled, ...]) -> None:
             if state.decision is not None and state.decision.is_automated and state.draft is None
         ]
         draft_total = len(draft_indexes)
+        automated_total = sum(
+            state.decision is not None and state.decision.is_automated for state in states
+        )
+        LOGGER.info(
+            "Classification stage completed | messages=%d automated=%d escalated=%d",
+            len(states),
+            automated_total,
+            len(states) - automated_total,
+        )
+        LOGGER.info("Drafting stage started | eligible_messages=%d", draft_total)
         for draft_number, state_index in enumerate(draft_indexes, start=1):
             state = states[state_index]
+            route = state.decision.action.value if state.decision is not None else "unknown"
+            LOGGER.info(
+                "Draft generation started | draft=%d/%d route=%s",
+                draft_number,
+                draft_total,
+                route,
+            )
+            draft_started = time.perf_counter()
             progress_bar.progress(
                 int(75 + 25 * (draft_number - 1) / max(draft_total, 1)),
                 text=f"Generating grounded draft {draft_number} of {draft_total}…",
             )
             states[state_index] = _generate_draft(state)
+            completed_draft = states[state_index].draft
+            draft_status = (
+                completed_draft.status.value if completed_draft is not None else "missing"
+            )
+            failure_reason = (
+                completed_draft.failure_reason.value
+                if completed_draft is not None and completed_draft.failure_reason is not None
+                else "none"
+            )
+            LOGGER.info(
+                "Draft generation completed | draft=%d/%d status=%s failure_reason=%s "
+                "elapsed_seconds=%.2f",
+                draft_number,
+                draft_total,
+                draft_status,
+                failure_reason,
+                time.perf_counter() - draft_started,
+            )
             st.session_state["processed_states"] = states
             repaint(
                 f"Generated {draft_number} of {draft_total} eligible drafts",
@@ -663,6 +878,11 @@ def _render_processing(items: tuple[Labelled, ...]) -> None:
             )
 
     except Exception as exc:  # noqa: BLE001 -- the UI must remain recoverable
+        LOGGER.exception(
+            "Processing stopped unexpectedly | classified=%d total=%d",
+            len(states),
+            len(items),
+        )
         st.session_state["processing_error"] = f"{type(exc).__name__}: {exc}"
         progress_bar.progress(
             int(75 * len(states) / max(len(items), 1)),
@@ -671,11 +891,30 @@ def _render_processing(items: tuple[Labelled, ...]) -> None:
         st.error(f"Processing stopped: {type(exc).__name__}: {exc}")
         retry_col, back_col = st.columns([1, 1])
         if retry_col.button("Retry from here", type="primary", use_container_width=True):
+            LOGGER.info(
+                "Processing retry requested | already_classified=%d total=%d",
+                len(states),
+                len(items),
+            )
             st.session_state["processing_error"] = None
             st.rerun()
         back_col.button("Back to inbox", use_container_width=True, on_click=_reset_workflow)
         return
 
+    drafts_ready = sum(
+        state.draft is not None and state.draft.status is DraftStatus.OK for state in states
+    )
+    draft_failures = sum(state.draft_failed for state in states)
+    LOGGER.info(
+        "Processing completed | messages=%d automated=%d escalated=%d drafts_ready=%d "
+        "draft_failures=%d elapsed_seconds=%.2f",
+        len(states),
+        automated_total,
+        len(states) - automated_total,
+        drafts_ready,
+        draft_failures,
+        time.perf_counter() - processing_started,
+    )
     progress_bar.progress(100, text="Processing complete")
     st.session_state["processing_error"] = None
     st.session_state["workflow_stage"] = "results"
@@ -752,9 +991,18 @@ def _render_draft(state: TriageState) -> None:
             "Its supporting procedure is available below."
         )
         if st.button("Retry draft", key=f"retry-draft-{state.email.id}", type="primary"):
+            LOGGER.info("Manual draft retry started")
+            retry_started = time.perf_counter()
             with st.spinner("Generating a new grounded draft…"):
                 updated = _generate_draft(state.model_copy(update={"draft": None}))
                 _replace_state(updated)
+            updated_draft = updated.draft
+            retry_status = updated_draft.status.value if updated_draft is not None else "missing"
+            LOGGER.info(
+                "Manual draft retry completed | status=%s elapsed_seconds=%.2f",
+                retry_status,
+                time.perf_counter() - retry_started,
+            )
             st.rerun()
         return
 
@@ -772,10 +1020,12 @@ def _render_draft(state: TriageState) -> None:
     save_col, reset_col, status_col = st.columns([1, 1, 2.2], vertical_alignment="center")
     if save_col.button("Save changes", key=f"save-draft-{state.email.id}", type="primary"):
         saved_drafts[state.email.id] = edited
+        LOGGER.info("Draft changes saved locally | characters=%d", len(edited))
         st.toast("Draft saved in this session", icon="✅")
     if reset_col.button("Reset draft", key=f"reset-draft-{state.email.id}"):
         st.session_state[widget_key] = draft.text or ""
         saved_drafts.pop(state.email.id, None)
+        LOGGER.info("Draft reset to generated version")
         st.rerun()
     baseline = saved_drafts.get(state.email.id, draft.text or "")
     if edited != baseline:
@@ -935,9 +1185,7 @@ def _render_results(states: list[TriageState]) -> None:
             if selected_state.in_human_queue:
                 st.warning(status, icon="⚠️")
             else:
-                decision = selected_state.decision
-                confidence = decision.confidence if decision is not None else 0.0
-                st.success(f"{status} · routing confidence {confidence:.2f}")
+                st.success(status)
 
             predicted = (
                 selected_state.classification.label
@@ -1006,6 +1254,7 @@ except Exception as exc:  # noqa: BLE001 -- load failures need a usable page
     st.stop()
 
 current_stage = _stage()
+_log_stage_transition(current_stage)
 if current_stage == "inbox":
     _render_inbox(mailbox)
 elif current_stage == "processing":

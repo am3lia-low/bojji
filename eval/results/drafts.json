@@ -838,11 +838,11 @@
       ],
       "grounding_correct": null,
       "model_name": "gemini-3.6-flash",
-      "judge_verdict": null,
-      "judge_reason": null,
-      "judge_model": null,
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "All statements in the draft match the approved self_employed_redirect wording in the SOP and introduce no unsupported factual claims.",
+      "judge_model": "groq/compound-mini",
       "text": "Your enquiry relates to income from a sole proprietorship or partnership. While business income is declared in your individual Income Tax Return, it is computed under separate rules. Guidance for self-employed persons and partners, including record keeping and calculating business income, is available at iras.gov.sg/taxes/individual-income-tax/self-employed-and-partnerships.",
-      "judge_failure_reason": "rate_limit"
+      "judge_failure_reason": null
     },
     {
       "email_id": "OOSA-GST-001-007",
@@ -1028,11 +1028,11 @@
       ],
       "grounding_correct": null,
       "model_name": "gemini-3.6-flash",
-      "judge_verdict": null,
-      "judge_reason": null,
-      "judge_model": null,
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "All factual statements in the draft match the approved self\u2011employed redirect phrasing in SOP\u2011RTE\u2011001.",
+      "judge_model": "groq/compound-mini",
       "text": "Your enquiry relates to income from a sole proprietorship or partnership. While business income is declared in your individual Income Tax Return, it is computed under separate rules. Guidance for self-employed persons and partners, including record keeping and calculating business income, is available at iras.gov.sg/taxes/individual-income-tax/self-employed-and-partnerships.",
-      "judge_failure_reason": "rate_limit"
+      "judge_failure_reason": null
     },
     {
       "email_id": "OOSB-RECORD-001-020",
@@ -1083,11 +1083,11 @@
       ],
       "grounding_correct": null,
       "model_name": "gemini-3.6-flash",
-      "judge_verdict": null,
-      "judge_reason": null,
-      "judge_model": null,
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "The draft merely repeats the SOP\u2011approved self\u2011employed redirect wording and does not introduce any unsupported factual claim.",
+      "judge_model": "groq/compound-mini",
       "text": "Your enquiry relates to income from a sole proprietorship or partnership. While business income is declared in your individual Income Tax Return, it is computed under separate rules. Guidance for self-employed persons and partners, including record keeping and calculating business income, is available at iras.gov.sg/taxes/individual-income-tax/self-employed-and-partnerships.",
-      "judge_failure_reason": "rate_limit"
+      "judge_failure_reason": null
     },
     {
       "email_id": "OOSB-RECORD-001-003",
@@ -1409,5 +1409,6 @@
       "judge_model": null,
       "text": null
     }
-  ]
+  ],
+  "judge_version": "2025-08-16"
 }

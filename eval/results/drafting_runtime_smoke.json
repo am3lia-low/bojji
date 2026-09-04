@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-09-04T10:27:14+00:00",
+  "purpose": "post-latency-tuning operational smoke check",
+  "sample_size": 1,
+  "email_id": "OOSA-GST-001-020",
+  "synthetic_email": true,
+  "model": "gemini-3.6-flash",
+  "drafting_config": {
+    "thinking_level": "minimal",
+    "max_output_tokens": 768,
+    "timeout_seconds": 75.0,
+    "sdk_attempts": 1
+  },
+  "status": "ok",
+  "failure_reason": null,
+  "elapsed_seconds": 21.74,
+  "response_characters": 393,
+  "valid_citation": true,
+  "redacted_values": 0
+}

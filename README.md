@@ -15,6 +15,10 @@ An agency inbox mixes routine questions, private-record lookups, hardship, and f
 The objective is to answer one operational question: **what share can be automated,
 at what error rate, while reliably escalating cases that need an officer?**
 
+The non-obvious part is the refusal boundary. A generic chatbot tries to answer as
+often as possible; this prototype treats a justified redirect or escalation as a
+correct outcome when the evidence or risk does not support a reply.
+
 ## What it does
 
 ```text
@@ -22,18 +26,33 @@ email
   -> scrub PII locally
   -> classify into 1 of 10 intents with a fine-tuned MiniLM-L6 model
   -> roll up to 1 of 5 routing buckets and calibrate confidence
-  -> retrieve SOPs by an exact class-to-SOP mapping
+  -> retrieve from 14 indexed synthetic SOPs by an exact class-to-SOP mapping
   -> route
        -> auto-reply or redirect: ask Gemini for an SOP-grounded draft
        -> officer queue: attach the SOP and an escalation reason
 ```
 
 LangGraph makes the safety gate structural: escalated emails have no edge to the
-drafting node. All steps are local except eligible drafting, which sends only scrubbed
-text to Gemini.
+drafting node. All steps are local except eligible drafting, which sends scrubbed
+citizen text and the retrieved synthetic SOPs to Gemini.
 
 The Streamlit app shows the inbox, editable drafts, escalation reasons, supporting
-SOPs, and risk-coverage results. It never sends an email.
+SOPs, and risk-coverage results. Failed drafts remain in the officer queue and can be
+retried manually. The app never sends an email.
+
+## Assessment coverage
+
+| Criterion | Evidence in this repository |
+|---|---|
+| Problem framing and creativity (20%) | [Problem and objective](#problem-and-objective) and the bounded-automation design |
+| Technical execution (25%) | [Quick start](#quick-start), [Docker](#docker), tests, and the LangGraph pipeline |
+| Evaluation and effectiveness (30%) | [Methodology](#evaluation-methodology), [results](#results), ablations, and [human evaluation](eval/HUMAN_EVAL.md) |
+| Data thinking (15%) | [Data provenance, licensing, privacy, and coverage](data/SOURCES.md) |
+| Communication (10%) | This README, explicit limitations, and committed evaluation artifacts |
+
+The required deployment discussion, development narrative, and coding-agent
+disclosure are below. Replace the demo-video placeholder with the 3–5-minute URL
+before submission.
 
 ## Quick start
 
@@ -73,11 +92,16 @@ Optional fallback and evaluation keys are documented in `.env.example`.
 ### Free-tier scope
 
 The Streamlit app, local routing pipeline, Docker image, tests, and offline
-evaluation do not require a paid service. Live drafting requires your own Gemini
-free-tier key. A Groq key is needed only to regenerate the evaluation judge outputs;
-Streamlit does not call Groq. The judge uses `groq/compound-mini`, disables its
-external tools, conservatively spaces long requests to respect the rolling token
-limit, and saves each verdict as it completes.
+evaluation do not require a paid service. Live drafting requires your own Gemini API
+key; Gemini 3.6 Flash currently has a free tier. A Groq key is used only for optional
+evaluation reruns of the zero-shot baseline or groundedness judge; Streamlit does not
+call Groq. Provider access and quotas can change, so check the current
+[Gemini pricing](https://ai.google.dev/gemini-api/docs/pricing) and
+[Groq limits](https://console.groq.com/docs/rate-limits).
+
+The judge uses `groq/compound-mini`, disables external tools, pins system version
+`2025-08-16`, checkpoints each verdict, and stops cleanly after a rate limit so the
+run can resume later.
 
 A full 50-item drafting evaluation can reach free-tier quotas, so its outputs are
 committed for inspection and the reproducible offline command uses `--no-draft`.
@@ -96,14 +120,20 @@ python eval/run_eval.py --no-draft
 The second command regenerates offline reports in `eval/results/` without an API.
 Omit `--no-draft` only to run the quota-using drafting evaluation.
 
-After a successful live drafting run, prepare blinded human-review sheets and score
-them without another API call:
+To check the current drafting configuration without replacing the reviewed sample,
+run `python eval/smoke_drafting.py`. It consumes one Gemini call and stores only
+operational metadata, never the response text.
+
+After a successful live drafting run, prepare and score the blinded primary-reviewer
+sheet without another API call:
 
 ```bash
 python eval/human_review.py prepare --reviewer-id reviewer_a --output eval/human_review/reviewer_a.csv
-python eval/human_review.py prepare --reviewer-id reviewer_b --overlap-only --output eval/human_review/reviewer_b.csv
-python eval/human_review.py score --ratings eval/human_review/reviewer_a.csv eval/human_review/reviewer_b.csv
+python eval/human_review.py score --ratings eval/human_review/reviewer_a.csv --single-reviewer --normalize-overall-pass --allow-missing-rating-notes
 ```
+
+The [human-evaluation protocol](eval/HUMAN_EVAL.md) explains the rubric, recorded
+single-reviewer design, and stronger optional double-review procedure.
 
 ### Docker
 
@@ -115,13 +145,19 @@ docker run --rm -p 8501:8501 citizen-triage-agent
 Add `--env-file .env` to `docker run` for live drafting. The image uses CPU-only
 PyTorch and includes the model weights.
 
+A no-cache Python 3.11 build was verified on 4 September 2026: the complete test
+suite passed inside the image, and a no-key container returned `200 OK` from both
+the Streamlit page and health endpoint. The resulting local image was 841 MB.
+
 ## Why this design
 
 - **Bounded routing:** risky, private, unsupported, and low-confidence cases go to an officer.
 - **Local classification:** MiniLM keeps original emails off external services and returns calibratable probabilities.
 - **Measured model choice:** on 30 emails, MiniLM reached 0.809 macro-F1 at 0.67 s/email; the LLM baseline reached 0.540 at 10.6 s/email.
+- **Task-fit drafting:** Gemini 3.6 Flash is a stable text model with enough context for the complete SOP evidence; it is called only after local scrubbing and routing.
+- **Independent judging:** Compound Mini is evaluation-only, belongs to a different model family from the drafter, and has its external tools disabled.
 - **Per-bucket thresholds:** two buckets can automate; the other three always escalate.
-- **Exact SOP lookup:** 14 indexed documents do not need uncertain vector search; see the [SOP schema and corpus design](data/sop_specs/README.md).
+- **Exact SOP lookup:** 14 indexed documents out of 17 authored SOPs do not need uncertain vector search; see the [SOP schema and corpus design](data/sop_specs/README.md).
 - **Visible failure:** missing keys, timeouts, and provider failures stay in the officer queue instead of using a fallback draft.
 
 ## Data
@@ -156,12 +192,15 @@ not raw accuracy alone.
 - **Comparison:** MiniLM and a zero-shot LLM use the same 30-email sample and fixed labels.
 - **Uncertainty:** 95% intervals bootstrap 2,000 whole scenarios within class strata.
 
-A separate model judges unsupported draft claims. It judged 21 of 24 successful
-drafts and marked 19 grounded (90.5%); three calls were rate-limited. The
-[human-evaluation protocol](eval/HUMAN_EVAL.md) specifies blinded double review and
-agreement measures. Human labels are still missing, so this machine score is not
-validated evidence of draft quality. See the
-[human-evaluation status](eval/results/HUMAN_EVAL_REPORT.md).
+A blinded human reviewer rated all 24 successful drafts as grounded, correct in their
+next step, safe, and complete. Tone passed for 18/24 (75.0%), and 23/24 drafts (95.8%)
+were acceptable after proofreading. Tone was weaker for redirects (64.3%) than
+auto-replies (90.0%), matching the qualitative concern that some redirects feel
+abrupt. The separate LLM judge agreed on groundedness for 22/24 drafts (91.7%); both
+of its ungrounded flags were false alarms against the human reference. Because the
+human found no ungrounded draft, judge recall for unsupported claims is undefined.
+This run used one reviewer, so it does not measure inter-human reliability. See the
+[human-evaluation report](eval/results/HUMAN_EVAL_REPORT.md).
 
 Thresholds were frozen before test evaluation: `auto_answerable=0.93` first met the
 10% development-risk target; `out_of_scope=0.58` was the first with no observed
@@ -170,6 +209,8 @@ development errors.
 ## Results
 
 Offline results use the 877-email test split and seed 42.
+The [consolidated results report](eval/results/RESULTS.md) explains every metric,
+route-level result, uncertainty interval, and limitation.
 
 | Metric | Result |
 |---|---:|
@@ -180,13 +221,27 @@ Offline results use the 877-email test split and seed 42.
 | Unsafe must-escalate automations | **0/456** |
 | Coverage at the frozen operating point | **11.6%** (102/877) |
 | Risk among automated actions | **1.0%** (1/102; interval 0.0%-3.7%) |
+| Auto-reply coverage / risk | 6.3% (55/877) / 0.0% (0/55) |
+| Redirect coverage / risk | 5.4% (47/877) / 2.1% (1/47) |
 | PII scrub recall on planted values | **1.000** (99/99) |
 | Area under the risk-coverage curve | 0.0513 |
-| Live drafting availability | **48.0%** (24/50 successful) |
+| Historical live drafting availability (pre-tuning) | **48.0%** (24/50 successful) |
+| Human-reviewed draft groundedness | **100.0%** (24/24) |
+| Human-reviewed tone pass rate | 75.0% (18/24) |
+| Human-reviewed overall acceptability | **95.8%** (23/24) |
 
-The 26 live drafting failures were 12 timeouts, 10 rate limits, and 4 other API
-errors. They are availability failures, not fabricated zero-quality drafts, and
-remain outside the groundedness denominator because no text existed to review.
+The reviewed 50-item drafting run predates the runtime latency tuning: it used
+Gemini's default medium thinking, no output-token cap, and a 45-second timeout. Its
+26 failures were 12 timeouts, 10 rate limits, and 4 other API errors. The result is
+retained as historical evidence because its 24 successful drafts are the exact
+sample that was human reviewed; it is not presented as an estimate of the current
+runtime configuration.
+
+The current runtime uses minimal thinking, a 768-token response cap, one provider
+attempt, and a 75-second network deadline. A one-call post-change smoke check
+produced a 393-character draft with a valid SOP citation in 21.74 seconds and no
+timeout. This confirms the configured path operates, but one call is not an
+availability estimate. See [`drafting_runtime_smoke.json`](eval/results/drafting_runtime_smoke.json).
 
 The aggregate coverage figure describes this deliberately balanced benchmark, not a
 production inbox. Real coverage depends on the agency's seasonal topic mix.
@@ -201,9 +256,19 @@ macro-F1 by -0.0011. The fitted temperature (`T=0.998`) is a negative result.
 - **Synthetic ceiling:** results do not establish performance on real correspondence.
 - **PII scope:** recall covers planted shapes, not every form a citizen may write.
 - **Scam language:** the lexical flag reached 95.2% test recall but misses indirect reports.
-- **Incomplete human evidence:** independent draft ratings and judge-human agreement are not yet reported.
+- **Single human reviewer:** all successful drafts were reviewed, but individual rating bias and inter-human reliability were not measured.
+- **Incomplete rating notes:** four negative rows lack item-level rationale; the aggregate labels remain usable but less auditable.
 - **Narrow corpus:** one tax type, English-only single emails, synthetic SOPs, and no attachments or threads.
 - **Provider risk:** free-tier models and quotas change; routing quality and drafting availability need separate monitoring.
+
+## Future improvements
+
+Production would add mailbox ingestion through supported APIs, a durable work queue,
+attachment scanning, and audited write-back for officer review. Classification can
+remain batched and local; external drafting should move to independently scaled,
+rate-aware workers. Sending must remain a separate human action. Real correspondence
+also requires least-privilege access, encryption, retention rules, idempotency, and
+ongoing approval of the SOP corpus.
 
 ## Deployment considerations
 
@@ -211,9 +276,10 @@ The target user is a correspondence officer working inside an agency environment
 not a citizen. The classifier and routing policy can run on an on-premise CPU; only
 scrubbed text from routes eligible for drafting crosses the boundary to Gemini. The
 fine-tuned checkpoint is 87.4 MiB, while the repository carries roughly 175 MiB across
-the base and fine-tuned weight copies. Measured sequential classification was about
-0.67 seconds per email, or roughly 19 single-core hours per 100,000 messages before
-batching improvements. If a production inbox matched the balanced benchmark, the
+the base and fine-tuned weight copies. The 30-email comparison measured about 0.67
+seconds per email on one Windows CPU run; a linear estimate is roughly 19 CPU-hours
+per 100,000 messages, but production throughput needs a load test. If a production
+inbox matched the balanced benchmark, the
 11.6% operating coverage would imply about 11,600 drafting calls per 100,000 emails;
 the real cost must be recalculated from the agency's topic mix and provider pricing.
 Production-scale drafting would likely require paid provider capacity or a
@@ -240,7 +306,7 @@ that keeps high-consequence or unsupported cases outside automated drafting.
 
 ## Coding-agent usage
 
-Claude Code (Claude Opus) supported implementation, test creation, and adversarial
+Claude Code supported implementation, test creation, and adversarial
 audits. Codex was used to audit this README against the repository and assessment
 brief, simplify it, and verify the documented commands. Agent output was reviewed by
 the author, and numerical claims were checked against committed evaluation artifacts

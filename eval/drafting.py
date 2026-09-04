@@ -40,7 +40,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Final
 
-from triage.llm.client import LLMError, classify_error
+from triage.llm.client import LLMError, classify_error, gemini_draft_settings
 from triage.nodes.draft import PROMPT_PATH, draft_node
 from triage.schemas import DraftFailure, ScrubRecord, TriageState
 from triage.sop.index import SOPIndex
@@ -338,7 +338,9 @@ def run_draft_sample(
                 "drafter_model": next(
                     (r.model_name for r in records if r.model_name), None
                 ),
+                "drafting_config": gemini_draft_settings(),
                 "judge_model": judge_model,
+                "judge_version": getattr(judge, "model_version", None),
                 "prompt": PROMPT_PATH.name,
                 "judge_prompt": JUDGE_PROMPT_PATH.name,
                 "note": (
@@ -356,6 +358,7 @@ def run_draft_sample(
         "n_attempted": len(records),
         "n_ok": n_ok,
         "availability": round(n_ok / len(records), 4) if records else 0.0,
+        "drafting_config": gemini_draft_settings(),
         "sample": {
             "method": "deterministic simple random sample without replacement",
             "seed": seed,
@@ -378,6 +381,7 @@ def run_draft_sample(
         },
         "judge": {
             "model": judge_model,
+            "version": getattr(judge, "model_version", None),
             "question": (
                 "Does this reply assert any fact unsupported by the SOP or not "
                 "clearly attributed to the citizen?"

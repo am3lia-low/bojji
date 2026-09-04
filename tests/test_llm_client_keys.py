@@ -126,15 +126,18 @@ def test_no_key_at_all_is_a_construction_error() -> None:
         GeminiClient(api_keys=[])
 
 
-def test_provider_sdk_retries_are_disabled(monkeypatch: pytest.MonkeyPatch) -> None:
-    """One provider attempt means the configured timeout remains a real bound."""
+def test_gemini_request_is_tuned_for_short_low_latency_drafts(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Drafts avoid default medium thinking and hidden provider retries."""
     from google import genai
 
     captured: dict[str, object] = {}
 
     class FakeModels:
         @staticmethod
-        def generate_content(**_kwargs: object) -> SimpleNamespace:
+        def generate_content(**kwargs: object) -> SimpleNamespace:
+            captured["request"] = kwargs
             return SimpleNamespace(text="drafted")
 
     class FakeProviderClient:
@@ -149,8 +152,13 @@ def test_provider_sdk_retries_are_disabled(monkeypatch: pytest.MonkeyPatch) -> N
 
     assert response.text == "drafted"
     options = captured["http_options"]
-    assert options.timeout == 45_000  # type: ignore[attr-defined]
+    assert options.timeout == 75_000  # type: ignore[attr-defined]
     assert options.retry_options.attempts == 1  # type: ignore[attr-defined]
+    request = captured["request"]
+    config = request["config"]  # type: ignore[index]
+    assert config.max_output_tokens == 768
+    assert config.thinking_config.thinking_level.value == "MINIMAL"
+    assert config.temperature is None
 
 
 def test_judge_caps_output_tokens_and_disables_sdk_retries(
@@ -218,8 +226,10 @@ def test_compound_judge_retries_and_disables_external_tools(
             api_key: str,
             timeout: float,
             max_retries: int,
+            default_headers: dict[str, str],
         ) -> None:
             captured["max_retries"] = max_retries
+            captured["default_headers"] = default_headers
             self.chat = SimpleNamespace(completions=FakeCompletions())
 
     monkeypatch.setattr(groq, "Groq", FakeGroq)
@@ -229,5 +239,6 @@ def test_compound_judge_retries_and_disables_external_tools(
 
     assert response.model_name == "groq/compound-mini"
     assert captured["max_retries"] == 2
+    assert captured["default_headers"] == {"Groq-Model-Version": "2025-08-16"}
     request = captured["request"]
     assert request["tool_choice"] == "none"  # type: ignore[index]

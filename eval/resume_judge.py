@@ -66,7 +66,10 @@ def _has_current_judgment(item: dict[str, Any], judge_model: str) -> bool:
 
 
 def _refresh_report(
-    report: dict[str, Any], items: list[dict[str, Any]], judge_model: str
+    report: dict[str, Any],
+    items: list[dict[str, Any]],
+    judge_model: str,
+    judge_version: str | None,
 ) -> None:
     successful = [item for item in items if item.get("status") == "ok"]
     judged = [item for item in successful if _has_current_judgment(item, judge_model)]
@@ -92,6 +95,7 @@ def _refresh_report(
     judge = report.setdefault("judge", {})
     judge.update({
         "model": judge_model,
+        "version": judge_version,
         "n_eligible": len(successful),
         "n_judged": len(judged),
         "availability": round(len(judged) / len(successful), 4) if successful else None,
@@ -137,6 +141,7 @@ def resume_missing_judgments(
         missing_or_stale = missing_or_stale[:max_items]
 
     payload["judge_model"] = client.model_name
+    payload["judge_version"] = getattr(client, "model_version", None)
     attempted_items: list[dict[str, Any]] = []
     for position, item in enumerate(missing_or_stale, 1):
         if position > 1 and delay_seconds > 0:
@@ -155,7 +160,12 @@ def resume_missing_judgments(
             # items stay resumable instead of spending requests that cannot pass.
             break
 
-    _refresh_report(report, items, client.model_name)
+    _refresh_report(
+        report,
+        items,
+        client.model_name,
+        getattr(client, "model_version", None),
+    )
     _write_json_atomic(report_path, report)
     remaining = sum(
         item.get("status") == "ok"

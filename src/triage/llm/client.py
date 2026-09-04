@@ -24,7 +24,7 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
-from typing import Final, Protocol
+from typing import Any, Final, Protocol
 
 from triage.schemas import DraftFailure
 
@@ -41,14 +41,33 @@ DEFAULT_GROQ_MODEL: Final[str] = "qwen/qwen3.8-27b"
 #: than the fixed Qwen baseline. It is eval-time only, receives the complete SOP
 #: evidence, and has its external tools disabled in :class:`GroqJudgeClient`.
 DEFAULT_GROQ_JUDGE_MODEL: Final[str] = "groq/compound-mini"
+DEFAULT_GROQ_JUDGE_VERSION: Final[str] = "2025-08-16"
 
 # The binary judge returns two short lines. A tight cap avoids reserving thousands
 # of needless output tokens against Groq's free-tier tokens-per-minute allowance.
 JUDGE_MAX_COMPLETION_TOKENS: Final[int] = 128
 
-#: Per-attempt timeout: generous enough for a cold free-tier call, short enough
-#: that a hung request fails the item rather than stalling a sweep.
+#: Shared timeout for the evaluation-only Groq clients.
 DEFAULT_TIMEOUT: Final[float] = 45.0
+
+#: Runtime drafting is a short-form generation task. Gemini 3.6 Flash otherwise
+#: defaults to medium thinking, which made even tiny prompts take 20--50 seconds
+#: in the demo. Minimal thinking and a bounded response keep drafting responsive;
+#: the longer network deadline is only a guard for cold or congested requests.
+GEMINI_DRAFT_TIMEOUT: Final[float] = 75.0
+GEMINI_DRAFT_MAX_OUTPUT_TOKENS: Final[int] = 768
+GEMINI_DRAFT_THINKING_LEVEL: Final[str] = "minimal"
+GEMINI_DRAFT_SDK_ATTEMPTS: Final[int] = 1
+
+
+def gemini_draft_settings() -> dict[str, str | int | float]:
+    """Serializable runtime settings recorded beside drafting evaluations."""
+    return {
+        "thinking_level": GEMINI_DRAFT_THINKING_LEVEL,
+        "max_output_tokens": GEMINI_DRAFT_MAX_OUTPUT_TOKENS,
+        "timeout_seconds": GEMINI_DRAFT_TIMEOUT,
+        "sdk_attempts": GEMINI_DRAFT_SDK_ATTEMPTS,
+    }
 
 
 class LLMError(RuntimeError):
@@ -195,17 +214,28 @@ class GeminiClient:
         client = genai.Client(
             api_key=key,
             http_options=types.HttpOptions(
-                timeout=int(DEFAULT_TIMEOUT * 1_000),
+                timeout=int(GEMINI_DRAFT_TIMEOUT * 1_000),
                 # The SDK otherwise defaults to five attempts. Provider retries
-                # would turn this 45-second budget into several hidden minutes and
+                # would turn this deadline into several hidden minutes and
                 # contradict the explicit no-retry availability policy above.
-                retry_options=types.HttpRetryOptions(attempts=1),
+                retry_options=types.HttpRetryOptions(attempts=GEMINI_DRAFT_SDK_ATTEMPTS),
             ),
         )
+
+        # Gemini 3.x deprecates the sampling controls used by earlier models. The
+        # drafting prompt supplies the deterministic constraints instead. More
+        # importantly, 3.6 Flash defaults to MEDIUM thinking; that is unnecessary
+        # for a short SOP-grounded reply and was the main source of demo timeouts.
+        del temperature
         response = client.models.generate_content(
             model=self._model_name,
             contents=prompt,
-            config=types.GenerateContentConfig(temperature=temperature),
+            config=types.GenerateContentConfig(
+                max_output_tokens=GEMINI_DRAFT_MAX_OUTPUT_TOKENS,
+                thinking_config=types.ThinkingConfig(
+                    thinking_level=types.ThinkingLevel.MINIMAL,
+                ),
+            ),
         )
         return (response.text or "").strip()
 
@@ -261,6 +291,7 @@ class GroqClient:
         *,
         max_retries: int = 0,
         disable_tools: bool = False,
+        model_version: str | None = None,
     ) -> None:
         key = api_key or os.environ.get("GROQ_API_KEY", "")
         if not key:
@@ -273,20 +304,30 @@ class GroqClient:
         self._key = key
         self._max_retries = max_retries
         self._disable_tools = disable_tools
+        self._model_version = model_version
 
     @property
     def model_name(self) -> str:
         return self._model_name
 
+    @property
+    def model_version(self) -> str | None:
+        return self._model_version
+
     def generate(self, prompt: str, *, temperature: float = 0.0) -> LLMResponse:
         try:
             from groq import Groq
 
-            client = Groq(
-                api_key=self._key,
-                timeout=DEFAULT_TIMEOUT,
-                max_retries=self._max_retries,
-            )
+            client_options: dict[str, Any] = {
+                "api_key": self._key,
+                "timeout": DEFAULT_TIMEOUT,
+                "max_retries": self._max_retries,
+            }
+            if self._model_version:
+                client_options["default_headers"] = {
+                    "Groq-Model-Version": self._model_version
+                }
+            client = Groq(**client_options)
             if self._disable_tools:
                 # Compound models can search the web or execute code. A grounding
                 # judge must use only the evidence supplied in the prompt.
@@ -334,13 +375,16 @@ class GroqJudgeClient(GroqClient):
             model=judge_model,
             max_retries=2,
             disable_tools=True,
+            model_version=DEFAULT_GROQ_JUDGE_VERSION,
         )
 
 
 __all__ = [
-    "DEFAULT_GEMINI_MODEL", "DEFAULT_GROQ_JUDGE_MODEL", "DEFAULT_GROQ_MODEL",
-    "GEMINI_KEY_VARS",
-    "JUDGE_MAX_COMPLETION_TOKENS",
+    "DEFAULT_GEMINI_MODEL", "DEFAULT_GROQ_JUDGE_MODEL",
+    "DEFAULT_GROQ_JUDGE_VERSION", "DEFAULT_GROQ_MODEL", "GEMINI_KEY_VARS",
+    "GEMINI_DRAFT_MAX_OUTPUT_TOKENS", "GEMINI_DRAFT_SDK_ATTEMPTS",
+    "GEMINI_DRAFT_THINKING_LEVEL", "GEMINI_DRAFT_TIMEOUT",
+    "JUDGE_MAX_COMPLETION_TOKENS", "gemini_draft_settings",
     "GeminiClient", "GroqClient", "GroqJudgeClient", "gemini_keys",
     "LLMClient", "LLMError", "LLMResponse", "classify_error",
 ]

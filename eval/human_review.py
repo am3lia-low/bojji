@@ -163,6 +163,7 @@ def _new_manifest(
             "sha256": hashlib.sha256(drafts_path.read_bytes()).hexdigest(),
             "drafter_model": draft_document.get("drafter_model"),
             "judge_model": draft_document.get("judge_model"),
+            "judge_version": draft_document.get("judge_version"),
             "draft_prompt": draft_document.get("prompt"),
             "judge_prompt": draft_document.get("judge_prompt"),
         },
@@ -297,6 +298,7 @@ def sync_manifest_judgments(
     source["sha256"] = hashlib.sha256(drafts_path.read_bytes()).hexdigest()
     source["drafter_model"] = draft_document.get("drafter_model")
     source["judge_model"] = draft_document.get("judge_model")
+    source["judge_version"] = draft_document.get("judge_version")
     manifest["judge_synced_at"] = datetime.now(UTC).isoformat(timespec="seconds")
 
     temporary = manifest_path.with_suffix(f"{manifest_path.suffix}.tmp")
@@ -314,7 +316,14 @@ def sync_manifest_judgments(
     }
 
 
-def _load_ratings(paths: list[Path], evidence_by_item: dict[str, str]) -> list[Rating]:
+def _load_ratings(
+    paths: list[Path],
+    evidence_by_item: dict[str, str],
+    *,
+    require_notes: bool = True,
+    allow_unsure: bool = True,
+    normalize_overall_pass: bool = False,
+) -> list[Rating]:
     ratings: list[Rating] = []
     seen: set[tuple[str, str]] = set()
     for path in paths:
@@ -330,6 +339,11 @@ def _load_ratings(paths: list[Path], evidence_by_item: dict[str, str]) -> list[R
                     field: str(row.get(field, "")).strip().upper()
                     for field in REVIEW_FIELDS
                 }
+                if (
+                    normalize_overall_pass
+                    and raw_values["overall_acceptability"] == "PASS"
+                ):
+                    raw_values["overall_acceptability"] = "ACCEPT"
                 if not any(raw_values.values()):
                     continue
                 item_id = str(row.get("item_id", "")).strip()
@@ -360,6 +374,11 @@ def _load_ratings(paths: list[Path], evidence_by_item: dict[str, str]) -> list[R
                             f"{path}:{line_number}: {field} must be one of "
                             f"{sorted(allowed)}, got {raw_values[field]!r}"
                         )
+                if not allow_unsure and "UNSURE" in raw_values.values():
+                    raise ValueError(
+                        f"{path}:{line_number}: adjudication must resolve every "
+                        "field without UNSURE"
+                    )
                 notes = str(row.get("review_notes", "")).strip()
                 flagged = (
                     raw_values["groundedness"] != "GROUNDED"
@@ -367,7 +386,7 @@ def _load_ratings(paths: list[Path], evidence_by_item: dict[str, str]) -> list[R
                     or raw_values["overall_acceptability"] != "ACCEPT"
                     or any(value in {"FAIL", "UNSURE"} for value in raw_values.values())
                 )
-                if flagged and not notes:
+                if require_notes and flagged and not notes:
                     raise ValueError(
                         f"{path}:{line_number}: review_notes are required for a "
                         "failure, rejection, or unsure verdict"
@@ -389,6 +408,8 @@ def _cohen_kappa(left: list[str], right: list[str], labels: tuple[str, ...]) -> 
     if len(left) != len(right):
         raise ValueError("kappa inputs must have equal length")
     if not left:
+        return None
+    if len(set(left)) < 2 or len(set(right)) < 2:
         return None
     observed = sum(a == b for a, b in zip(left, right, strict=True)) / len(left)
     left_counts, right_counts = Counter(left), Counter(right)
@@ -598,17 +619,19 @@ def render_markdown_report(report: dict[str, Any]) -> str:
         "",
         "## Evaluation coverage",
         "",
-        "| Quantity | Count |",
+        "| Quantity | Value |",
         "|---|---:|",
+        f"| Review design | {coverage['review_mode'].replace('_', ' ').title()} |",
         f"| Successful drafts | {coverage['successful_drafts']} |",
         f"| LLM-judge verdicts | {coverage['judge_verdicts']} |",
         f"| Resolved human references | {coverage['human_reference_labels']} |",
-        f"| Independently double-reviewed | {coverage['double_reviewed']} |",
-        f"| Required double-review target | {coverage['double_review_target']} |",
-        "",
-        "Completion checks:",
-        "",
     ])
+    if coverage["review_mode"] != "single_reviewer":
+        lines.extend([
+            f"| Independently double-reviewed | {coverage['double_reviewed']} |",
+            f"| Required double-review target | {coverage['double_review_target']} |",
+        ])
+    lines.extend(["", "Completion checks:", ""])
     for name, passed in coverage["complete_conditions"].items():
         label = name.replace("_", " ")
         lines.append(f"- {'PASS' if passed else 'PENDING'} — {label}")
@@ -617,7 +640,7 @@ def render_markdown_report(report: dict[str, Any]) -> str:
         "",
         "## Human draft-quality ratings",
         "",
-        "Humans are the reference. Intervals are 95% Wilson intervals for the",
+        "Human labels are the reference. Intervals are 95% Wilson intervals for the",
         "observed sample proportions.",
         "",
         "| Dimension | Passing | Rate | 95% interval |",
@@ -629,6 +652,24 @@ def render_markdown_report(report: dict[str, Any]) -> str:
         lines.append(
             f"| {label} | {metric['successes']}/{metric['n']} | "
             f"{_display_rate(metric['rate'])} | {interval} |"
+        )
+
+    lines.extend([
+        "",
+        "Human ratings by route:",
+        "",
+        "| Route | Items | Grounded | Next step | Safety | Complete | Tone | Overall |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|",
+    ])
+    for route, metrics in report["human_quality_by_route"].items():
+        lines.append(
+            f"| {route} | {metrics['n']} | "
+            f"{_display_rate(metrics['groundedness']['rate'])} | "
+            f"{_display_rate(metrics['correct_next_step']['rate'])} | "
+            f"{_display_rate(metrics['safety_privacy']['rate'])} | "
+            f"{_display_rate(metrics['completeness']['rate'])} | "
+            f"{_display_rate(metrics['tone']['rate'])} | "
+            f"{_display_rate(metrics['overall_acceptability']['rate'])} |"
         )
 
     lines.extend([
@@ -686,7 +727,10 @@ def render_markdown_report(report: dict[str, Any]) -> str:
                 f"{_display_number(overall['cohen_kappa'])} |"
             )
     else:
-        lines.append("No reviewer pair has completed an overlapping sample.")
+        if coverage["review_mode"] == "single_reviewer":
+            lines.append("Not measured because this run uses one human reviewer.")
+        else:
+            lines.append("No reviewer pair has completed an overlapping sample.")
 
     lines.extend([
         "",
@@ -713,6 +757,9 @@ def score_reviews(
     *,
     adjudication_path: Path | None = None,
     markdown_path: Path | None = None,
+    require_rating_notes: bool = True,
+    single_reviewer: bool = False,
+    normalize_overall_pass: bool = False,
 ) -> dict[str, Any]:
     """Validate human labels and write the agreement/quality report."""
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -723,9 +770,19 @@ def score_reviews(
     }
     if any(not value for value in evidence_by_item.values()):
         raise ValueError("manifest is missing per-item evidence hashes")
-    ratings = _load_ratings(rating_paths, evidence_by_item)
+    ratings = _load_ratings(
+        rating_paths,
+        evidence_by_item,
+        require_notes=require_rating_notes,
+        normalize_overall_pass=normalize_overall_pass,
+    )
     adjudications = (
-        _load_ratings([adjudication_path], evidence_by_item)
+        _load_ratings(
+            [adjudication_path],
+            evidence_by_item,
+            require_notes=True,
+            allow_unsure=False,
+        )
         if adjudication_path is not None
         else []
     )
@@ -739,6 +796,11 @@ def score_reviews(
     double_reviewed = sum(len(values) >= 2 for values in ratings_by_item.values())
     target = int(manifest.get("protocol", {}).get("double_review_target", 0))
     reviewer_ids = sorted({rating.reviewer_id for rating in ratings})
+    if single_reviewer and len(reviewer_ids) != 1:
+        raise ValueError(
+            "single-reviewer mode requires ratings from exactly one reviewer"
+        )
+    review_mode = "single_reviewer" if single_reviewer else "double_review"
 
     quality_labels = {
         "groundedness": "GROUNDED",
@@ -755,48 +817,111 @@ def score_reviews(
         )
         for field, success in quality_labels.items()
     }
+    route_by_item = {
+        str(item["item_id"]): str(item.get("route") or "unknown")
+        for item in manifest_items
+    }
+    human_quality_by_route: dict[str, Any] = {}
+    for route in sorted(set(route_by_item.values())):
+        route_references = [
+            values
+            for item_id, values in references.items()
+            if route_by_item.get(item_id) == route
+        ]
+        if not route_references:
+            continue
+        human_quality_by_route[route] = {
+            "n": len(route_references),
+            **{
+                field: _wilson(
+                    sum(values[field] == success for values in route_references),
+                    len(route_references),
+                )
+                for field, success in quality_labels.items()
+            },
+        }
 
     judged = sum(
         item.get("judge_verdict") in {"GROUNDED", "UNGROUNDED"}
         for item in manifest_items
     )
-    complete_conditions = {
+    complete_conditions: dict[str, bool] = {
         "all_successful_drafts_judged": judged == len(manifest_items),
         "all_successful_drafts_human_reviewed": len(references) == len(manifest_items),
         "no_unresolved_fields": not unresolved,
-        "at_least_two_reviewers": len(reviewer_ids) >= 2,
-        "double_review_target_met": double_reviewed >= target,
     }
+    if single_reviewer:
+        complete_conditions["one_reviewer_present"] = len(reviewer_ids) == 1
+    else:
+        complete_conditions["at_least_two_reviewers"] = len(reviewer_ids) >= 2
+        complete_conditions["double_review_target_met"] = double_reviewed >= target
     complete = all(complete_conditions.values())
+
+    reported_protocol = dict(manifest.get("protocol", {}))
+    reported_protocol["review_mode"] = review_mode
+    if single_reviewer:
+        reported_protocol["configured_double_review_target"] = target
+        reported_protocol["double_review_target"] = 0
+
+    if single_reviewer:
+        interpretation = (
+            "One resolved human rating set is the reference for draft quality and "
+            "judge comparison. Inter-human reliability is not measured. Wilson "
+            "intervals show denominator uncertainty for the observed sample rates."
+        )
+    else:
+        interpretation = (
+            "The human reference is authoritative. Single-reviewed items use that "
+            "reviewer's label; matching double reviews use their consensus; any "
+            "disagreement or UNSURE value requires a separate adjudication row. "
+            "Wilson intervals show denominator uncertainty for human quality rates."
+        )
+
+    limitations = [
+        "Human review uses synthetic correspondence and authored SOPs, not real inbox mail.",
+        "Agreement validates this judge prompt and sample, not arbitrary future prompts.",
+        "A sample with no human-identified ungrounded draft cannot estimate judge recall.",
+    ]
+    if single_reviewer:
+        limitations.append(
+            "One reviewer supplied the human reference, so individual rating bias "
+            "and inter-human reliability are not measured."
+        )
+    if not require_rating_notes:
+        limitations.append(
+            "The rating sheet did not include notes for every negative label, so "
+            "some item-level rationale is unavailable."
+        )
+    if normalize_overall_pass:
+        limitations.append(
+            "Positive PASS values in the overall-acceptability column were "
+            "normalized to the rubric's equivalent ACCEPT label."
+        )
+
     report = {
         "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
         "status": "complete" if complete else "incomplete",
         "source": manifest.get("source", {}),
-        "protocol": manifest.get("protocol", {}),
+        "protocol": reported_protocol,
         "coverage": {
+            "review_mode": review_mode,
             "successful_drafts": len(manifest_items),
             "judge_verdicts": judged,
             "human_reference_labels": len(references),
             "reviewers": reviewer_ids,
             "double_reviewed": double_reviewed,
-            "double_review_target": target,
+            "double_review_target": 0 if single_reviewer else target,
+            "independent_rating_notes_required": require_rating_notes,
+            "normalized_overall_pass": normalize_overall_pass,
             "unresolved": unresolved,
             "complete_conditions": complete_conditions,
         },
         "human_quality": human_quality,
+        "human_quality_by_route": human_quality_by_route,
         "inter_human_reliability": _pairwise_reliability(ratings),
         "judge_human_groundedness": _judge_agreement(manifest_items, references),
-        "interpretation": (
-            "The human reference is authoritative. Single-reviewed items use that "
-            "reviewer's label; matching double reviews use their consensus; any "
-            "disagreement or UNSURE value requires a separate adjudication row. "
-            "Wilson intervals show denominator uncertainty for human quality rates."
-        ),
-        "limitations": [
-            "Reviewers see synthetic correspondence and authored SOPs, not real inbox mail.",
-            "Agreement validates this judge prompt and sample, not arbitrary future prompts.",
-            "A sample with no human-identified ungrounded draft cannot estimate judge recall.",
-        ],
+        "interpretation": interpretation,
+        "limitations": limitations,
     }
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
@@ -826,6 +951,24 @@ def _parser() -> argparse.ArgumentParser:
     score.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
     score.add_argument("--ratings", type=Path, nargs="+", required=True)
     score.add_argument("--adjudication", type=Path, default=None)
+    score.add_argument(
+        "--allow-missing-rating-notes",
+        action="store_true",
+        help=(
+            "allow missing notes in rating sheets; adjudication still requires "
+            "notes for negative verdicts"
+        ),
+    )
+    score.add_argument(
+        "--single-reviewer",
+        action="store_true",
+        help="use one resolved reviewer sheet without inter-human reliability",
+    )
+    score.add_argument(
+        "--normalize-overall-pass",
+        action="store_true",
+        help="treat PASS in overall_acceptability as the equivalent ACCEPT label",
+    )
     score.add_argument("--output", type=Path, default=DEFAULT_REPORT)
     score.add_argument(
         "--markdown-output", type=Path, default=DEFAULT_MARKDOWN_REPORT
@@ -865,6 +1008,9 @@ def main() -> int:
         args.output,
         adjudication_path=args.adjudication,
         markdown_path=args.markdown_output,
+        require_rating_notes=not args.allow_missing_rating_notes,
+        single_reviewer=args.single_reviewer,
+        normalize_overall_pass=args.normalize_overall_pass,
     )
     print(json.dumps({
         "status": report["status"],

@@ -58,10 +58,14 @@ roles:
       Writes the reply, grounded in the retrieved SOP. There is no template
       fallback: a failed call escalates the item to the human queue carrying its
       SOP, rather than degrading into a lesser reply (BUILD.md S5.8). Free-tier
-      rate limits are real and are reported as drafting availability.
+      rate limits are real and are reported as drafting availability. The current
+      short-form runtime uses minimal thinking, a 768-token cap, one SDK attempt,
+      and a 75-second network deadline; eval artifacts record their own request
+      configuration so historical availability is not attributed to new settings.
 
   judge_primary:
     model: groq/compound-mini
+    version: 2025-08-16
     provider: groq
     runtime: false
     cost: free_tier
@@ -69,11 +73,12 @@ roles:
     override: GROQ_JUDGE_MODEL
     note: >
       Groundedness judge. A different model family from the drafter on purpose --
-      separation rule 2. Compound Mini supplies enough free-tier token throughput
-      for the complete SOP evidence where the fixed Qwen baseline did not. Its web,
-      code and other external tools are disabled, so it can judge only the supplied
-      evidence. It may route between GPT-OSS 120B and Llama 3.3 70B; that compound
-      provenance is recorded rather than presented as a single underlying model.
+      separation rule 2. Compound Mini has more free-tier per-minute headroom than
+      the fixed Qwen baseline, although the daily allowances of its underlying
+      models still apply. Its web, code and other external tools are disabled, so it
+      can judge only the supplied evidence. It may route between GPT-OSS 120B and
+      Llama 3.3 70B; that compound provenance is recorded rather than presented as a
+      single underlying model. The Groq system version is pinned for repeatability.
       One binary question and measured judge-human agreement make the result
       defensible rather than decorative.
 

@@ -7,3 +7,11 @@ fileWatcherType = "none"
 
 [browser]
 gatherUsageStats = false
+
+[theme]
+base = "light"
+primaryColor = "#176F9C"
+backgroundColor = "#F4F7F9"
+secondaryBackgroundColor = "#E7F1F6"
+textColor = "#263640"
+font = "sans serif"

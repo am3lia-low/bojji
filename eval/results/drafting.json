@@ -1,4 +1,17 @@
 {
+  "run_context": {
+    "status": "historical_pre_latency_tuning",
+    "generated_at": "2026-09-04T04:18:00+00:00",
+    "model": "gemini-3.6-flash",
+    "drafting_config": {
+      "thinking_level": "provider_default_medium",
+      "max_output_tokens": null,
+      "timeout_seconds": 45.0,
+      "sdk_attempts": 1,
+      "temperature": 0.2
+    },
+    "note": "Retained because the successful outputs are the human-reviewed sample. This is not a current-runtime availability estimate; see drafting_runtime_smoke.json."
+  },
   "skipped": false,
   "n_attempted": 50,
   "n_ok": 24,
@@ -45,25 +58,24 @@
   "judge": {
     "model": "groq/compound-mini",
     "question": "Does this reply assert any fact unsupported by the SOP or not clearly attributed to the citizen?",
-    "n_judged": 21,
-    "n_grounded": 19,
-    "groundedness_rate": 0.9048,
+    "n_judged": 24,
+    "n_grounded": 22,
+    "groundedness_rate": 0.9167,
     "by_route": {
       "auto_reply": {
         "n_judged": 10,
         "n_grounded": 8
       },
       "redirect": {
-        "n_judged": 11,
-        "n_grounded": 11
+        "n_judged": 14,
+        "n_grounded": 14
       }
     },
     "note": "Judge-human agreement over the same sample is reported separately once the drafts are hand-reviewed; a judge without measured agreement is decorative.",
     "n_eligible": 24,
-    "availability": 0.875,
-    "failures_by_reason": {
-      "rate_limit": 3
-    },
-    "last_resumed_at": "2026-09-04T05:59:36+00:00"
+    "availability": 1.0,
+    "failures_by_reason": {},
+    "last_resumed_at": "2026-09-04T07:16:30+00:00",
+    "version": "2025-08-16"
   }
 }

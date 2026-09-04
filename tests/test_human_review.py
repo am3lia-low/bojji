@@ -184,6 +184,7 @@ def test_complete_report_scores_safety_critical_judge_recall(tmp_path: Path) -> 
     assert report["status"] == "complete"
     agreement = report["judge_human_groundedness"]
     assert agreement["rate"] == 0.5
+    assert agreement["cohen_kappa"] is None
     assert agreement["ungrounded_recall"] == 0.0
     assert agreement["confusion_rows_reference_columns_comparison"]["UNGROUNDED"][
         "GROUNDED"
@@ -243,6 +244,116 @@ def test_separate_adjudication_resolves_a_disagreement(tmp_path: Path) -> None:
     assert report["status"] == "complete"
     assert report["coverage"]["unresolved"] == []
     assert report["human_quality"]["groundedness"]["rate"] == 0.0
+
+
+def test_original_ratings_can_report_missing_note_protocol_deviation(
+    tmp_path: Path,
+) -> None:
+    manifest_path = tmp_path / "manifest.json"
+    ratings_path = tmp_path / "ratings.csv"
+    output_path = tmp_path / "agreement.json"
+    manifest_path.write_text(json.dumps(manifest([
+        {"item_id": "JH-001", "judge_verdict": "GROUNDED", "route": "auto_reply"},
+    ], target=1)), encoding="utf-8")
+    rows = [
+        rating_row("JH-001", "reviewer_a", "GROUNDED", overall="REJECT"),
+        rating_row("JH-001", "reviewer_b", "GROUNDED", overall="REJECT"),
+    ]
+    for row in rows:
+        row["review_notes"] = ""
+    write_ratings(ratings_path, rows)
+
+    report = score_reviews(
+        manifest_path,
+        [ratings_path],
+        output_path,
+        require_rating_notes=False,
+    )
+
+    assert report["status"] == "complete"
+    assert report["coverage"]["independent_rating_notes_required"] is False
+    assert any("did not include notes" in item for item in report["limitations"])
+
+
+def test_single_reviewer_mode_normalizes_positive_overall_label(
+    tmp_path: Path,
+) -> None:
+    manifest_path = tmp_path / "manifest.json"
+    ratings_path = tmp_path / "ratings.csv"
+    output_path = tmp_path / "agreement.json"
+    markdown_path = tmp_path / "agreement.md"
+    manifest_path.write_text(json.dumps(manifest([
+        {"item_id": "JH-001", "judge_verdict": "GROUNDED", "route": "auto_reply"},
+    ], target=1)), encoding="utf-8")
+    row = rating_row("JH-001", "reviewer_a", "GROUNDED")
+    row["overall_acceptability"] = "PASS"
+    write_ratings(ratings_path, [row])
+
+    report = score_reviews(
+        manifest_path,
+        [ratings_path],
+        output_path,
+        markdown_path=markdown_path,
+        single_reviewer=True,
+        normalize_overall_pass=True,
+    )
+
+    assert report["status"] == "complete"
+    assert report["coverage"]["review_mode"] == "single_reviewer"
+    assert report["coverage"]["double_review_target"] == 0
+    assert report["human_quality"]["overall_acceptability"]["rate"] == 1.0
+    assert report["human_quality_by_route"]["auto_reply"]["n"] == 1
+    assert report["inter_human_reliability"] == []
+    assert any("normalized" in item for item in report["limitations"])
+    assert "Not measured because this run uses one human reviewer." in (
+        markdown_path.read_text(encoding="utf-8")
+    )
+
+
+def test_single_reviewer_mode_rejects_multiple_reviewer_ids(tmp_path: Path) -> None:
+    manifest_path = tmp_path / "manifest.json"
+    ratings_path = tmp_path / "ratings.csv"
+    output_path = tmp_path / "agreement.json"
+    manifest_path.write_text(json.dumps(manifest([
+        {"item_id": "JH-001", "judge_verdict": "GROUNDED", "route": "auto_reply"},
+    ], target=1)), encoding="utf-8")
+    write_ratings(ratings_path, [
+        rating_row("JH-001", "reviewer_a", "GROUNDED"),
+        rating_row("JH-001", "reviewer_b", "GROUNDED"),
+    ])
+
+    with pytest.raises(ValueError, match="exactly one reviewer"):
+        score_reviews(
+            manifest_path,
+            [ratings_path],
+            output_path,
+            single_reviewer=True,
+        )
+
+
+def test_adjudication_cannot_leave_unsure_labels(tmp_path: Path) -> None:
+    manifest_path = tmp_path / "manifest.json"
+    ratings_path = tmp_path / "ratings.csv"
+    adjudication_path = tmp_path / "adjudicated.csv"
+    output_path = tmp_path / "agreement.json"
+    manifest_path.write_text(json.dumps(manifest([
+        {"item_id": "JH-001", "judge_verdict": "GROUNDED", "route": "auto_reply"},
+    ], target=1)), encoding="utf-8")
+    write_ratings(ratings_path, [
+        rating_row("JH-001", "reviewer_a", "GROUNDED"),
+        rating_row("JH-001", "reviewer_b", "UNGROUNDED"),
+    ])
+    row = rating_row("JH-001", "adjudicator", "UNSURE", overall="UNSURE")
+    row["review_notes"] = "Requires a final decision."
+    write_ratings(adjudication_path, [row])
+
+    with pytest.raises(ValueError, match="adjudication must resolve"):
+        score_reviews(
+            manifest_path,
+            [ratings_path],
+            output_path,
+            adjudication_path=adjudication_path,
+        )
 
 
 def test_ungrounded_draft_cannot_be_accepted(tmp_path: Path) -> None:
