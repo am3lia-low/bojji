@@ -7,7 +7,8 @@ reason.
 
 **The main contribution is not drafting. It is knowing when not to draft.**
 
-> **Demo video (3-5 minutes): TODO - add the URL before submission.**
+[![Demo video link](image.png)]([URL_OF_YOUR_VIDEO](https://drive.google.com/file/d/1s3FMZnXqy4PFhBYQvYZXpDtTjD4Nuqtz/view?usp=drive_link))
+
 
 ## Problem and objective
 
