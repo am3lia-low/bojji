@@ -5,7 +5,7 @@
 #
 # The largest class by SOP count: four indexed procedures, so within-group
 # selection by the drafter is measurable here. `source_sops` per scenario is
-# therefore the ground truth for grounding accuracy (BUILD.md S9.2).
+# therefore the ground truth for grounding accuracy.
 #
 # Note REL-005 (the $80,000 cap) is HELD OUT. Scenarios asking about the cap
 # are included deliberately: the agent can state each relief's rules and still

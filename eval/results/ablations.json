@@ -6,15 +6,15 @@
     "temperature": 0.998,
     "ece_before": 0.1507,
     "ece_after": 0.1502,
-    "aurc_uncalibrated": 0.0607,
-    "aurc_calibrated": 0.0613,
+    "aurc_uncalibrated": 0.0513,
+    "aurc_calibrated": 0.0513,
     "note": "ECE says the confidence is more honest; AURC says whether that honesty changes a routing decision. They can move independently."
   },
   "thresholds": {
     "question": "Do per-bucket thresholds beat one global number?",
-    "aurc_per_bucket": 0.0613,
+    "aurc_per_bucket": 0.0513,
     "aurc_global": 0.0584,
-    "global_value_used": 0.5,
+    "global_value_used": 0.93,
     "note": "Only auto_answerable and out_of_scope have a threshold that bites, so this isolates the out_of_scope difference."
   },
   "scrub": {

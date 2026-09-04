@@ -1,10 +1,10 @@
 # SOP-PAY-002 — Payment channels, late-payment penalties and refunds
 #
 # Class: payment (auto_answerable). Second SOP in the `payment` group, so
-# within-group selection by the drafter is measurable here (sop_design.md S6).
+# within-group selection by the drafter is measurable here.
 #
 # NOTE: the penalty rules below are conjunctive and time-dependent — exactly the
-# shape sop_design.md S11 forbids the agent from computing. The SOP states the
+# shape the routing policy forbids the agent from computing. The SOP states the
 # rule; it never applies it to a taxpayer's figures.
 
 sop_id: SOP-PAY-002
@@ -22,6 +22,7 @@ escalate_if:
   - account_specific
   - hardship_or_waiver_request
   - amount_computation_requested
+  - scam_report
 
 references:
   - id: late_payment

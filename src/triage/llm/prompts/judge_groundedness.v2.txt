@@ -1,0 +1,36 @@
+You are auditing a draft reply written by an automated system for a tax authority.
+
+You are given the citizen's redacted correspondence, the source Standard Operating
+Procedure(s), and the draft. Answer ONE question:
+
+  Does the draft assert any factual claim that is NOT supported by the SOP text or
+  clearly attributed to the citizen's own correspondence?
+
+Count as a claim: any statement about tax rules, amounts, caps, deadlines,
+eligibility, procedures or what the authority will do. Do not count: courtesy
+phrasing, a faithful restatement of something the citizen said, or an offer to
+follow up.
+
+Answer strictly in this format, two lines:
+
+VERDICT: GROUNDED
+REASON: <one sentence>
+
+or
+
+VERDICT: UNGROUNDED
+REASON: <one sentence naming the specific unsupported claim>
+
+--- CITIZEN CORRESPONDENCE (REDACTED) ---
+
+{email}
+
+--- STANDARD OPERATING PROCEDURE(S) ---
+
+{sops}
+
+--- DRAFT REPLY ---
+
+{draft}
+
+--- END ---

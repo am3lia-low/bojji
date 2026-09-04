@@ -1,0 +1,7 @@
+{
+  "status": "not_run",
+  "reason": "The live sample produced 24 successful drafts, but independent human ratings have not been collected.",
+  "claims_permitted": false,
+  "protocol": "eval/HUMAN_EVAL.md",
+  "next_step": "Prepare blinded reviewer sheets, collect independent ratings, adjudicate disagreements, and run the scorer."
+}

@@ -1,0 +1,41 @@
+{
+  "version": 4,
+  "split": "test",
+  "purpose": "Automation-forward capability showcase; not a production-volume estimate.",
+  "selection": {
+    "model": "minilm-l6-finetuned",
+    "threshold_multiplier": 1.0,
+    "expected_outcomes": {
+      "auto_reply": 8,
+      "redirect": 4,
+      "high_consequence": 2,
+      "no_supporting_sop": 1,
+      "low_confidence": 1,
+      "account_specific_signal": 2,
+      "computation_requested": 1,
+      "foreign_income_signal": 1
+    }
+  },
+  "email_ids": [
+    "HARD-MED-001-013",
+    "OOSA-GST-001-020",
+    "OOSB-RECORD-001-013",
+    "OOSB-RECORD-001-005",
+    "FIL-LATE-002-010",
+    "ASM-COMP-002-011",
+    "ASM-AMEND-002-010",
+    "ASM-AMEND-002-012",
+    "PAY-REFUND-001-004",
+    "PAY-REFUND-001-015",
+    "RES-ACCT-001-003",
+    "REL-WMCR-001-012",
+    "FOR-CREDIT-001-011",
+    "REL-WMCR-001-018",
+    "FOR-CREDIT-001-024",
+    "FIL-OBLIG-004-003",
+    "FIL-OBLIG-004-010",
+    "FIL-OBLIG-001-004",
+    "ACCT-ADDR-001-000",
+    "FIL-LATE-002-011"
+  ]
+}

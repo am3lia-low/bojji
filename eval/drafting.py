@@ -18,10 +18,11 @@ the two classes that pull a group of more than one; for the 1:1 classes the answ
 is correct by construction and measuring it would be theatre (S9.2).
 
 **Groundedness** -- one binary question put to a judge: *does this reply assert any
-fact not present in the provided SOP?* Narrow question, binary outcome, and
-judge-human agreement reported, which is what makes an LLM judge defensible rather
-than decorative. Groq is the primary judge: free, fast, and a different model family
-from the drafter, because a model must not be scored on its own output (S6.4).
+fact unsupported by the SOP or not clearly attributed to the citizen?* Narrow
+question, binary outcome, and a blind judge-human agreement workflow, which is what
+makes an LLM judge defensible once the human labels exist rather than decorative.
+Groq is the primary judge: free, fast, and a different model family from the drafter,
+because a model must not be scored on its own output (S6.4).
 
 **Judge outputs are committed** with each judge's model identifier and date, so a
 grader reads the judgments without re-running anything or holding a key.
@@ -32,14 +33,16 @@ from __future__ import annotations
 import json
 import random
 import re
+import time
+from collections import Counter
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Final
 
-from triage.llm.client import LLMError
-from triage.nodes.draft import PROMPT_PATH, parse_citations, render_prompt
-from triage.schemas import DraftFailure
+from triage.llm.client import LLMError, classify_error
+from triage.nodes.draft import PROMPT_PATH, draft_node
+from triage.schemas import DraftFailure, ScrubRecord, TriageState
 from triage.sop.index import SOPIndex
 
 #: Classes whose SOP lookup returns more than one document, so the drafter makes a
@@ -51,9 +54,18 @@ _VERDICT_RE: Final[re.Pattern[str]] = re.compile(
 )
 _REASON_RE: Final[re.Pattern[str]] = re.compile(r"REASON:\s*(?P<reason>.+)", re.IGNORECASE)
 
+# Source URLs document provenance but are not rules the judge can use. Removing
+# their repeated HTML footnotes keeps the complete normative SOP evidence while
+# avoiding needless input tokens on the free-tier judge.
+_SOURCE_FOOTNOTE_RE: Final[re.Pattern[str]] = re.compile(
+    r"(?im)^[ \t]*<sup>Source:\s*https?://[^<\r\n]+</sup>[ \t]*\r?\n?"
+)
+
+DEFAULT_JUDGE_DELAY_SECONDS: Final[float] = 12.0
+
 JUDGE_PROMPT_PATH: Final[Path] = (
     Path(__file__).resolve().parents[1]
-    / "src" / "triage" / "llm" / "prompts" / "judge_groundedness.v1.txt"
+    / "src" / "triage" / "llm" / "prompts" / "judge_groundedness.v2.txt"
 )
 
 
@@ -66,6 +78,11 @@ class DraftRecord:
     sop_ids: tuple[str, ...]
     source_sops: tuple[str, ...]
     status: str
+    scenario_id: str = ""
+    predicted_label: str = ""
+    route: str = ""
+    confidence: float | None = None
+    email_text: str = ""
     text: str | None = None
     failure_reason: str | None = None
     grounded_on: tuple[str, ...] = ()
@@ -73,6 +90,7 @@ class DraftRecord:
     judge_verdict: str | None = None
     judge_reason: str | None = None
     judge_model: str | None = None
+    judge_failure_reason: str | None = None
 
     @property
     def grounding_correct(self) -> bool | None:
@@ -91,7 +109,12 @@ class DraftRecord:
     def as_dict(self) -> dict[str, Any]:
         return {
             "email_id": self.email_id,
+            "scenario_id": self.scenario_id,
             "label": self.label,
+            "predicted_label": self.predicted_label,
+            "route": self.route,
+            "confidence": self.confidence,
+            "email_text": self.email_text,
             "sop_ids": list(self.sop_ids),
             "source_sops": list(self.source_sops),
             "status": self.status,
@@ -102,8 +125,18 @@ class DraftRecord:
             "judge_verdict": self.judge_verdict,
             "judge_reason": self.judge_reason,
             "judge_model": self.judge_model,
+            "judge_failure_reason": self.judge_failure_reason,
             "text": self.text,
         }
+
+
+@dataclass(frozen=True)
+class JudgeResult:
+    """One judge attempt, including why a verdict may be missing."""
+
+    verdict: str | None
+    reason: str | None
+    failure_reason: str | None
 
 
 def _sample(items: list[Any], size: int, seed: int) -> list[Any]:
@@ -113,9 +146,21 @@ def _sample(items: list[Any], size: int, seed: int) -> list[Any]:
     return random.Random(seed).sample(items, size)
 
 
-def judge_groundedness(
+def render_judge_sops(sop_ids: tuple[str, ...], index: SOPIndex) -> str:
+    """Render the exact SOP evidence shared by the LLM and human reviewers."""
+    sections: list[str] = []
+    for sop_id in sop_ids:
+        if sop_id not in index.by_id:
+            continue
+        sop = index.by_id[sop_id]
+        body = _SOURCE_FOOTNOTE_RE.sub("", sop.body).strip()
+        sections.append(f"### {sop.sop_id} - {sop.title}\n\n{body}")
+    return "\n\n".join(sections)
+
+
+def judge_groundedness_detailed(
     record: DraftRecord, index: SOPIndex, client: Any
-) -> tuple[str | None, str | None]:
+) -> JudgeResult:
     """Ask the judge one binary question about one draft.
 
     A judge that errors or answers off-format returns ``None`` rather than a
@@ -123,29 +168,35 @@ def judge_groundedness(
     defaulting either way would quietly bias the reported rate.
     """
     if record.status != "ok" or not record.text:
-        return None, None
+        return JudgeResult(None, None, None)
 
-    sops = tuple(index.by_id[sid] for sid in record.sop_ids if sid in index.by_id)
-    rendered = "\n\n".join(
-        f"### {sop.sop_id} - {sop.title}\n\n{sop.body.strip()}" for sop in sops
-    )
+    rendered = render_judge_sops(record.sop_ids, index)
     prompt = JUDGE_PROMPT_PATH.read_text(encoding="utf-8").format(
-        sops=rendered, draft=record.text
+        email=record.email_text, sops=rendered, draft=record.text
     )
 
     try:
         response = client.generate(prompt)
-    except LLMError:
-        return None, None
-    except Exception:  # noqa: BLE001 -- a judge failure is missing data, not a verdict
-        return None, None
+    except LLMError as exc:
+        return JudgeResult(None, None, exc.reason.value)
+    except Exception as exc:  # noqa: BLE001 -- report missing judge data by category
+        return JudgeResult(None, None, classify_error(exc).value)
 
     verdict = _VERDICT_RE.search(response.text)
     reason = _REASON_RE.search(response.text)
-    return (
-        verdict["verdict"].upper() if verdict else None,
-        reason["reason"].strip()[:300] if reason else None,
+    return JudgeResult(
+        verdict=verdict["verdict"].upper() if verdict else None,
+        reason=reason["reason"].strip()[:300] if reason else None,
+        failure_reason=None if verdict else "unparseable_response",
     )
+
+
+def judge_groundedness(
+    record: DraftRecord, index: SOPIndex, client: Any
+) -> tuple[str | None, str | None]:
+    """Compatibility view returning only the parsed verdict and reason."""
+    result = judge_groundedness_detailed(record, index, client)
+    return result.verdict, result.reason
 
 
 def run_draft_sample(
@@ -166,7 +217,7 @@ def run_draft_sample(
     Returns a report carrying availability, grounding accuracy and the judge's
     verdicts, with every judged draft written out for inspection.
     """
-    from triage.llm.client import GeminiClient, GroqClient
+    from triage.llm.client import GeminiClient, GroqJudgeClient
 
     chosen = _sample(automated, sample_size, seed)
     if not chosen:
@@ -176,7 +227,7 @@ def run_draft_sample(
         drafter: Any = GeminiClient()
     except LLMError as exc:
         drafter = None
-        drafter_error = str(exc)
+        drafter_error: str | None = str(exc)
     else:
         drafter_error = None
 
@@ -189,28 +240,38 @@ def run_draft_sample(
             sop_ids=sop_ids,
             source_sops=tuple(row.item.source_sops),
             status="failed",
+            scenario_id=row.item.scenario_id,
+            predicted_label=row.predicted,
+            route=_decision.action.value,
+            confidence=_decision.confidence,
+            email_text=row.scrub.text,
             failure_reason=DraftFailure.API_ERROR.value,
         )
 
         if drafter is None:
             record.failure_reason = DraftFailure.API_ERROR.value
         else:
-            sops = tuple(index.by_id[sid] for sid in sop_ids if sid in index.by_id)
-            try:
-                response = drafter.generate(
-                    render_prompt(sops, row.item.email.subject, row.scrubbed)
-                )
-            except LLMError as exc:
-                record.failure_reason = exc.reason.value
-            except Exception:  # noqa: BLE001
-                record.failure_reason = DraftFailure.API_ERROR.value
-            else:
-                body, cited = parse_citations(response.text, frozenset(sop_ids))
-                record.status = "ok"
-                record.failure_reason = None
-                record.text = body
-                record.grounded_on = cited
-                record.model_name = response.model_name
+            state = TriageState(
+                email=row.item.email,
+                scrub=ScrubRecord(
+                    text=row.scrub.text,
+                    vault=dict(row.scrub.vault),
+                    counts=dict(row.scrub.counts),
+                ),
+                sop_ids=sop_ids,
+                decision=_decision,
+            )
+            update = draft_node(state, index, drafter)
+            completed = state.model_copy(update=update).redacted()
+            result = completed.draft
+            assert result is not None
+            record.status = result.status.value
+            record.failure_reason = (
+                result.failure_reason.value if result.failure_reason is not None else None
+            )
+            record.text = result.text
+            record.grounded_on = result.grounded_on
+            record.model_name = result.model_name
 
         records.append(record)
         print(f"  drafted {len(records)}/{len(chosen)}", end="\r")
@@ -219,18 +280,24 @@ def run_draft_sample(
     # ---- judge -------------------------------------------------------------
     judge_model: str | None = None
     try:
-        judge: Any = GroqClient()
+        judge: Any = GroqJudgeClient()
         judge_model = judge.model_name
     except LLMError:
         judge = None
 
     if judge is not None:
-        for i, record in enumerate(records, 1):
-            verdict, reason = judge_groundedness(record, index, judge)
-            record.judge_verdict = verdict
-            record.judge_reason = reason
-            record.judge_model = judge_model if verdict else None
-            print(f"  judged {i}/{len(records)}", end="\r")
+        eligible_records = [
+            record for record in records if record.status == "ok" and record.text
+        ]
+        for i, record in enumerate(eligible_records, 1):
+            if i > 1:
+                time.sleep(DEFAULT_JUDGE_DELAY_SECONDS)
+            judge_result = judge_groundedness_detailed(record, index, judge)
+            record.judge_verdict = judge_result.verdict
+            record.judge_reason = judge_result.reason
+            record.judge_model = judge_model if judge_result.verdict else None
+            record.judge_failure_reason = judge_result.failure_reason
+            print(f"  judged {i}/{len(eligible_records)}", end="\r")
         print()
 
     # ---- aggregate ---------------------------------------------------------
@@ -243,6 +310,25 @@ def run_draft_sample(
     grounding = [r.grounding_correct for r in records if r.grounding_correct is not None]
     judged = [r for r in records if r.judge_verdict is not None]
     n_grounded = sum(r.judge_verdict == "GROUNDED" for r in judged)
+    judge_failures = Counter(
+        r.judge_failure_reason
+        for r in records
+        if r.status == "ok" and r.judge_verdict is None and r.judge_failure_reason
+    )
+    sample_by_route = Counter(r.route for r in records)
+    sample_by_label = Counter(r.predicted_label for r in records)
+    population_by_route = Counter(decision.action.value for _, decision in automated)
+    population_by_label = Counter(row.predicted for row, _ in automated)
+    judge_by_route = {
+        route: {
+            "n_judged": len(route_records),
+            "n_grounded": sum(
+                record.judge_verdict == "GROUNDED" for record in route_records
+            ),
+        }
+        for route in sorted(sample_by_route)
+        if (route_records := [record for record in judged if record.route == route])
+    }
 
     if out_dir is not None:
         out_dir.mkdir(parents=True, exist_ok=True)
@@ -270,6 +356,16 @@ def run_draft_sample(
         "n_attempted": len(records),
         "n_ok": n_ok,
         "availability": round(n_ok / len(records), 4) if records else 0.0,
+        "sample": {
+            "method": "deterministic simple random sample without replacement",
+            "seed": seed,
+            "population_n": len(automated),
+            "sample_n": len(records),
+            "population_by_route": dict(sorted(population_by_route.items())),
+            "sample_by_route": dict(sorted(sample_by_route.items())),
+            "population_by_predicted_label": dict(sorted(population_by_label.items())),
+            "sample_by_predicted_label": dict(sorted(sample_by_label.items())),
+        },
         "failures_by_reason": failures,
         "drafter_error": drafter_error,
         "grounding": {
@@ -282,12 +378,19 @@ def run_draft_sample(
         },
         "judge": {
             "model": judge_model,
-            "question": "Does this reply assert any fact not present in the provided SOP?",
+            "question": (
+                "Does this reply assert any fact unsupported by the SOP or not "
+                "clearly attributed to the citizen?"
+            ),
+            "n_eligible": n_ok,
             "n_judged": len(judged),
+            "availability": round(len(judged) / n_ok, 4) if n_ok else None,
+            "failures_by_reason": dict(sorted(judge_failures.items())),
             "n_grounded": n_grounded,
             "groundedness_rate": (
                 round(n_grounded / len(judged), 4) if judged else None
             ),
+            "by_route": judge_by_route,
             "note": (
                 "Judge-human agreement over the same sample is reported separately "
                 "once the drafts are hand-reviewed; a judge without measured "
@@ -297,4 +400,13 @@ def run_draft_sample(
     }
 
 
-__all__ = ["DraftRecord", "MULTI_SOP_CLASSES", "judge_groundedness", "run_draft_sample"]
+__all__ = [
+    "DraftRecord",
+    "DEFAULT_JUDGE_DELAY_SECONDS",
+    "JudgeResult",
+    "MULTI_SOP_CLASSES",
+    "judge_groundedness",
+    "judge_groundedness_detailed",
+    "render_judge_sops",
+    "run_draft_sample",
+]

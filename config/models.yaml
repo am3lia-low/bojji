@@ -61,19 +61,21 @@ roles:
       rate limits are real and are reported as drafting availability.
 
   judge_primary:
-    model: qwen/qwen3.8-27b
+    model: groq/compound-mini
     provider: groq
     runtime: false
-    cost: free
+    cost: free_tier
     env: GROQ_API_KEY
-    override: GROQ_MODEL
+    override: GROQ_JUDGE_MODEL
     note: >
       Groundedness judge. A different model family from the drafter on purpose --
-      separation rule 2. Qwen rather than the `openai/gpt-oss-*` models also on
-      Groq's roster, because GPT-4o generated the email corpus and a judge from the
-      generator's family would weaken separation rule 3. One binary question, and
-      judge-human agreement reported, which is what makes an LLM judge defensible
-      rather than decorative.
+      separation rule 2. Compound Mini supplies enough free-tier token throughput
+      for the complete SOP evidence where the fixed Qwen baseline did not. Its web,
+      code and other external tools are disabled, so it can judge only the supplied
+      evidence. It may route between GPT-OSS 120B and Llama 3.3 70B; that compound
+      provenance is recorded rather than presented as a single underlying model.
+      One binary question and measured judge-human agreement make the result
+      defensible rather than decorative.
 
       ROSTER ROTATION IS REAL, NOT HYPOTHETICAL, AND IT HAPPENED TWICE. This
       project originally pinned `llama-3.3-70b-versatile`; Groq withdrew it
@@ -111,7 +113,7 @@ roles:
     cost: paid
     env: OPENAI_API_KEY
     note: >
-      BUILD-TIME ONLY. Wrote the 1,800-email corpus from 113 authored scenarios.
+      BUILD-TIME ONLY. Wrote the 3,000-email corpus from 116 authored scenarios.
       The output is frozen and committed, so no grader re-runs this. Different from
       the classification baseline (rule 1) and from the judge (rule 3), so no model
       is ever scored on text it wrote.

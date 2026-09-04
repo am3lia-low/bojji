@@ -76,7 +76,7 @@ def _scrubber() -> Scrubber:
     return Scrubber()
 
 
-def render_prompt(sops: tuple[SOP, ...], subject: str, body: str) -> str:
+def render_prompt(sops: tuple[SOP, ...], email_text: str) -> str:
     """Build the drafting prompt.
 
     The whole SOP group goes in, not a pre-selected member: a multi-relief question
@@ -84,12 +84,16 @@ def render_prompt(sops: tuple[SOP, ...], subject: str, body: str) -> str:
     is the four relief SOPs at ~6,900 tokens, well inside free-tier limits -- the
     real risk is attention rather than capacity, which is what the grounding metric
     measures.
+
+    ``email_text`` is the scrub node's complete ``subject + body`` output. The raw
+    subject must never be supplied separately: doing so would bypass the privacy
+    gate when a citizen puts an identifier in the subject line.
     """
     rendered = "\n\n".join(
         f"### {sop.sop_id} - {sop.title} (v{sop.version})\n\n{sop.body.strip()}"
         for sop in sops
     )
-    return _prompt_template().format(sops=rendered, subject=subject or "(none)", body=body)
+    return _prompt_template().format(sops=rendered, email_text=email_text)
 
 
 def parse_citations(text: str, valid: frozenset[str]) -> tuple[str, tuple[str, ...]]:
@@ -167,7 +171,7 @@ def draft_node(
     if client is None:
         return _failed(state, DraftFailure.API_ERROR, "no drafting client configured")
 
-    prompt = render_prompt(sops, state.email.subject, state.scrub.text)
+    prompt = render_prompt(sops, state.scrub.text)
     model_name = getattr(client, "model_name", None)
 
     try:

@@ -22,10 +22,9 @@ last_reviewed: 2026-09-01
 
 # SOP-RTE-002 - Redirect: other agencies and other tax types
 
-> **SYNTHETIC DOCUMENT.** Authored for a technical assessment. This is not an
-> IRAS document and does not reflect IRAS internal material, templates or
-> practice. Every factual claim is a restatement traceable to the public
-> source cited beside it in section 2.
+> **SYNTHETIC DOCUMENT.** Written for this assessment from the public sources cited
+> in section 2. It is not an IRAS document or internal procedure. See
+> [data provenance](../SOURCES.md).
 
 ## 1. Scope
 
@@ -33,7 +32,7 @@ Enquiry belongs to another IRAS tax type — GST, property tax, stamp duty, with
 
 **Not in scope:**
 - Tax relief on CPF or SRS contributions, which is an individual income tax matter. -> escalate (`tax_reliefs`)
-- Business or corporate income tax. -> escalate (`oos_business_tax`)
+- Business or corporate income tax. -> escalate (`oos_redirect`)
 - Reporting a suspected IRAS impersonation scam. -> escalate (`scam_report`)
 
 ## 2. Key facts the officer may state

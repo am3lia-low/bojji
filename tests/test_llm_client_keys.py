@@ -12,9 +12,11 @@ anything else.
 
 from __future__ import annotations
 
+from types import SimpleNamespace
+
 import pytest
 
-from triage.llm.client import GeminiClient, LLMError
+from triage.llm.client import GeminiClient, GroqClient, GroqJudgeClient, LLMError
 from triage.schemas import DraftFailure
 
 THREE = [
@@ -122,3 +124,110 @@ def test_a_single_key_behaves_exactly_as_before() -> None:
 def test_no_key_at_all_is_a_construction_error() -> None:
     with pytest.raises(LLMError):
         GeminiClient(api_keys=[])
+
+
+def test_provider_sdk_retries_are_disabled(monkeypatch: pytest.MonkeyPatch) -> None:
+    """One provider attempt means the configured timeout remains a real bound."""
+    from google import genai
+
+    captured: dict[str, object] = {}
+
+    class FakeModels:
+        @staticmethod
+        def generate_content(**_kwargs: object) -> SimpleNamespace:
+            return SimpleNamespace(text="drafted")
+
+    class FakeProviderClient:
+        def __init__(self, *, api_key: str, http_options: object) -> None:
+            captured["api_key"] = api_key
+            captured["http_options"] = http_options
+            self.models = FakeModels()
+
+    monkeypatch.setattr(genai, "Client", FakeProviderClient)
+
+    response = GeminiClient(api_key="fake-key").generate("prompt")
+
+    assert response.text == "drafted"
+    options = captured["http_options"]
+    assert options.timeout == 45_000  # type: ignore[attr-defined]
+    assert options.retry_options.attempts == 1  # type: ignore[attr-defined]
+
+
+def test_judge_caps_output_tokens_and_disables_sdk_retries(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import groq
+
+    captured: dict[str, object] = {}
+
+    class FakeCompletions:
+        @staticmethod
+        def create(**kwargs: object) -> SimpleNamespace:
+            captured["request"] = kwargs
+            message = SimpleNamespace(
+                content="VERDICT: GROUNDED\nREASON: Supported."
+            )
+            return SimpleNamespace(choices=[SimpleNamespace(message=message)])
+
+    class FakeGroq:
+        def __init__(
+            self,
+            *,
+            api_key: str,
+            timeout: float,
+            max_retries: int,
+        ) -> None:
+            captured.update({
+                "api_key": api_key,
+                "timeout": timeout,
+                "max_retries": max_retries,
+            })
+            self.chat = SimpleNamespace(completions=FakeCompletions())
+
+    monkeypatch.setattr(groq, "Groq", FakeGroq)
+
+    response = GroqClient(api_key="fake-key").generate("prompt")
+
+    assert response.text.startswith("VERDICT: GROUNDED")
+    assert captured["max_retries"] == 0
+    request = captured["request"]
+    assert request["max_completion_tokens"] == 128  # type: ignore[index]
+    assert "tool_choice" not in request  # type: ignore[operator]
+
+
+def test_compound_judge_retries_and_disables_external_tools(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import groq
+
+    captured: dict[str, object] = {}
+
+    class FakeCompletions:
+        @staticmethod
+        def create(**kwargs: object) -> SimpleNamespace:
+            captured["request"] = kwargs
+            message = SimpleNamespace(
+                content="VERDICT: GROUNDED\nREASON: Supported."
+            )
+            return SimpleNamespace(choices=[SimpleNamespace(message=message)])
+
+    class FakeGroq:
+        def __init__(
+            self,
+            *,
+            api_key: str,
+            timeout: float,
+            max_retries: int,
+        ) -> None:
+            captured["max_retries"] = max_retries
+            self.chat = SimpleNamespace(completions=FakeCompletions())
+
+    monkeypatch.setattr(groq, "Groq", FakeGroq)
+
+    client = GroqJudgeClient(api_key="fake-key")
+    response = client.generate("prompt")
+
+    assert response.model_name == "groq/compound-mini"
+    assert captured["max_retries"] == 2
+    request = captured["request"]
+    assert request["tool_choice"] == "none"  # type: ignore[index]

@@ -19,7 +19,7 @@
 # What still separates them is the redirect TARGET -- CPF Board, MOM, the GST
 # division, the corporate tax line. That selection now happens in the drafter,
 # which receives both redirect SOPs and picks the applicable one, and it is
-# measured through the cited `source_sops` (BUILD.md S9.2) rather than through
+# measured through the cited `source_sops` rather than through
 # the classifier.
 #
 # Two boundaries are the sharp ones and both are deliberately represented below:

@@ -1,0 +1,1413 @@
+{
+  "generated_at": "2026-09-04T04:18:00+00:00",
+  "drafter_model": "gemini-3.6-flash",
+  "judge_model": "groq/compound-mini",
+  "prompt": "draft_reply.v1.txt",
+  "judge_prompt": "judge_groundedness.v2.txt",
+  "note": "Committed so a grader reads the judgments without re-running anything or holding a key. A failed draft is missing, not wrong: it leaves the groundedness denominator.",
+  "drafts": [
+    {
+      "email_id": "PAY-REFUND-001-016",
+      "scenario_id": "PAY-REFUND-001",
+      "label": "payment",
+      "predicted_label": "payment",
+      "route": "auto_reply",
+      "confidence": 0.9395589296270568,
+      "email_text": "Inquiry About Overpaid Tax Refund\n\nI recently received a notice that I have overpaid my taxes, and I am eligible for a refund. Could you please let me know how the refund process works and how long it typically takes for the refund to be processed and returned to me? Thank you for your assistance with this matter.",
+      "sop_ids": [
+        "SOP-PAY-001",
+        "SOP-PAY-002"
+      ],
+      "source_sops": [
+        "SOP-PAY-001",
+        "SOP-PAY-002"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-PAY-002"
+      ],
+      "grounding_correct": true,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "All factual statements about refunds are directly supported by SOP\u2011PAY\u2011002.",
+      "judge_model": "groq/compound-mini",
+      "text": "Tax credits are refunded automatically, through GIRO, PayNow or Telegraphic Transfer. Interest is paid on credits that are not refunded within 30 days of the date the credit arises. From 1 January 2026 IRAS no longer issues cheques, so please ensure your PayNow or GIRO details are up to date.\n\nI am unable to check the specific status or timeline of your individual refund as I cannot access your tax account records. A colleague will follow up with you regarding your account.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "OOSB-PARTNER-001-009",
+      "scenario_id": "OOSB-PARTNER-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.6221945418264686,
+      "email_text": "Clarification on Tax Responsibilities in a Partnership\n\nHello,\n\nI am in a two-person partnership, and we are unsure about our individual responsibilities regarding tax submission. Could you please clarify who is responsible for submitting what information, and if there are any specific forms we should be aware of? Thank you for your guidance.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-RTE-001"
+      ],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "All statements in the draft are directly taken from the SOP\u2019s approved self\u2011employed redirect wording.",
+      "judge_model": "groq/compound-mini",
+      "text": "Your enquiry relates to income from a sole proprietorship or partnership. While business income is declared in your individual Income Tax Return, it is computed under separate rules. Guidance for self-employed persons and partners, including record keeping and calculating business income, is available at iras.gov.sg/taxes/individual-income-tax/self-employed-and-partnerships.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "OOSA-GST-001-011",
+      "scenario_id": "OOSA-GST-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.6263604161419146,
+      "email_text": "Advice on Consumption Tax Registration Requirement\n\nHello, I'm seeking some guidance on whether I need to register for the consumption tax. As a self-employed individual, my business turnover has increased recently, and I want to ensure I comply with all requirements. Could you advise if there's a specific threshold I need to consider for registration? If my turnover has exceeded this, what steps should I take next?",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "failed",
+      "failure_reason": "timeout",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "OOSB-RECORD-001-012",
+      "scenario_id": "OOSB-RECORD-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.8052454300711769,
+      "email_text": "Books and Accounts for Online Business\n\nHi, Im running an online retail business and I want to be sure Im keeping the right books and accounts for it. What specific records do I need to maintain and for how long? Also is there a particular format they should be in? Any guidance would be greatly appreciated thanks.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "failed",
+      "failure_reason": "api_error",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "REL-WMCR-001-009",
+      "scenario_id": "REL-WMCR-001",
+      "label": "tax_reliefs",
+      "predicted_label": "tax_reliefs",
+      "route": "auto_reply",
+      "confidence": 0.9500811453236383,
+      "email_text": "Clarification on Claims for My Child Born Last Year\n\nHello,\n\nI am a working mother, and my child was born last year. I'm trying to understand what I can claim on my taxes related to my child. Could you please provide some guidance on the benefits or deductions available for new parents like me? Thank you.",
+      "sop_ids": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "source_sops": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-REL-001",
+        "SOP-REL-004"
+      ],
+      "grounding_correct": true,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "All factual statements about relief amounts, eligibility conditions, caps, and the Parenthood Tax Rebate are directly supported by the cited SOPs.",
+      "judge_model": "groq/compound-mini",
+      "text": "Qualifying Child Relief is $4,000 per qualifying child, and Child Relief (Disability) is $7,500 per qualifying child. To claim Qualifying Child Relief, your child must be unmarried, and must be your own child, a step-child, or legally adopted. The child must have been below 16 years old, or 16 or above and studying full-time at a university, college or other educational institution at any time during the year. The child must also not have had annual income of more than $8,000. Parents may share the relief for the same child in a proportion they agree between themselves.\n\nFor a qualifying Singaporean child born or adopted on or after 1 January 2024, Working Mother's Child Relief is a fixed amount: $8,000 for the first child, $10,000 for the second, and $12,000 for the third and each subsequent child.\n\nYou may claim Working Mother's Child Relief even if you or your husband or ex-husband has already claimed Qualifying Child Relief or Child Relief (Disability) on the same child. Qualifying Child Relief is allowed first, and Working Mother's Child Relief is limited to the remaining balance, with a combined cap of $50,000 per child.\n\nThe Parenthood Tax Rebate is a one-off rebate for tax residents, of $5,000 for the first child, $10,000 for the second, and $20,000 for the third and fourth child. Any unutilised amount is carried forward to offset your income tax in later years until it is fully used, and it may also be transferred to your spouse.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "REL-WMCR-001-003",
+      "scenario_id": "REL-WMCR-001",
+      "label": "tax_reliefs",
+      "predicted_label": "tax_reliefs",
+      "route": "auto_reply",
+      "confidence": 0.9524168160002787,
+      "email_text": "Enquiry About Child-Related Tax Claims\n\nHello, I am trying to understand what I can claim on my taxes for my child who was born last year. Are there specific deductions or reliefs available for new parents? Also, do I need to provide any supporting documents for these claims? Thanks for your assistance.",
+      "sop_ids": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "source_sops": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "status": "failed",
+      "failure_reason": "api_error",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "REL-WMCR-001-000",
+      "scenario_id": "REL-WMCR-001",
+      "label": "tax_reliefs",
+      "predicted_label": "tax_reliefs",
+      "route": "auto_reply",
+      "confidence": 0.9431002577416864,
+      "email_text": "Inquiry About Child-Related Tax Claims\n\nI am a working mother and my child was born last year. I would like to know what I can claim in terms of tax benefits or reliefs for my child. Can you please provide some guidance on this? Thank you.",
+      "sop_ids": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "source_sops": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-REL-001",
+        "SOP-REL-004"
+      ],
+      "grounding_correct": true,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "All factual statements are directly supported by the SOPs.",
+      "judge_model": "groq/compound-mini",
+      "text": "To claim Qualifying Child Relief for Year of Assessment 2026, all the conditions must have been met in 2025. Your child must be unmarried, and must be your own child, a step-child, or legally adopted. The child must have been below 16 years old, or 16 or above and studying full-time at a university, college or other educational institution at any time during the year. The child must also not have had annual income of more than $8,000. Qualifying Child Relief is $4,000 per qualifying child, and Child Relief (Disability) is $7,500 per qualifying child. Parents may share the relief for the same child in a proportion they agree between themselves.\n\nFor a qualifying Singaporean child born or adopted on or after 1 January 2024, Working Mother's Child Relief is a fixed amount: $8,000 for the first child, $10,000 for the second, and $12,000 for the third and each subsequent child. You may claim Working Mother's Child Relief even if you or your husband or ex-husband has already claimed Qualifying Child Relief or Child Relief (Disability) on the same child. Qualifying Child Relief is allowed first, and Working Mother's Child Relief is limited to the remaining balance, with a combined cap of $50,000 per child.\n\nThe Parenthood Tax Rebate is a one-off rebate for tax residents, of $5,000 for the first child, $10,000 for the second, and $20,000 for the third and fourth child. Any unutilised amount is carried forward to offset your income tax in later years until it is fully used, and it may also be transferred to your spouse.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "OOSB-PARTNER-001-012",
+      "scenario_id": "OOSB-PARTNER-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.6226507606596134,
+      "email_text": "Clarification on Tax Filing Responsibilities for Partnership\n\nHello, \n\nI am part of a two-person partnership, and I am trying to understand our responsibilities when it comes to filing taxes. Could you please clarify who is responsible for submitting the necessary documents? Does each partner file separately, or is there a joint filing process we need to follow? \n\nThank you for your guidance.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-RTE-001"
+      ],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "The draft only restates SOP\u2011provided facts about partnership income being declared in the individual return and computed under separate rules.",
+      "judge_model": "groq/compound-mini",
+      "text": "Your enquiry relates to income from a sole proprietorship or partnership. While business income is declared in your individual Income Tax Return, it is computed under separate rules. \n\nGuidance for self-employed persons and partners, including record keeping and calculating business income, is available at iras.gov.sg/taxes/individual-income-tax/self-employed-and-partnerships.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "OOSB-PARTNER-001-006",
+      "scenario_id": "OOSB-PARTNER-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.5826669971423216,
+      "email_text": "Clarification on Income Tax Responsibilities for a Partnership\n\nI am part of a two-person partnership and I'm trying to understand our tax responsibilities. Could you clarify who is responsible for submitting the income tax returns? Do we each need to submit separately, or is there a joint submission required for the partnership? Thank you for your assistance with this matter.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-RTE-001"
+      ],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "The draft\u2019s statements about partnership income being declared in the individual return, computed under separate rules, and partners\u2019 distinct tax obligations are all directly covered by SOP\u2011RTE\u2011001.",
+      "judge_model": "groq/compound-mini",
+      "text": "Your enquiry relates to income from a sole proprietorship or partnership. While business income is declared in your individual Income Tax Return, it is computed under separate rules. Guidance for self-employed persons and partners, including record keeping and calculating business income, is available at iras.gov.sg/taxes/individual-income-tax/self-employed-and-partnerships.\n\nSelf-employed persons and partners have distinct tax obligations covering trade income, record keeping, and the calculation of business income, set out in the IRAS guidance for the self-employed and partnerships.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "OOSB-RECORD-001-004",
+      "scenario_id": "OOSB-RECORD-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.7709146846364764,
+      "email_text": "record keeping for online retail business\n\nhi there i recently started a registered online retail business and I am trying to figure out what kind of books and accounts im supposed to keep for my trade. I'm not sure if theres a list of things i need to have or if its more flexible than that i want to make sure I'm doing everything right so i don't get into trouble later on. Can you help? thanks",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-RTE-001"
+      ],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "All factual statements about tax rules and guidance are directly supported by the SOPs.",
+      "judge_model": "groq/compound-mini",
+      "text": "Your enquiry relates to income from a sole proprietorship or partnership. While business income is declared in your individual Income Tax Return, it is computed under separate rules. Guidance for self-employed persons and partners, including record keeping and calculating business income, is available at iras.gov.sg/taxes/individual-income-tax/self-employed-and-partnerships.\n\nIf your business is a company, your enquiry relates to corporate income tax, which is handled separately from individual income tax. Guidance on company filing obligations, including Form C-S and Form C, is available at iras.gov.sg/taxes/corporate-income-tax.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "ASM-AMEND-002-021",
+      "scenario_id": "ASM-AMEND-002",
+      "label": "assessment_and_amendment",
+      "predicted_label": "assessment_and_amendment",
+      "route": "auto_reply",
+      "confidence": 0.9516482374580987,
+      "email_text": "Timeframe for Objecting to a Tax Bill\n\nI recently received a tax bill that I believe is incorrect. Could you please let me know how long I have to file an objection to it? Thank you for your assistance.",
+      "sop_ids": [
+        "SOP-ASM-001"
+      ],
+      "source_sops": [
+        "SOP-ASM-001"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-ASM-001"
+      ],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "All factual statements (30\u2011day amendment window, payment due within 1 month despite objection, 30\u2011day refund of credit balances) are directly supported by the SOP text.",
+      "judge_model": "groq/compound-mini",
+      "text": "If you need to make a change after receiving your tax bill, you may file an amendment using the 'Amend Tax Bill' digital service at myTax Portal within 30 days from the date on your Notice of Assessment. IRAS will review the amendment and inform you of the outcome.\n\nPlease note that filing an objection does not defer payment. Tax is due within 1 month of the date of your Notice of Assessment, and a late payment penalty applies to tax outstanding after that date even while an objection is being reviewed. If your assessment is revised, any credit balance is refunded within 30 days from the date of the amended tax bill.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "OOSB-PARTNER-001-002",
+      "scenario_id": "OOSB-PARTNER-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.7762431940072355,
+      "email_text": "Clarification on Filing Responsibilities for Partnership\n\nI am in a business partnership with another person, and we are trying to understand our responsibilities for filing our income tax. Can you clarify who needs to submit what documents? For instance, do both of us need to file separately, or is there a joint submission required? Any guidance on this would be appreciated.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-RTE-001"
+      ],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "The draft only repeats the SOP\u2011approved self\u2011employed redirect wording, with no extra factual claim.",
+      "judge_model": "groq/compound-mini",
+      "text": "Your enquiry relates to income from a sole proprietorship or partnership. While business income is declared in your individual Income Tax Return, it is computed under separate rules. Guidance for self-employed persons and partners, including record keeping and calculating business income, is available at iras.gov.sg/taxes/individual-income-tax/self-employed-and-partnerships.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "FIL-OBLIG-004-010",
+      "scenario_id": "FIL-OBLIG-004",
+      "label": "filing",
+      "predicted_label": "filing",
+      "route": "auto_reply",
+      "confidence": 0.9428488755990149,
+      "email_text": "Confused About Tax Return Request\n\nhello i got another letter telling me to file a tax return but i only made a very small amount last year definitely below the threshold. how many times do i need to say this. can you please check if maybe there is a mistake in your system or let me know what i should do next. thanks",
+      "sop_ids": [
+        "SOP-FIL-001"
+      ],
+      "source_sops": [
+        "SOP-FIL-001"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-FIL-001"
+      ],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "UNGROUNDED",
+      "judge_reason": "The draft states that \u201ca colleague will follow up with you directly on this matter,\u201d a claim about what the authority will do that is not supported by the SOP.",
+      "judge_model": "groq/compound-mini",
+      "text": "You are generally required to file an Income Tax Return if your total income for the preceding calendar year was more than $22,000, or if your self-employment income produced a net profit of more than $6,000, or if you are a non-resident who derived income from Singapore. If you have received a letter, form or SMS from IRAS asking you to file, you must file regardless of the amount you earned.\n\nThe filing deadline is 18 April each year for e-filing, and 15 April for paper returns. You can file at myTax Portal using your Singpass.\n\nRegarding your request to check your specific account details and whether there is an error in the system, I am unable to view your personal tax records. A colleague will follow up with you directly on this matter.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "REL-MULTI-001-011",
+      "scenario_id": "REL-MULTI-001",
+      "label": "tax_reliefs",
+      "predicted_label": "tax_reliefs",
+      "route": "auto_reply",
+      "confidence": 0.9528753995924057,
+      "email_text": "Claim for Child and Elderly Parent\n\nI would like to know if it's possible to claim for both my young child and my elderly mother in the same tax year. I am working and supporting both of them. Are there any specific forms or documents I need to prepare for this claim? Thank you for your assistance.",
+      "sop_ids": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "source_sops": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "status": "failed",
+      "failure_reason": "timeout",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "OOSA-GST-001-015",
+      "scenario_id": "OOSA-GST-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.6206411933087362,
+      "email_text": "Clarification on Registration Requirement for Consumption Tax\n\nHello,\n\nI am self-employed, and my business turnover has recently increased. I'm trying to find out if I need to register for the consumption tax now. Could you please let me know what the requirements are and if there are any specific steps I need to follow? Thank you for your assistance.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "failed",
+      "failure_reason": "timeout",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "OOSB-RECORD-001-018",
+      "scenario_id": "OOSB-RECORD-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.8085152223168122,
+      "email_text": "Business record keeping requirements\n\nhi there Im running an online retail business and I want to make sure Im keeping all the right records for it. What kind of books and accounts do I need to maintain to stay compliant with the rules? Im not sure if theres specific documents or if general financial statements are enough. Please advise thanks!",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-RTE-001"
+      ],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "All factual statements about business income declaration, separate computation rules, and the location of guidance are directly taken from the SOP\u2019s approved self\u2011employed redirect wording.",
+      "judge_model": "groq/compound-mini",
+      "text": "Your enquiry relates to income from a sole proprietorship or partnership. While business income is declared in your individual Income Tax Return, it is computed under separate rules. Guidance for self-employed persons and partners, including record keeping and calculating business income, is available at iras.gov.sg/taxes/individual-income-tax/self-employed-and-partnerships.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "OOSB-RECORD-001-008",
+      "scenario_id": "OOSB-RECORD-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.6793502736553803,
+      "email_text": "Need Guidance on Business Records\n\nHi tax office im new to running my online retail shop and im a bit lost on what records I have to keep like sales invoices or receipts or whatever please let me know exactly what I need to track or if theres a specific list of accounts how long to keep these records must be saved, much appreciated thanks!",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-RTE-001"
+      ],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "All statements in the draft match the approved self\u2011employed redirect phrasing in SOP\u2011RTE\u2011001 and are therefore supported.",
+      "judge_model": "groq/compound-mini",
+      "text": "Your enquiry relates to income from a sole proprietorship or partnership. While business income is declared in your individual Income Tax Return, it is computed under separate rules. Guidance for self-employed persons and partners, including record keeping and calculating business income, is available at iras.gov.sg/taxes/individual-income-tax/self-employed-and-partnerships.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "REL-PARENT-003-010",
+      "scenario_id": "REL-PARENT-003",
+      "label": "tax_reliefs",
+      "predicted_label": "tax_reliefs",
+      "route": "auto_reply",
+      "confidence": 0.9368805681835858,
+      "email_text": "Enquiry on Claiming Dependants for Tax Relief\n\nGood day,\n\nI am writing to ask about claiming dependants for tax relief. I currently support both of my parents and my grandmother. Could you please explain how many dependants I am allowed to include when filing my taxes? Thank you for your assistance.",
+      "sop_ids": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "source_sops": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-REL-002"
+      ],
+      "grounding_correct": true,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "All factual statements in the draft are directly supported by SOP\u2011REL\u2011002.",
+      "judge_model": "groq/compound-mini",
+      "text": "To claim Parent Relief, you must have supported a dependant who was 55 years of age or above, who did not have annual income of more than $8,000 in 2025, and who was living with you in the same household in Singapore. If your dependant did not live with you, the relief applies only if they stayed in Singapore for at least 8 months in the year. Qualifying dependants include parents, grandparents, parents-in-law and grandparents-in-law, as well as step-parents and adoptive parents.\n\nYou may claim the relief for up to 2 dependants. If more than one person supports the same dependant and each meets the qualifying conditions, the relief may be shared between you.\n\nParent Relief is $9,000 per dependant if you stay with your dependant, and $5,500 if you do not. Parent Relief (Disability) is $14,000 per dependant if you stay with your dependant, and $10,000 if you do not.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "REL-WMCR-001-001",
+      "scenario_id": "REL-WMCR-001",
+      "label": "tax_reliefs",
+      "predicted_label": "tax_reliefs",
+      "route": "auto_reply",
+      "confidence": 0.9540237496147409,
+      "email_text": "Enquiry About Claims for Newborn Child\n\nMy child was born last year, and I heard that there are some things I might be able to claim on my taxes because of this. Could you let me know what I should look into or what I might be eligible for as a working mother? Any guidance on this would be very helpful.",
+      "sop_ids": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "source_sops": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "status": "failed",
+      "failure_reason": "timeout",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "ASM-AMEND-002-012",
+      "scenario_id": "ASM-AMEND-002",
+      "label": "assessment_and_amendment",
+      "predicted_label": "assessment_and_amendment",
+      "route": "auto_reply",
+      "confidence": 0.9304396598819834,
+      "email_text": "Timeframe to Object to a Tax Bill\n\nI recently received a tax bill that I do not agree with, and I would like to know how long I have to object to it. Could you please let me know the deadline for raising an objection? Thank you.",
+      "sop_ids": [
+        "SOP-ASM-001"
+      ],
+      "source_sops": [
+        "SOP-ASM-001"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-ASM-001"
+      ],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "All statements (30\u2011day amendment window and payment due within 1 month) are directly supported by the SOP.",
+      "judge_model": "groq/compound-mini",
+      "text": "If you need to make a change after receiving your tax bill, you may file an amendment using the 'Amend Tax Bill' digital service at myTax Portal within 30 days from the date on your Notice of Assessment. IRAS will review the amendment and inform you of the outcome.\n\nPlease note that filing an objection does not defer payment. Tax is due within 1 month of the date of your Notice of Assessment, and a late payment penalty applies to tax outstanding after that date even while an objection is being reviewed. If your assessment is revised, any credit balance is refunded within 30 days from the date of the amended tax bill.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "FIL-DATE-003-009",
+      "scenario_id": "FIL-DATE-003",
+      "label": "filing",
+      "predicted_label": "filing",
+      "route": "auto_reply",
+      "confidence": 0.9306008336145005,
+      "email_text": "Correction Needed for Submitted Income Tax\n\nI recently submitted my income tax return, but I realised that I forgot to include a small amount of income from a part-time job. I'm really worried about this mistake and want to correct it. Could you please tell me how I can amend my tax return to include this missing income? Thank you.",
+      "sop_ids": [
+        "SOP-FIL-001"
+      ],
+      "source_sops": [
+        "SOP-FIL-001"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-FIL-001"
+      ],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "All statements in the draft (re\u2011filing once by 18\u202fApril, using myTax Portal with Singpass, and post\u2011deadline amendments via tax bill) are directly supported by SOP\u2011FIL\u2011001.",
+      "judge_model": "groq/compound-mini",
+      "text": "If your Income Tax Return was e-filed, it may be re-filed once, provided the re-filing is done by 18 April. You can log in to myTax Portal using your Singpass to make the update.\n\nAfter 18 April, changes are made by amending your tax bill instead.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "OOSB-RECORD-001-010",
+      "scenario_id": "OOSB-RECORD-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.8401365608660616,
+      "email_text": "Business Record Keeping Requirements\n\nHi there, im running a small online retail business and trying to figure out what kind of books or accounts I need to keep for my business. Ive heard different things from different people and its a bit confusing. Do I need to keep every little detail recorded or just the main transactions? Also is there a specific format or software that is recommended for small businesses like mine? I want to make sure I'm doing everything right can you let me know? Thanks.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "failed",
+      "failure_reason": "timeout",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "ASM-YA-001-004",
+      "scenario_id": "ASM-YA-001",
+      "label": "assessment_and_amendment",
+      "predicted_label": "assessment_and_amendment",
+      "route": "auto_reply",
+      "confidence": 0.9313185661998564,
+      "email_text": "Tax Bill Query\n\nHi i got a tax bill dated this year but it seems like its about the money I made last year im a bit confused about how that works. Should the bill not have been issued last year am I understanding the timing wrong? Let me know if i need to do anything about it. Thanks",
+      "sop_ids": [
+        "SOP-ASM-001"
+      ],
+      "source_sops": [
+        "SOP-ASM-001"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-ASM-001"
+      ],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "All factual statements about the Year of Assessment and amendment window are directly supported by the SOP text.",
+      "judge_model": "groq/compound-mini",
+      "text": "The Year of Assessment is the year in which tax is calculated and charged on income earned in the preceding calendar year. For example, Year of Assessment 2026 covers income earned from 1 January to 31 December 2025.\n\nIf you need to make a change after receiving your tax bill, you may file an amendment using the 'Amend Tax Bill' digital service at myTax Portal within 30 days from the date on your Notice of Assessment. IRAS will review the amendment and inform you of the outcome.\n\nAs I cannot access or view your specific account records, I am unable to confirm the details of your individual tax bill or advise if specific action is required for your account. A colleague will follow up with you on your specific account.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "OOSB-PARTNER-001-022",
+      "scenario_id": "OOSB-PARTNER-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.7177506283999355,
+      "email_text": "Clarification on Tax Responsibilities for Partnership\n\nHello,\n\nI am part of a two-person partnership business and I'm a bit confused about how we should handle our taxes. Could you clarify who is responsible for submitting the tax returns? Is each partner required to file separately, or is this something that should be done collectively? I want to make sure we are following the correct procedure. Thank you for your guidance.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-RTE-001"
+      ],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "All statements in the draft are directly taken from the approved SOP phrasing and thus are supported.",
+      "judge_model": "groq/compound-mini",
+      "text": "Your enquiry relates to income from a sole proprietorship or partnership. While business income is declared in your individual Income Tax Return, it is computed under separate rules. \n\nGuidance for self-employed persons and partners, including record keeping and calculating business income, is available at iras.gov.sg/taxes/individual-income-tax/self-employed-and-partnerships.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "OOSB-RECORD-001-009",
+      "scenario_id": "OOSB-RECORD-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.7222747090989712,
+      "email_text": "record keeping for online retail business\n\nhi, im running a small online retail business and im not sure what kind of records and accounts I need to keep for it. I know I have to keep track of sales and expenses but are there specific documents I need to maintain? do I need to keep digital copies or are paper ones enough? and for how many years do I need to keep them? thanks in advance for your help",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-RTE-001"
+      ],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "All factual statements in the draft (sole proprietorship classification, income declaration, separate rules, and reference to self\u2011employed guidance) are directly supported by the SOP\u2011RTE\u2011001 approved phrasing.",
+      "judge_model": "groq/compound-mini",
+      "text": "Your enquiry relates to income from a sole proprietorship or partnership. While business income is declared in your individual Income Tax Return, it is computed under separate rules. Guidance for self-employed persons and partners, including record keeping and calculating business income, is available at iras.gov.sg/taxes/individual-income-tax/self-employed-and-partnerships.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "REL-MULTI-001-010",
+      "scenario_id": "REL-MULTI-001",
+      "label": "tax_reliefs",
+      "predicted_label": "tax_reliefs",
+      "route": "auto_reply",
+      "confidence": 0.9464041959563876,
+      "email_text": "Claiming for Child and Elderly Parent in the Same Year\n\nHi, I'm reaching out to understand if I can claim tax relief for both my young child and my elderly mother in the same tax year. They both rely on my support, but I am unsure about how the process works or if there are any restrictions I should be aware of. Could you please guide me on how to proceed with this? Thank you for your assistance.",
+      "sop_ids": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "source_sops": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-REL-001",
+        "SOP-REL-002"
+      ],
+      "grounding_correct": true,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "UNGROUNDED",
+      "judge_reason": "The draft\u2019s statement that \u201cyou may claim tax relief for both your child and your parent in the same tax year\u201d is not directly supported by any SOP text.",
+      "judge_model": "groq/compound-mini",
+      "text": "You may claim tax relief for both your child and your parent in the same tax year, provided you satisfy the qualifying conditions for each relief.\n\nTo claim Qualifying Child Relief for Year of Assessment 2026, all the conditions must have been met in 2025. Your child must be unmarried, and must be your own child, a step-child, or legally adopted. The child must have been below 16 years old, or 16 or above and studying full-time at a university, college or other educational institution at any time during the year. The child must also not have had annual income of more than $8,000.\n\nQualifying Child Relief is $4,000 per qualifying child, and Child Relief (Disability) is $7,500 per qualifying child. Parents may share the relief for the same child in a proportion they agree between themselves.\n\nTo claim Parent Relief you must have supported a dependant who was 55 years of age or above, who did not have annual income of more than $8,000 in 2025, and who was living with you in the same household in Singapore. If your dependant did not live with you, the relief applies only if they stayed in Singapore for at least 8 months in the year. Qualifying dependants include parents, grandparents, parents-in-law and grandparents-in-law, as well as step-parents and adoptive parents.\n\nParent Relief is $9,000 per dependant if you stay with your dependant, and $5,500 if you do not. Parent Relief (Disability) is $14,000 per dependant if you stay with your dependant, and $10,000 if you do not. You may claim the relief for up to 2 dependants. If more than one person supports the same dependant and each meets the qualifying conditions, the relief may be shared between you.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "OOSB-RECORD-001-013",
+      "scenario_id": "OOSB-RECORD-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.7545864918339499,
+      "email_text": "record keeping for my online retail business\n\nhi I recently started an online Retail business and Im trying to make sure I have everything in order can you tell me what type of books and accounts Im supposed to keep I dont want to miss anything important and get into trouble later with the tax office thanks",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "failed",
+      "failure_reason": "api_error",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "OOSA-IR21-001-018",
+      "scenario_id": "OOSA-IR21-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.5875640327230607,
+      "email_text": "Tax Filing Requirements for Departing Foreign Employee\n\nHello, \n\nWe have a foreign employee who will be leaving our company soon, and I need some clarification on the tax filing requirements. Could you please advise on what forms or filings the company needs to complete in this situation? Additionally, are we required to withhold the employee's final salary until the necessary tax matters are settled?\n\nThank you for your assistance.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-RTE-002"
+      ],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "All factual statements about tax clearance and Form IR21 are directly supported by SOP-RTE-002, and no unsupported tax rule claim is made.",
+      "judge_model": "groq/compound-mini",
+      "text": "Your enquiry relates to tax clearance for an employee who is ceasing employment or leaving Singapore. This is handled through the Form IR21 process, which is an obligation on the employer. Guidance is available at iras.gov.sg under tax clearance for foreign and Singapore Permanent Resident employees.\n\nRegarding your question about whether you are required to withhold the employee's final salary, I am unable to answer this part as it is not covered in my guidance. A colleague will follow up with you on this matter.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "OOSB-RECORD-001-015",
+      "scenario_id": "OOSB-RECORD-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.7264854408893336,
+      "email_text": "Record keeping for online business\n\nHi there I have a small online retail business and I want to make sure Im keeping the right books and accounts for it could you let me know exactly what records I need to keep for my trade. Im not sure if theres a specific format or if I need to keep everything electronically or in print. Would appreciate any guidance on this thanks",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-RTE-001"
+      ],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": "Your enquiry relates to income from a sole proprietorship or partnership. While business income is declared in your individual Income Tax Return, it is computed under separate rules. Guidance for self-employed persons and partners, including record keeping and calculating business income, is available at iras.gov.sg/taxes/individual-income-tax/self-employed-and-partnerships.",
+      "judge_failure_reason": "rate_limit"
+    },
+    {
+      "email_id": "OOSA-GST-001-007",
+      "scenario_id": "OOSA-GST-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.661814360001016,
+      "email_text": "Enquiry About Tax Registration Due to Increased Turnover\n\nHello,\n\nI am self-employed and have experienced a recent increase in my business turnover. I am unsure if this requires me to register for any consumption tax, and would appreciate guidance on this matter. Could you please let me know the criteria or threshold that determine when registration is necessary?\n\nThank you for your assistance.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-RTE-002"
+      ],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": "GROUNDED",
+      "judge_reason": "The draft\u2019s statements are exactly the approved phrasing provided in SOP\u2011RTE\u2011002, so no unsupported factual claim is made.",
+      "judge_model": "groq/compound-mini",
+      "text": "Your enquiry relates to a tax type other than individual income tax. IRAS administers each tax type separately, with its own guidance and contact channels, which you can find at iras.gov.sg.",
+      "judge_failure_reason": null
+    },
+    {
+      "email_id": "OOSB-PARTNER-001-017",
+      "scenario_id": "OOSB-PARTNER-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.6080968098781021,
+      "email_text": "Clarification on Tax Responsibilities in a Partnership\n\nHello,  \n\nI am part of a two-person business partnership and I am trying to understand our tax obligations. Specifically, I want to know which partner should handle submitting the necessary tax documents. Do we both have to submit separate returns for our partnership income, or is there one partner who is responsible for all submissions? Any clarification on this process would be helpful.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "failed",
+      "failure_reason": "timeout",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "OOSB-RECORD-001-006",
+      "scenario_id": "OOSB-RECORD-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.5965777084564489,
+      "email_text": "What records do I need to keep for my online shop?\n\nHi there Im running an online retail business and Im trying to make sure Im keeping the right records for it. Can you tell me what books and accounts I need to maintain? I want to be sure Im doing it correctly for my taxes. Thanks",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "failed",
+      "failure_reason": "timeout",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "REL-MULTI-001-000",
+      "scenario_id": "REL-MULTI-001",
+      "label": "tax_reliefs",
+      "predicted_label": "tax_reliefs",
+      "route": "auto_reply",
+      "confidence": 0.9445311639908929,
+      "email_text": "Claiming for Child and Elderly Mother in the Same Year\n\nHello,\n\nI would like to know if it's possible to claim for both my young child and my elderly mother in the same tax year. Are there specific requirements or documents I need to provide for each? Thank you for your guidance.",
+      "sop_ids": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "source_sops": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "status": "failed",
+      "failure_reason": "api_error",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "FIL-OBLIG-004-003",
+      "scenario_id": "FIL-OBLIG-004",
+      "label": "filing",
+      "predicted_label": "filing",
+      "route": "auto_reply",
+      "confidence": 0.9484112520317507,
+      "email_text": "Mistake in tax return request?\n\nGot a letter saying i need to submit a tax return but i barely earned anything last year, maybe [AMOUNT_1]k total, is this a mistake i already tried calling twice and couldn't get through. Can someone pls check this for me? Should i just ignore the letter or do i really need to submit something? Thanks",
+      "sop_ids": [
+        "SOP-FIL-001"
+      ],
+      "source_sops": [
+        "SOP-FIL-001"
+      ],
+      "status": "failed",
+      "failure_reason": "timeout",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "OOSB-PARTNER-001-015",
+      "scenario_id": "OOSB-PARTNER-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.8154410465750711,
+      "email_text": "Clarification on Tax Submission for Partnership\n\nMy business partner and I have recently started a partnership, and I'm trying to understand how our tax submissions should be handled. Could you let me know who is responsible for submitting the relevant tax documents, and what exactly each of us needs to provide? Thank you for your assistance.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "failed",
+      "failure_reason": "timeout",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "OOSB-RECORD-001-002",
+      "scenario_id": "OOSB-RECORD-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.8247711630980353,
+      "email_text": "Keeping business records question\n\nHi there i just started running an online retail business and doing it all by myself .Im trying to figure out what kind of books or accounts i need to keep track of for the business Can you let me know the essentials so i dont mess up or miss anything important thanks.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-RTE-001"
+      ],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": "Your enquiry relates to income from a sole proprietorship or partnership. While business income is declared in your individual Income Tax Return, it is computed under separate rules. Guidance for self-employed persons and partners, including record keeping and calculating business income, is available at iras.gov.sg/taxes/individual-income-tax/self-employed-and-partnerships.",
+      "judge_failure_reason": "rate_limit"
+    },
+    {
+      "email_id": "OOSB-RECORD-001-020",
+      "scenario_id": "OOSB-RECORD-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.8404817182815957,
+      "email_text": "Information Needed for Business Accounting\n\nHi there, I'm running an online retail business and I just want to check, what kind of records I'm legally supposed to keep, like for taxes and inspection, is there a specific list or something my business needs to follow im not too sure, it would really help if you could provide some guidelines thanks.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "failed",
+      "failure_reason": "timeout",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "OOSB-RECORD-001-011",
+      "scenario_id": "OOSB-RECORD-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.6517204480609943,
+      "email_text": "Records for Online Business\n\nhello! Im running a small online business and im not sure what kind of records i'm supposed to be keeping. Do i need special software or can i use a spreadsheet? I've been writing down everything by hand so far inventory sales and expenses but i dont know if thats enough. Is there a list of what i need to keep to make sure i'm doing it right? Thanks sorry if this is a basic question, I just want to get it done correctly.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "ok",
+      "failure_reason": null,
+      "grounded_on": [
+        "SOP-RTE-001"
+      ],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": "Your enquiry relates to income from a sole proprietorship or partnership. While business income is declared in your individual Income Tax Return, it is computed under separate rules. Guidance for self-employed persons and partners, including record keeping and calculating business income, is available at iras.gov.sg/taxes/individual-income-tax/self-employed-and-partnerships.",
+      "judge_failure_reason": "rate_limit"
+    },
+    {
+      "email_id": "OOSB-RECORD-001-003",
+      "scenario_id": "OOSB-RECORD-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.7320228833296221,
+      "email_text": "Record keeping for my online business\n\nHi, im running a small online retail business and Im not sure what records I need to keep. Can you tell me what kind of books or accounts are required for a registered business like mine. Is there a specific format I need to follow or is there any software you recommend? Thanks!",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "failed",
+      "failure_reason": "timeout",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "OOSB-PARTNER-001-021",
+      "scenario_id": "OOSB-PARTNER-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.5929059264648973,
+      "email_text": "Clarification on Tax Responsibilities for Partnership\n\nHello, I am part of a two-person partnership and I would like to understand how we should handle our tax submissions. Are we both required to submit our own tax returns individually, or is one person responsible for submitting on behalf of the partnership? I want to ensure that we're following the correct procedures. Thank you for your guidance.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "failed",
+      "failure_reason": "timeout",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "OOSA-GST-001-018",
+      "scenario_id": "OOSA-GST-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.6102273104335624,
+      "email_text": "Inquiry About Registering for Consumption Tax\n\nHello,\n\nI am self-employed, and my business turnover has increased recently. I am trying to understand if this means I now need to register for any kind of consumption tax. Could you please clarify the requirements for registration based on turnover? Thank you.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "failed",
+      "failure_reason": "rate_limit",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "OOSB-PARTNER-001-019",
+      "scenario_id": "OOSB-PARTNER-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.6179363231714509,
+      "email_text": "Clarification on Tax Submission Responsibilities for Partnership\n\nHello,\n\nI am in a partnership and we are trying to understand who is responsible for submitting our tax information. Do both partners need to submit their own returns, or does one person handle the submission for the partnership as a whole? I just want to make sure we're doing everything correctly. Thank you for your guidance.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "failed",
+      "failure_reason": "rate_limit",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "ASM-AMEND-002-022",
+      "scenario_id": "ASM-AMEND-002",
+      "label": "assessment_and_amendment",
+      "predicted_label": "assessment_and_amendment",
+      "route": "auto_reply",
+      "confidence": 0.9472367953075598,
+      "email_text": "Timeframe for Objecting to Tax Bill\n\nI recently received a tax bill that I disagree with, and I would like to know how long I have to raise an objection. Could you please let me know the time limit for submitting an objection after receiving the bill? Thank you.",
+      "sop_ids": [
+        "SOP-ASM-001"
+      ],
+      "source_sops": [
+        "SOP-ASM-001"
+      ],
+      "status": "failed",
+      "failure_reason": "rate_limit",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "ASM-AMEND-002-003",
+      "scenario_id": "ASM-AMEND-002",
+      "label": "assessment_and_amendment",
+      "predicted_label": "assessment_and_amendment",
+      "route": "auto_reply",
+      "confidence": 0.9567582118853257,
+      "email_text": "Timeline for Objecting to a Tax Bill\n\nHello,\n\nI recently received a tax bill that I believe might be incorrect. Could you please let me know the time frame within which I need to submit an objection? I want to ensure I address this in a timely manner.",
+      "sop_ids": [
+        "SOP-ASM-001"
+      ],
+      "source_sops": [
+        "SOP-ASM-001"
+      ],
+      "status": "failed",
+      "failure_reason": "rate_limit",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "REL-WMCR-001-012",
+      "scenario_id": "REL-WMCR-001",
+      "label": "tax_reliefs",
+      "predicted_label": "tax_reliefs",
+      "route": "auto_reply",
+      "confidence": 0.9338343276731148,
+      "email_text": "Enquiry About Child-Related Claims\n\nHello,\n\nI recently became a mother last year and would like to know what I can claim for my child in terms of tax relief or benefits. Could you provide some guidance on what options are available and any necessary steps I should take?",
+      "sop_ids": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "source_sops": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "status": "failed",
+      "failure_reason": "rate_limit",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "OOSB-PARTNER-001-011",
+      "scenario_id": "OOSB-PARTNER-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.6387170106397786,
+      "email_text": "Clarification on Partnership Tax Responsibilities\n\nHello,  \n\nI am a partner in a two-person business partnership, and I want to ensure we've got our tax responsibilities right. Could you please clarify what each partner is responsible for when it comes to submitting tax information to the authorities? It would be really helpful to have a clear understanding to avoid any errors on our part.\n\nThank you very much for your assistance.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "failed",
+      "failure_reason": "rate_limit",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "REL-MULTI-001-008",
+      "scenario_id": "REL-MULTI-001",
+      "label": "tax_reliefs",
+      "predicted_label": "tax_reliefs",
+      "route": "auto_reply",
+      "confidence": 0.9398781309591488,
+      "email_text": "Claiming for Both My Child and Elderly Mother\n\nI would like to know if it's possible to claim for both my young child and my elderly mother on my tax returns for the current year. Are there specific conditions or documents I would need to provide for each?",
+      "sop_ids": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "source_sops": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "status": "failed",
+      "failure_reason": "rate_limit",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "OOSA-GST-001-009",
+      "scenario_id": "OOSA-GST-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.6887980215633864,
+      "email_text": "Query About Registration Due to Increased Turnover\n\nI recently noticed that my business turnover has grown significantly. I am self-employed and want to make sure I'm following all the necessary regulations. Could you please advise if I need to register for any additional taxes or make any changes to my current tax status because of this increase in turnover? Thank you for your guidance.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "failed",
+      "failure_reason": "rate_limit",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "REL-MULTI-001-003",
+      "scenario_id": "REL-MULTI-001",
+      "label": "tax_reliefs",
+      "predicted_label": "tax_reliefs",
+      "route": "auto_reply",
+      "confidence": 0.9445150622735484,
+      "email_text": "Claiming for Both Child and Elderly Mother in the Same Year\n\nHello,\n\nI would like to know if it is possible to claim for both my young child and my elderly mother in the same year. Are there specific requirements or documents that I need to provide for each claim? Any guidance on how to proceed with this would be appreciated. Thank you.",
+      "sop_ids": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "source_sops": [
+        "SOP-REL-001",
+        "SOP-REL-002",
+        "SOP-REL-003",
+        "SOP-REL-004"
+      ],
+      "status": "failed",
+      "failure_reason": "rate_limit",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    },
+    {
+      "email_id": "OOSB-RECORD-001-000",
+      "scenario_id": "OOSB-RECORD-001",
+      "label": "oos_redirect",
+      "predicted_label": "oos_redirect",
+      "route": "redirect",
+      "confidence": 0.8710707932417483,
+      "email_text": "Query on Required Business Records\n\nHi I run a small online retail business and I was wondering what kind of books and accounts Im supposed to keep for my trade. I want to make sure I'm doing everything right but I'm not sure what exactly is needed is there a list or something that I should follow? Would appreciate any guidance or resources you could point me to thanks.",
+      "sop_ids": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "source_sops": [
+        "SOP-RTE-001",
+        "SOP-RTE-002"
+      ],
+      "status": "failed",
+      "failure_reason": "rate_limit",
+      "grounded_on": [],
+      "grounding_correct": null,
+      "model_name": "gemini-3.6-flash",
+      "judge_verdict": null,
+      "judge_reason": null,
+      "judge_model": null,
+      "text": null
+    }
+  ]
+}

@@ -21,14 +21,12 @@ last_reviewed: 2026-09-01
 
 # SOP-INC-001 - Rental income
 
-> **SYNTHETIC DOCUMENT.** Authored for a technical assessment. This is not an
-> IRAS document and does not reflect IRAS internal material, templates or
-> practice. Every factual claim is a restatement traceable to the public
-> source cited beside it in section 2.
+> **SYNTHETIC DOCUMENT.** Written for this assessment from the public sources cited
+> in section 2. It is not an IRAS document or internal procedure. See
+> [data provenance](../SOURCES.md).
 
-> **HELD OUT OF THE INDEX.** This procedure is authored but excluded from
-> the runtime lookup, so the classes it serves resolve to no SOP. See
-> `sop_design.md` S5.
+> **NOT INDEXED.** This SOP is excluded from runtime retrieval. See the
+> [SOP schema and corpus design](../sop_specs/README.md).
 
 ## 1. Scope
 
@@ -37,7 +35,7 @@ Taxpayer asks whether rent received is taxable, when rental income must be decla
 **Not in scope:**
 - The taxpayer's own declared rental figures or assessment. -> escalate (`account_specific`)
 - Computing net rental income or tax for the taxpayer. -> escalate (`amount_computation_requested`)
-- Property tax, which is a different tax type. -> escalate (`oos_other_agency`)
+- Property tax, which is a different tax type. -> escalate (`oos_redirect`)
 
 ## 2. Key facts the officer may state
 
@@ -63,7 +61,7 @@ Taxpayer asks whether rent received is taxable, when rental income must be decla
 2. **If** Asking IRAS to compute net rental income or tax  
    -> Escalate (`amount_computation_requested`)
 3. **If** Asking about property tax rather than income tax on rent  
-   -> Redirect (`oos_other_agency`)
+   -> Redirect (`oos_redirect`)
 4. **If** Otherwise  
    -> State the treatment of rental income from the key facts
 

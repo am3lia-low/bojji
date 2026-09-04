@@ -435,10 +435,38 @@ def test_redacted_state_carries_no_identifiers() -> None:
             vault={"[NRIC_1]": "S1234567D", "[PHONE_1]": "91234567"},
             counts={"nric": 1, "sg_phone": 1},
         ),
+        draft=DraftResult(
+            status=DraftStatus.OK,
+            text="We recorded NRIC S1234567D and phone 91234567.",
+            sop_ids=("SOP-PAY-001",),
+        ),
     )
     dumped = state.redacted().model_dump_json()
     for identifier in ("S1234567D", "91234567", "citizen@example.com"):
         assert identifier not in dumped, identifier
+
+
+def test_redacted_state_restores_placeholders_inside_a_draft() -> None:
+    """Rehydration is local; persistence must reverse it before clearing the vault."""
+    state = TriageState(
+        email=make_email(body="My NRIC is S1234567D"),
+        scrub=ScrubRecord(
+            text="My NRIC is [NRIC_1]",
+            vault={"[NRIC_1]": "S1234567D"},
+            counts={"nric": 1},
+        ),
+        draft=DraftResult(
+            status=DraftStatus.OK,
+            text="We have your NRIC S1234567D.",
+            sop_ids=("SOP-PAY-001",),
+        ),
+    )
+
+    redacted = state.redacted()
+
+    assert redacted.draft is not None
+    assert redacted.draft.text == "We have your NRIC [NRIC_1]."
+    assert "S1234567D" not in redacted.model_dump_json()
 
 
 def test_redacted_state_keeps_what_reporting_needs() -> None:
@@ -475,7 +503,7 @@ def test_redaction_preserves_the_decision_record() -> None:
     )
     redacted = state.redacted()
     assert redacted.decision == state.decision
-    assert redacted.draft == state.draft
+    assert redacted.draft == state.draft  # no identifiers in this draft, so unchanged
     assert redacted.email.id == state.email.id
 
 

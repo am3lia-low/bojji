@@ -1,5 +1,8 @@
 .claude/settings.local.json
 .scratch/
+ref material/
+/tmp/
+/eval/human_review/
 __pycache__/
 *.pyc
 .venv/

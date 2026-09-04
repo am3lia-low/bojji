@@ -44,6 +44,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # caches, and the .env file -- secrets are passed at run time, never baked in.
 COPY src/ ./src/
 COPY app/ ./app/
+COPY .streamlit/ ./.streamlit/
 COPY eval/ ./eval/
 COPY scripts/ ./scripts/
 COPY config/ ./config/

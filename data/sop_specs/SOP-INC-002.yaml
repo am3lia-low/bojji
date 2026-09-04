@@ -1,6 +1,6 @@
 # SOP-INC-002 — Foreign income and DTA relief
 #
-# Class: foreign_income_dta. ***HELD OUT — indexed: false*** (sop_design.md S5).
+# Class: foreign_income_dta. Held out with `indexed: false`.
 #
 # Second WHOLE-CLASS HOLDOUT. As with INC-001, no indexed SOP declares
 # `intents: [foreign_income_dta]`, so CLASS_TO_SOPS resolves EMPTY and the router

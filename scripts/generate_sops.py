@@ -7,7 +7,7 @@ hand-edited. Running this script is idempotent, so a spec change plus a re-run i
 the only way the corpus changes.
 
 Why generate rather than author markdown directly: the public-URL traceability
-guarantee (``sop_design.md`` S8.2) is enforced here, not promised in a README.
+guarantee is enforced here, not left as a documentation promise.
 Every fact carries a ``source`` handle, this script refuses to render a fact whose
 handle does not resolve to a cited reference, and the rendered S2 prints the URL
 beside the claim. A reviewer can therefore check any sentence in the corpus
@@ -25,7 +25,7 @@ property that would fail silently if it broke:
    holdout would collapse into an ordinary answerable case.
 3. **Held-out classes stay empty.**  ``rental_income`` and ``foreign_income_dta``
    must resolve to no indexed SOP, so that ``no_supporting_sop`` is *derived*
-   from an empty lookup rather than hand-mapped (``BUILD.md`` S5.6).
+   from an empty lookup rather than hand-mapped.
 
 Usage:
     python scripts/generate_sops.py            # render the corpus
@@ -54,13 +54,11 @@ HELD_OUT_CLASSES: Final[frozenset[str]] = frozenset({"rental_income", "foreign_i
 #: Marker for the leakage guard described in the module docstring.
 RELIEF_CAP_MARKER: Final[str] = "80,000"
 
-#: Prepended to every rendered SOP. The misrepresentation guard: a synthetic SOP
-#: that reads like a real IRAS document is its own problem (`sop_design.md` S8.2).
+#: Prepended to every rendered SOP so it cannot be mistaken for agency material.
 BANNER: Final[str] = (
-    "> **SYNTHETIC DOCUMENT.** Authored for a technical assessment. This is not an\n"
-    "> IRAS document and does not reflect IRAS internal material, templates or\n"
-    "> practice. Every factual claim is a restatement traceable to the public\n"
-    "> source cited beside it in section 2.\n"
+    "> **SYNTHETIC DOCUMENT.** Written for this assessment from the public sources cited\n"
+    "> in section 2. It is not an IRAS document or internal procedure. See\n"
+    "> [data provenance](../SOURCES.md).\n"
 )
 
 
@@ -165,14 +163,16 @@ def render_frontmatter(spec: dict[str, Any], urls: list[str]) -> str:
     ``intents`` builds ``CLASS_TO_SOPS``; ``auto_reply_permitted`` and
     ``escalate_if`` build ``BUCKET``. Escalation policy is therefore corpus-derived
     rather than hardcoded, which is what lets an agency conform real SOPs to this
-    schema and change system behaviour without touching code (`sop_design.md` S4).
+    schema and change system behaviour without touching code.
     """
     lines = ["---", "synthetic: true"]
     for key in (
         "sop_id", "title", "version", "effective_date", "supersedes",
-        "applies_to_ya", "intents", "indexed", "owner_queue",
+        "applies_to_ya", "intents", "indexed", "reachable_via", "owner_queue",
         "handling_target", "auto_reply_permitted",
     ):
+        if key == "reachable_via" and not spec.get(key):
+            continue
         lines.append(f"{key}: {_fm_value(spec.get(key), key)}")
     lines.append("escalate_if:")
     lines += [f"  - {item}" for item in spec.get("escalate_if", [])]
@@ -184,14 +184,13 @@ def render_frontmatter(spec: dict[str, Any], urls: list[str]) -> str:
 
 
 def render_body(spec: dict[str, Any], ref_urls: dict[str, str]) -> str:
-    """Render the officer-facing procedure: sections S1-S6 (`sop_design.md` S4)."""
+    """Render the officer-facing procedure in six consistent sections."""
     out: list[str] = [f"# {spec['sop_id']} - {spec['title']}", "", BANNER]
 
     if not spec["indexed"]:
         out += [
-            "> **HELD OUT OF THE INDEX.** This procedure is authored but excluded "
-            "from\n> the runtime lookup, so the classes it serves resolve to no SOP. "
-            "See\n> `sop_design.md` S5.\n",
+            "> **NOT INDEXED.** This SOP is excluded from runtime retrieval. See the\n"
+            "> [SOP schema and corpus design](../sop_specs/README.md).\n",
         ]
 
     out += ["## 1. Scope", "", spec["scope"].strip(), ""]

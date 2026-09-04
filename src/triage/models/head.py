@@ -9,7 +9,7 @@ predictions that are wrong without erroring.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import torch
 from torch import nn
@@ -45,4 +45,4 @@ class MiniLMClassifier(nn.Module):
         hidden = self.encoder(**encoded).last_hidden_state
         mask = encoded["attention_mask"].unsqueeze(-1).float()
         pooled = (hidden * mask).sum(1) / mask.sum(1).clamp(min=1e-9)
-        return self.head(self.dropout(pooled))
+        return cast(torch.Tensor, self.head(self.dropout(pooled)))

@@ -22,17 +22,16 @@ last_reviewed: 2026-09-01
 
 # SOP-ESC-003 - Scam and impersonation reports
 
-> **SYNTHETIC DOCUMENT.** Authored for a technical assessment. This is not an
-> IRAS document and does not reflect IRAS internal material, templates or
-> practice. Every factual claim is a restatement traceable to the public
-> source cited beside it in section 2.
+> **SYNTHETIC DOCUMENT.** Written for this assessment from the public sources cited
+> in section 2. It is not an IRAS document or internal procedure. See
+> [data provenance](../SOURCES.md).
 
 ## 1. Scope
 
 Taxpayer reports a suspicious email, SMS, WhatsApp message, call or website purporting to be from IRAS; asks whether a message they received is genuine; or reports that they have already responded to one, disclosed information or made a payment.
 
 **Not in scope:**
-- Reporting suspected tax evasion by another person. -> escalate (`oos_other_agency`)
+- Reporting suspected tax evasion by another person. -> escalate (`oos_redirect`)
 - A genuine IRAS notice the taxpayer disputes. -> escalate (`assessment_and_amendment`)
 
 ## 2. Key facts the officer may state

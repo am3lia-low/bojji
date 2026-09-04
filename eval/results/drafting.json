@@ -1,3 +1,69 @@
 {
-  "skipped": true
+  "skipped": false,
+  "n_attempted": 50,
+  "n_ok": 24,
+  "availability": 0.48,
+  "sample": {
+    "method": "deterministic simple random sample without replacement",
+    "seed": 42,
+    "population_n": 102,
+    "sample_n": 50,
+    "population_by_route": {
+      "auto_reply": 55,
+      "redirect": 47
+    },
+    "sample_by_route": {
+      "auto_reply": 20,
+      "redirect": 30
+    },
+    "population_by_predicted_label": {
+      "assessment_and_amendment": 14,
+      "filing": 6,
+      "oos_redirect": 47,
+      "payment": 4,
+      "tax_reliefs": 31
+    },
+    "sample_by_predicted_label": {
+      "assessment_and_amendment": 5,
+      "filing": 3,
+      "oos_redirect": 30,
+      "payment": 1,
+      "tax_reliefs": 11
+    }
+  },
+  "failures_by_reason": {
+    "timeout": 12,
+    "api_error": 4,
+    "rate_limit": 10
+  },
+  "drafter_error": null,
+  "grounding": {
+    "note": "Only tax_reliefs and payment pull a SOP group, so only they make a real selection. 1:1 classes are correct by construction.",
+    "n": 5,
+    "accuracy": 1.0
+  },
+  "judge": {
+    "model": "groq/compound-mini",
+    "question": "Does this reply assert any fact unsupported by the SOP or not clearly attributed to the citizen?",
+    "n_judged": 21,
+    "n_grounded": 19,
+    "groundedness_rate": 0.9048,
+    "by_route": {
+      "auto_reply": {
+        "n_judged": 10,
+        "n_grounded": 8
+      },
+      "redirect": {
+        "n_judged": 11,
+        "n_grounded": 11
+      }
+    },
+    "note": "Judge-human agreement over the same sample is reported separately once the drafts are hand-reviewed; a judge without measured agreement is decorative.",
+    "n_eligible": 24,
+    "availability": 0.875,
+    "failures_by_reason": {
+      "rate_limit": 3
+    },
+    "last_resumed_at": "2026-09-04T05:59:36+00:00"
+  }
 }

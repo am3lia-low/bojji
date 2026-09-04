@@ -1,6 +1,6 @@
 # SOP-REL-005 — Personal income tax relief cap
 #
-# Class: tax_reliefs. ***HELD OUT — indexed: false*** (sop_design.md S5).
+# Class: tax_reliefs. Held out with `indexed: false`.
 #
 # This is the PARTIAL-ANSWER holdout, and it is a different kind from INC-001 and
 # INC-002. Those hold out a whole class, so the email is unanswerable and the

@@ -14,10 +14,10 @@ rate limit and a malformed response must be distinguishable here rather than
 collapsed into one exception. :class:`LLMError` carries a
 :class:`triage.schemas.DraftFailure`, which is the vocabulary the queue renders.
 
-**No retries.** A free-tier rate limit does not clear in the few seconds a retry
-would wait, and retrying inside an eval sweep would turn a visible availability
-number into a hidden latency cost. Drafting availability is a reported metric
-(``BUILD.md`` S6.2), so the failure is surfaced rather than papered over.
+**Retry policy follows the metric.** Runtime drafting and the classification
+baseline do not retry, because hidden retries would distort availability or latency.
+The evaluation-only groundedness judge allows two SDK retries and paced requests;
+its availability is not a runtime service-level metric, and each result is saved.
 """
 
 from __future__ import annotations
@@ -32,17 +32,22 @@ from triage.schemas import DraftFailure
 #: not require a code change.
 DEFAULT_GEMINI_MODEL: Final[str] = "gemini-3.6-flash"
 
-#: Groq's roster rotates, and this is not hypothetical: ``llama-3.3-70b-versatile``
-#: -- the model this project originally pinned -- was withdrawn during the build and
-#: every call began returning 404. Qwen is chosen over the ``openai/gpt-oss-*``
-#: models also on the roster because GPT-4o generated the email corpus, and a judge
-#: from the generator's family would weaken separation rule 3 (judge != generator,
-#: ``BUILD.md`` S6.4). Override with ``GROQ_MODEL`` when this one rotates too; the
-#: identifier actually used is recorded in ``eval/results/``.
+#: The generic Groq client defaults to the fixed Qwen model used by the zero-shot
+#: classification baseline. The judge has its own default and environment override
+#: below, so changing the judge cannot silently change that benchmark.
 DEFAULT_GROQ_MODEL: Final[str] = "qwen/qwen3.8-27b"
 
-#: Generous enough for a cold free-tier call, short enough that a hung request
-#: fails the item rather than stalling a sweep.
+#: Groundedness judge. Compound Mini has materially more free-tier TPM headroom
+#: than the fixed Qwen baseline. It is eval-time only, receives the complete SOP
+#: evidence, and has its external tools disabled in :class:`GroqJudgeClient`.
+DEFAULT_GROQ_JUDGE_MODEL: Final[str] = "groq/compound-mini"
+
+# The binary judge returns two short lines. A tight cap avoids reserving thousands
+# of needless output tokens against Groq's free-tier tokens-per-minute allowance.
+JUDGE_MAX_COMPLETION_TOKENS: Final[int] = 128
+
+#: Per-attempt timeout: generous enough for a cold free-tier call, short enough
+#: that a hung request fails the item rather than stalling a sweep.
 DEFAULT_TIMEOUT: Final[float] = 45.0
 
 
@@ -80,7 +85,15 @@ def classify_error(exc: Exception) -> DraftFailure:
     guessing ``rate_limit`` would understate a real outage.
     """
     text = f"{type(exc).__name__} {exc}".lower()
-    if any(k in text for k in ("rate limit", "ratelimit", "429", "quota", "resource_exhausted")):
+    if any(k in text for k in (
+        "rate limit",
+        "rate_limit",
+        "ratelimit",
+        "429",
+        "quota",
+        "resource_exhausted",
+        "tokens per minute",
+    )):
         return DraftFailure.RATE_LIMIT
     if any(k in text for k in ("timeout", "timed out", "deadline")):
         return DraftFailure.TIMEOUT
@@ -172,14 +185,27 @@ class GeminiClient:
         return len(self._keys)
 
     def _call(self, key: str, prompt: str, temperature: float) -> str:
-        import google.generativeai as genai
+        from google import genai
+        from google.genai import types
 
-        genai.configure(api_key=key)
-        model = genai.GenerativeModel(self._model_name)
-        response = model.generate_content(
-            prompt,
-            generation_config={"temperature": temperature},
-            request_options={"timeout": DEFAULT_TIMEOUT},
+        # The maintained SDK owns configuration on the client instance. That is
+        # safer than the retired package's process-global ``configure(api_key=...)``
+        # and keeps key rotation isolated to this call. The new SDK expects timeout
+        # values in milliseconds.
+        client = genai.Client(
+            api_key=key,
+            http_options=types.HttpOptions(
+                timeout=int(DEFAULT_TIMEOUT * 1_000),
+                # The SDK otherwise defaults to five attempts. Provider retries
+                # would turn this 45-second budget into several hidden minutes and
+                # contradict the explicit no-retry availability policy above.
+                retry_options=types.HttpRetryOptions(attempts=1),
+            ),
+        )
+        response = client.models.generate_content(
+            model=self._model_name,
+            contents=prompt,
+            config=types.GenerateContentConfig(temperature=temperature),
         )
         return (response.text or "").strip()
 
@@ -222,13 +248,20 @@ class GeminiClient:
 
 
 class GroqClient:
-    """Groq, free tier -- the groundedness judge.
+    """Generic Groq client, used by the fixed-model classification baseline.
 
-    EVAL-TIME ONLY. A different model family from the drafter on purpose: a model
-    must not be scored on its own output (``BUILD.md`` S6.4).
+    EVAL-TIME ONLY. Provider retries are disabled by default so the baseline's
+    measured latency remains visible rather than being hidden in the SDK.
     """
 
-    def __init__(self, api_key: str | None = None, model: str | None = None) -> None:
+    def __init__(
+        self,
+        api_key: str | None = None,
+        model: str | None = None,
+        *,
+        max_retries: int = 0,
+        disable_tools: bool = False,
+    ) -> None:
         key = api_key or os.environ.get("GROQ_API_KEY", "")
         if not key:
             raise LLMError(
@@ -238,6 +271,8 @@ class GroqClient:
             )
         self._model_name = model or os.environ.get("GROQ_MODEL") or DEFAULT_GROQ_MODEL
         self._key = key
+        self._max_retries = max_retries
+        self._disable_tools = disable_tools
 
     @property
     def model_name(self) -> str:
@@ -247,12 +282,28 @@ class GroqClient:
         try:
             from groq import Groq
 
-            client = Groq(api_key=self._key, timeout=DEFAULT_TIMEOUT)
-            completion = client.chat.completions.create(
-                model=self._model_name,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=temperature,
+            client = Groq(
+                api_key=self._key,
+                timeout=DEFAULT_TIMEOUT,
+                max_retries=self._max_retries,
             )
+            if self._disable_tools:
+                # Compound models can search the web or execute code. A grounding
+                # judge must use only the evidence supplied in the prompt.
+                completion = client.chat.completions.create(
+                    model=self._model_name,
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=temperature,
+                    max_completion_tokens=JUDGE_MAX_COMPLETION_TOKENS,
+                    tool_choice="none",
+                )
+            else:
+                completion = client.chat.completions.create(
+                    model=self._model_name,
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=temperature,
+                    max_completion_tokens=JUDGE_MAX_COMPLETION_TOKENS,
+                )
             text = (completion.choices[0].message.content or "").strip()
         except LLMError:
             raise
@@ -264,8 +315,32 @@ class GroqClient:
         return LLMResponse(text=text, model_name=self._model_name)
 
 
+class GroqJudgeClient(GroqClient):
+    """Rate-limit-tolerant, evidence-only Groq groundedness judge.
+
+    This separate client keeps the Qwen classification baseline fixed while the
+    judge uses Compound Mini. Two SDK retries honour transient 429 responses; the
+    surrounding evaluation additionally paces calls and checkpoints each verdict.
+    """
+
+    def __init__(self, api_key: str | None = None, model: str | None = None) -> None:
+        judge_model = (
+            model
+            or os.environ.get("GROQ_JUDGE_MODEL")
+            or DEFAULT_GROQ_JUDGE_MODEL
+        )
+        super().__init__(
+            api_key=api_key,
+            model=judge_model,
+            max_retries=2,
+            disable_tools=True,
+        )
+
+
 __all__ = [
-    "DEFAULT_GEMINI_MODEL", "DEFAULT_GROQ_MODEL", "GEMINI_KEY_VARS",
-    "GeminiClient", "GroqClient", "gemini_keys",
+    "DEFAULT_GEMINI_MODEL", "DEFAULT_GROQ_JUDGE_MODEL", "DEFAULT_GROQ_MODEL",
+    "GEMINI_KEY_VARS",
+    "JUDGE_MAX_COMPLETION_TOKENS",
+    "GeminiClient", "GroqClient", "GroqJudgeClient", "gemini_keys",
     "LLMClient", "LLMError", "LLMResponse", "classify_error",
 ]

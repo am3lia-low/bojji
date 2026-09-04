@@ -2,7 +2,7 @@
 #
 # Class: assessment_and_amendment (auto_answerable).
 #
-# TIE-BREAK RULE (see sop_design.md S10.3): ASM-001 and FIL-001 both touch
+# TIE-BREAK RULE: ASM-001 and FIL-001 both touch
 # objecting to a Notice of Assessment. Any enquiry that DISPUTES THE FIGURES in
 # an assessment — including an estimated NOA raised for late filing — is
 # `assessment_and_amendment`, not `filing`. `filing` covers only how and when to
@@ -24,6 +24,7 @@ escalate_if:
   - account_specific
   - amount_computation_requested
   - hardship_or_waiver_request
+  - scam_report
 
 references:
   - id: understanding_assessment
@@ -163,4 +164,4 @@ do_not:
 related:
   - SOP-FIL-001   # filing mechanics; see the tie-break rule above
   - SOP-PAY-002   # payment due date and late-payment penalties
-  - SOP-REL-005   # relief cap — HELD OUT, see sop_design.md S5
+  - SOP-REL-005   # relief cap — held out

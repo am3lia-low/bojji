@@ -10,11 +10,11 @@ cutoff is unsound, and it is what this module measures and corrects.
 softmax. One parameter, fitted by minimising negative log-likelihood on the
 calibration split.
 
-**Why one parameter and not a curve.** The calibration split holds ~360 examples
-across five buckets, roughly 72 each. Isotonic regression is non-parametric and
-would overfit at that size; a single scalar cannot. This is a decision about data
-volume, not convenience -- isotonic becomes worth revisiting only if the dataset
-grows (``BUILD.md`` S5.5).
+**Why one parameter and not a curve.** The calibration split holds 646 examples
+across five uneven buckets. Isotonic regression is non-parametric and would overfit
+the smaller buckets; a single scalar sharply limits that freedom. This is a decision
+about data volume, not convenience -- isotonic becomes worth revisiting only if the
+labelled dataset grows (``BUILD.md`` S5.5).
 
 **What temperature scaling does and does not do.** It is monotonic, so it cannot
 change which class is predicted: accuracy before and after is identical. It changes
@@ -28,7 +28,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Final
+from typing import Any, Final, cast
 
 #: Fitted parameters live beside the weights, so a model and its temperature
 #: cannot be separated by accident.
@@ -154,11 +154,11 @@ def fit_temperature(
 
     def closure() -> torch.Tensor:
         optimiser.zero_grad()
-        loss = loss_fn(logits / log_temperature.exp(), labels)
-        loss.backward()
+        loss = cast(torch.Tensor, loss_fn(logits / log_temperature.exp(), labels))
+        loss.backward()  # type: ignore[no-untyped-call]
         return loss
 
-    optimiser.step(closure)  # type: ignore[arg-type]
+    optimiser.step(closure)  # type: ignore[no-untyped-call]
     return float(log_temperature.exp().item())
 
 
@@ -180,7 +180,8 @@ def bucket_confidences(
     at ``account_specific`` 0.40 with three auto-answerable classes at 0.20 each has
     0.60 of bucket mass on ``auto_answerable`` and 0.40 on the bucket that actually
     applies -- so ``max`` reports 0.60 for a decision made at 0.40. On the
-    calibration split the two disagree on 38 of 401 emails (9.5%), mean gap 0.109.
+    calibration split the two can disagree whenever probability mass is spread over
+    several classes that share another bucket.
 
     :func:`triage.nodes.calibrate.calibrate` returns ``p[predicted]`` and the router
     thresholds that value, so scoring ``max`` here would fit the temperature against

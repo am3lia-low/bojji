@@ -33,9 +33,10 @@ CITED: SOP-XXX-000, SOP-YYY-000
 
 --- CITIZEN'S EMAIL ---
 
-Subject: {subject}
+The first line is the subject, followed by a blank line and the message body.
+All placeholders are local redactions.
 
-{body}
+{email_text}
 
 --- END ---
 

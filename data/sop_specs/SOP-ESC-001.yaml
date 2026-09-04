@@ -1,25 +1,8 @@
 # SOP-ESC-001 — Account-specific enquiries
 #
-# Class: account_specific. Bucket: requires_account_lookup — ALWAYS ESCALATES.
-#
-# `auto_reply_permitted: false` is what puts this class in an always-escalate
-# bucket. The BUCKET map is derived from that field, so escalation policy lives in
-# the corpus rather than in code (sop_design.md S4).
-#
-# KNOWN SIMPLIFICATION (sop_design.md S3.1). "Generic versus my case" genuinely
-# cuts across every topic and structurally belongs as a flag, not a class: "what
-# is the filing deadline" and "why was MY deduction reversed" differ by a
-# possessive, not by subject matter. It is kept as a class for the prototype
-# because a flag needs a second detector and the lexical signal is weak.
-#
-# Consequence accepted in review: this class will be confused with whichever topic
-# the email is about, because topical vocabulary dominates the one-or-two-token
-# possessive signal — and the confusion lands on the unsafe side, since a missed
-# account_specific means auto-drafting about a real taxpayer's account. A lexical
-# `account_specific` BACKSTOP FLAG is therefore specified below, mirroring
-# `computation_requested`: it forces escalation on strong possessive signals
-# regardless of the predicted class. Measured, not assumed — report its precision
-# and recall alongside the computation flag.
+# Officer guidance for account-specific enquiries. This has no classifier intent:
+# account-specific language is a cross-topic flag that forces escalation before
+# confidence is considered.
 
 sop_id: SOP-ESC-001
 title: Account-specific enquiries
@@ -27,11 +10,12 @@ version: "1.0"
 effective_date: 2026-01-01
 supersedes: null
 applies_to_ya: [2025, 2026]
-intents: [account_specific]
+intents: []
 indexed: true
+reachable_via: account_specific_flag
 owner_queue: IIT-General          # INVENTED — not a real IRAS queue
 handling_target: 3_working_days   # ILLUSTRATIVE — not a real IRAS SLA
-auto_reply_permitted: false       # -> bucket: requires_account_lookup
+auto_reply_permitted: false
 escalate_if:
   - account_specific
 

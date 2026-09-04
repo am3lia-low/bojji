@@ -24,10 +24,9 @@ last_reviewed: 2026-09-01
 
 # SOP-RES-001 - Handling residency enquiries
 
-> **SYNTHETIC DOCUMENT.** Authored for a technical assessment. This is not an
-> IRAS document and does not reflect IRAS internal material, templates or
-> practice. Every factual claim is a restatement traceable to the public
-> source cited beside it in section 2.
+> **SYNTHETIC DOCUMENT.** Written for this assessment from the public sources cited
+> in section 2. It is not an IRAS document or internal procedure. See
+> [data provenance](../SOURCES.md).
 
 ## 1. Scope
 
@@ -37,7 +36,7 @@ Taxpayer asks whether they are a tax resident, how the residency test works, how
 - Confirming this particular taxpayer's residency status for a given YA. -> escalate (`account_specific`)
 - Whether specific foreign income is taxable, or how DTA relief applies to it. -> escalate (`foreign_income_dta`)
 - Computing tax at resident or non-resident rates for the taxpayer. -> escalate (`amount_computation_requested`)
-- Tax clearance for a departing foreign employee (Form IR21). -> escalate (`oos_other_agency`)
+- Tax clearance for a departing foreign employee (Form IR21). -> escalate (`oos_redirect`)
 
 ## 2. Key facts the officer may state
 
@@ -77,7 +76,7 @@ Taxpayer asks whether they are a tax resident, how the residency test works, how
 3. **If** Asking IRAS to compute tax at resident or non-resident rates  
    -> Escalate (`amount_computation_requested`)
 4. **If** Asking about tax clearance for a departing employee  
-   -> Redirect (`oos_other_agency`)
+   -> Redirect (`oos_redirect`)
 5. **If** Otherwise  
    -> State the residency test or the COR procedure from the key facts
 

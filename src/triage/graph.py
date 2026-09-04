@@ -151,7 +151,9 @@ def build_graph(deps: GraphDeps) -> Any:
     Nodes are bound to ``deps`` here, so each remains ``pure(state) -> partial
     state`` and stays independently testable without a graph.
     """
-    builder: StateGraph = StateGraph(TriageState)
+    builder: StateGraph[TriageState, None, TriageState, TriageState] = StateGraph(
+        TriageState
+    )
 
     builder.add_node("scrub", scrub_node)
     builder.add_node("classify", lambda s: classify_node(s, deps.classifier))

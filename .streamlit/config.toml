@@ -1,0 +1,9 @@
+# The app uses a local text-only Transformers model. Streamlit's default module
+# watcher introspects Transformers' lazy image modules and can consequently try to
+# import the optional `torchvision` package. The demo does not need hot reload, so
+# disabling the watcher avoids that false backend error and reduces startup work.
+[server]
+fileWatcherType = "none"
+
+[browser]
+gatherUsageStats = false

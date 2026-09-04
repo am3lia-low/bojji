@@ -1,90 +1,141 @@
-# SOP Specs — authoring format
+# SOP schema and corpus design
 
-Human-authored input to `scripts/generate_sops.py`, which renders each spec into
-`data/sop/SOP-*.md`. Specs are the source of truth; the markdown is derived and
-should never be hand-edited.
+`data/sop_specs/*.yaml` is the human-authored source of truth for the synthetic
+officer procedures. `scripts/generate_sops.py` validates those specs and renders
+the Markdown corpus in `data/sop/`; generated SOPs should not be edited directly.
 
-Design rationale is in `ref material/sop_design.md` S4 and S8.3.
+For source provenance, licensing, and privacy details, see
+[Data sources](../SOURCES.md).
 
----
+## Design decisions
 
-## Why specs rather than prose
+### The corpus controls routing
 
-Every factual claim in an SOP must trace to a public IRAS URL (`sop_design.md`
-S8.2). A spec makes that structural rather than aspirational: each fact is a
-record carrying its own `source`, and the generator refuses to render a fact
-without one. The traceability guarantee is therefore enforced by the build, not
-by a promise in the README.
+Each SOP declares the intents it supports, whether automated replies are permitted,
+and which conditions require escalation. At startup the application inverts those
+fields into the class-to-SOP and class-to-bucket mappings. Routing policy therefore
+lives in the corpus rather than in a duplicate table in application code.
 
----
+The runtime uses exact lookup instead of vector search. With 17 authored documents
+and a closed 10-class taxonomy, the mapping is complete, deterministic, and easy to
+audit. A similarity model would add a failure threshold directly before the
+escalation decision without solving an ambiguity present in this corpus.
 
-## Schema
+### Holdouts test missing knowledge
+
+Fourteen SOPs are indexed and three are deliberately held out:
+
+- `SOP-INC-001` and `SOP-INC-002` remove all indexed support for
+  `rental_income` and `foreign_income_dta`. The router derives
+  `no_supporting_sop` from the empty lookup and escalates.
+- `SOP-REL-005` removes the overall personal-relief cap from an otherwise
+  supported class. This creates a partial-knowledge case without making all tax
+  relief questions unanswerable.
+
+The agent never computes a citizen's tax or relief amount. Computation requests are
+flagged and escalated because caps, ordering rules, and interacting reliefs cannot be
+handled safely from a short prose procedure.
+
+### The SOPs are synthetic
+
+The files are author-written procedures based only on public IRAS guidance. Every
+fact in a spec names a source handle, every handle resolves to a URL declared in the
+same spec, and every rendered document carries a synthetic banner. Invented queue
+names and handling targets are marked as illustrative.
+
+Approved phrasing is rendered into each SOP as grounded source material. Live replies
+are still produced only by the configured drafter; the application has no local
+template fallback.
+
+## Corpus inventory
+
+| SOP | Intent | Indexed |
+|---|---|---:|
+| `SOP-FIL-001` | filing | yes |
+| `SOP-REL-001` to `SOP-REL-004` | tax_reliefs | yes |
+| `SOP-REL-005` | tax_reliefs | no |
+| `SOP-ASM-001` | assessment_and_amendment | yes |
+| `SOP-PAY-001`, `SOP-PAY-002` | payment | yes |
+| `SOP-RES-001` | residency | yes |
+| `SOP-ESC-001` | account-specific officer guidance; reached by flag | yes |
+| `SOP-ESC-002` | hardship_or_waiver | yes |
+| `SOP-ESC-003` | scam_report | yes |
+| `SOP-RTE-001`, `SOP-RTE-002` | oos_redirect | yes |
+| `SOP-INC-001` | rental_income | no |
+| `SOP-INC-002` | foreign_income_dta | no |
+
+## Spec schema
 
 ```yaml
-sop_id: SOP-PAY-001          # SOP-<AREA>-<NNN>; AREA in FIL REL ASM PAY RES ESC RTE INC
+sop_id: SOP-PAY-001
 title: Handling GIRO enquiries
 version: "1.0"
 effective_date: 2026-01-01
-supersedes: null             # or a sop_id
+supersedes: null
 applies_to_ya: [2025, 2026]
-intents: [payment]           # class name(s); builds CLASS_TO_SOPS
-indexed: true                # false = authored but held out of the index
-owner_queue: IIT-Payments    # INVENTED — not a real IRAS queue
-handling_target: same_day    # ILLUSTRATIVE — not a real IRAS SLA
+intents: [payment]           # builds the class-to-SOP mapping
+indexed: true                # false keeps the SOP out of runtime lookup
+owner_queue: IIT-Payments    # invented, not a real agency queue
+handling_target: same_day    # illustrative, not a real SLA
 auto_reply_permitted: true
 escalate_if:
   - account_specific
   - hardship_or_waiver_request
   - amount_computation_requested
 
-references:                  # every url cited by a fact must appear here
-  - id: giro                 # short handle, referenced by facts below
+references:
+  - id: giro
     url: https://www.iras.gov.sg/...
     fetched: 2026-09-01
 
 scope: >
-  One paragraph. What enquiry this procedure covers.
+  What this procedure covers.
 
 not_in_scope:
   - text: The status of a specific taxpayer's GIRO plan.
     route_to: account_specific
 
-facts:                       # -> S2 "Key facts the officer may state"
+facts:
   - text: Deduction date is the 6th of each month.
-    source: giro             # REQUIRED. must match a references[].id
+    source: giro             # must match a references[].id
 
-decision_steps:              # -> S3. Escalation steps come first, by convention.
-  - condition: Asking about their own plan or a specific failed deduction
+decision_steps:
+  - condition: Asking about a specific failed deduction or amount
     action: Escalate
     reason: account_specific
   - condition: Otherwise
-    action: Answer from S2 and direct to the channels listed
+    action: Answer only from the listed facts
 
-approved_phrasing:           # -> S4. The template-floor draft body (architecture S2.8).
-  - id: giro_dates           # slots use {curly_braces}
+approved_phrasing:
+  - id: giro_dates
     text: >
       Payments by GIRO are deducted on the 6th of each month.
 
-do_not:                      # -> S5
+do_not:
   - Do not confirm whether a specific deduction succeeded or failed.
 
-related: [SOP-PAY-002]       # -> S6
+related: [SOP-PAY-002]
 ```
 
-## Fields the generator treats specially
+## Fields with runtime or build behavior
 
-| Field | Behaviour |
+| Field | Behavior |
 |---|---|
-| `facts[].source` | Required. Must resolve to a `references[].id`, else the build fails. |
-| `indexed: false` | Rendered to `data/sop/` but excluded from the index. Creates the holdout. |
-| `intents` | Builds `CLASS_TO_SOPS`. A class absent from every indexed spec yields `no_supporting_sop` by derivation. |
-| `auto_reply_permitted` + `escalate_if` | Build `BUCKET`. Escalation policy is corpus-derived, not hardcoded. |
-| `approved_phrasing` | Load-bearing: it is the `local`-mode draft. Not decorative. |
-| `related` | Cross-references. One dangling ref is deliberate (`sop_design.md` S10.4). |
+| `facts[].source` | Required; generation fails if it does not resolve to a declared reference |
+| `indexed: false` | Renders the SOP but excludes it from runtime lookup |
+| `intents` | Builds the class-to-SOP mapping |
+| `reachable_via` | Names a non-classifier route for an indexed SOP with no intent |
+| `auto_reply_permitted` and `escalate_if` | Determine routing buckets and escalation triggers |
+| `approved_phrasing` | Becomes part of the rendered SOP supplied to the drafter |
+| `related` | Adds cross-references; one dangling reference is retained deliberately as a missing-knowledge case |
 
-## Conventions
+## Validation
 
-- **Synthetic banner** is added by the generator, not written in the spec.
-- `owner_queue`, `handling_target` are invented/illustrative and marked so.
-- Facts are restatements, never verbatim IRAS prose (`sop_design.md` S8.1).
-- Never state a dollar amount as a computed result — only as a published threshold.
+```bash
+python scripts/generate_sops.py --check
+python scripts/derive_taxonomy.py --check
+```
+
+The checks reject missing citations, an accidental leak of the held-out relief cap,
+held-out classes that have become indexed, and a taxonomy projection that no longer
+matches the corpus.

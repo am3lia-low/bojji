@@ -2,7 +2,7 @@
 #
 # Class: tax_reliefs (auto_answerable). Fourth of four indexed relief SOPs.
 #
-# SUPERSESSION (sop_design.md S10.1). This is v2.0, superseding SOP-REL-004 v1.0.
+# SUPERSESSION. This is v2.0, superseding SOP-REL-004 v1.0.
 # The change is REAL, not invented: with effect from YA 2025, WMCR changed from a
 # percentage of the mother's earned income to a fixed dollar relief for Singaporean
 # children born or adopted on or after 1 Jan 2024. Children born before that date
@@ -20,7 +20,7 @@
 # of any single relief. IRAS repeats it as a warning on most individual relief
 # pages -- it appears on 6 of the 8 relief pages fetched for this corpus,
 # including this SOP's own source. It is deliberately NOT restated here: it
-# belongs to SOP-REL-005, which is HELD OUT (sop_design.md S5).
+# belongs to SOP-REL-005, which is held out.
 #
 # This suppression is what makes the partial-answer holdout real. The cap is the
 # one relief fact that cannot be derived from any single relief's rules, because
@@ -42,6 +42,7 @@ auto_reply_permitted: true
 escalate_if:
   - account_specific
   - amount_computation_requested
+  - scam_report
 
 references:
   - id: wmcr
@@ -192,6 +193,6 @@ do_not:
 
 related:
   - SOP-REL-001   # QCR and Child Relief (Disability) — allowed first
-  - SOP-REL-005   # personal income tax relief cap — HELD OUT (sop_design.md S5)
+  - SOP-REL-005   # personal income tax relief cap — held out
   - SOP-ASM-001   # amending a relief claim after the tax bill
-  - ANNEX-REL-A   # DANGLING REFERENCE — deliberate (sop_design.md S10.4)
+  - ANNEX-REL-A   # deliberate dangling reference for missing-knowledge behavior

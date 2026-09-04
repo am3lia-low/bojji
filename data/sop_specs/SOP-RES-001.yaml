@@ -3,7 +3,7 @@
 # Class: residency (auto_answerable).
 #
 # BOUNDARY NOTE: a Certificate of Residence exists in order to claim DTA
-# benefits, and `foreign_income_dta` is a HELD-OUT class (sop_design.md S5).
+# benefits, and `foreign_income_dta` is a held-out class.
 # This SOP therefore covers *how to obtain a COR* and *what the residency test
 # is*, and stops at the DTA boundary. An enquiry about whether particular
 # foreign income is taxable, or how DTA relief applies, is `foreign_income_dta`
@@ -25,6 +25,7 @@ escalate_if:
   - account_specific
   - amount_computation_requested
   - foreign_income_dta
+  - scam_report
 
 references:
   - id: rates
@@ -46,7 +47,7 @@ not_in_scope:
   - text: Computing tax at resident or non-resident rates for the taxpayer.
     route_to: amount_computation_requested
   - text: Tax clearance for a departing foreign employee (Form IR21).
-    route_to: oos_other_agency
+    route_to: oos_redirect
 
 facts:
   - text: >
@@ -121,7 +122,7 @@ decision_steps:
     reason: amount_computation_requested
   - condition: Asking about tax clearance for a departing employee
     action: Redirect
-    reason: oos_other_agency
+    reason: oos_redirect
   - condition: Otherwise
     action: State the residency test or the COR procedure from the key facts
 
@@ -158,6 +159,6 @@ do_not:
     relief applies — escalate instead.
 
 related:
-  - SOP-INC-002   # foreign income and DTA relief — HELD OUT (sop_design.md S5)
+  - SOP-INC-002   # foreign income and DTA relief — held out
   - SOP-RTE-002   # tax clearance and other agencies
   - SOP-FIL-001   # non-residents' obligation to file

@@ -1,6 +1,6 @@
 =========================================================
 BRAINSTORM SESSION LOG
-Topic: GovTech Data Scientist Technical Assessment (AI Track)
+Topic: Take-home technical assessment (AI Track)
 Sessions: 31 August 2026 (Session 1), 1 September 2026 (Session 2)
 Participants: USER, CLAUDE
 Status at end of Session 2: SCOPE LOCKED. Day 1 of 5.
@@ -134,7 +134,7 @@ Ran prior-art checks. Findings:
 
 TAKEN (shipped, do not touch):
 - PQ / ministerial reply drafting — GovText Hansard Analysis tool, OGP's
-  Pair Search over Hansard/judgments/legislation, and GovTech's own
+  Pair Search over Hansard/judgments/legislation, and the hiring organisation's own
   published fine-tuning of Llama 3 and Gemma 2 on Hansard data.
 - Bereavement — MyLegacy, used by ~90% of bereaved families monthly for
   digital death certificates; My Legacy Link extended it at hack.gov.sg
@@ -143,7 +143,7 @@ TAKEN (shipped, do not touch):
   for ageing and caregiving information.
 - LLM assurance — IMDA / AI Verify / Project Moonshot, whose Starter Kit
   covers hallucination, undesirable content, data disclosure and
-  adversarial prompts, informed by CSA and GovTech.
+  adversarial prompts, informed by CSA and the hiring organisation.
 
 CROWDED ACADEMICALLY:
 - Staleness / temporal RAG — HoH, FRESCO, MemStrata.
@@ -167,7 +167,7 @@ USER:
 ---------------------------------------------------------
 Asked for elaboration on the three surviving ideas. Challenged idea 3
 (contradiction detection) as likely already handled by government QA.
-Revealed context: applied to GovTech GASP.
+Revealed context: applied to the hiring organisation's target team.
 
 
 ---------------------------------------------------------
@@ -177,7 +177,7 @@ Conceded idea 3 — agencies do have clearance processes and most apparent
 contradictions are scope or version differences, so the honest result
 would be "found almost nothing".
 
-Identified GASP as GovTech Anti Scam Products, not a graduate programme.
+Identified the target team; its specific name was redacted for blind review.
 Team runs SATIS with the in-house rMSE classifier analysing 400,000+
 websites daily and disrupting 15,000+ monthly, and ScamShield, which has
 blocked 120,000+ scam entities since 2022.
@@ -262,7 +262,7 @@ user's portfolio, so it demonstrates new capability.
 ---------------------------------------------------------
 USER:
 ---------------------------------------------------------
-Asked whether to tie the project to GASP via phishing detection.
+Asked whether to tie the project to the target team via phishing detection.
 
 
 ---------------------------------------------------------

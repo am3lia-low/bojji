@@ -1,6 +1,6 @@
 # SOP-FIL-001 — Handling filing enquiries
 #
-# Class: filing (auto_answerable). See sop_design.md S2.1.
+# Class: filing (auto_answerable).
 # Every fact below carries a `source:` handle resolving to `references[]`.
 
 sop_id: SOP-FIL-001
@@ -18,6 +18,7 @@ escalate_if:
   - account_specific
   - amount_computation_requested
   - hardship_or_waiver_request
+  - scam_report
 
 references:
   - id: who_must_file
@@ -46,7 +47,7 @@ not_in_scope:
   - text: Requesting waiver of a composition amount or late-filing penalty.
     route_to: hardship_or_waiver_request
   - text: Filing obligations for a sole proprietorship, partnership or company.
-    route_to: oos_business_tax
+    route_to: oos_redirect
 
 facts:
   - text: >
@@ -127,7 +128,7 @@ decision_steps:
     reason: tie_break_objection_belongs_to_assessment
   - condition: Filing obligations of a business, partnership or company
     action: Redirect
-    reason: oos_business_tax
+    reason: oos_redirect
   - condition: Otherwise
     action: Answer from the key facts and direct to myTax Portal
 

@@ -16,9 +16,9 @@ because they answer different questions: ECE says the confidence is more honest,
 AURC says whether that honesty changes any decision.
 
 **Per-bucket vs a single global threshold.** The design argues thresholds belong at
-bucket level because a bucket carries ~108 test examples against ~45 for a class.
-This measures whether the per-bucket policy actually beats one number applied
-everywhere, rather than asserting it.
+bucket level because the bucket determines the action. This measures whether the
+per-bucket policy actually beats one number applied everywhere, rather than
+asserting it.
 
 **Scrubbed vs unscrubbed input.** Does removing PII cost classification accuracy?
 The scrub is non-negotiable on privacy grounds, so this is not a decision under

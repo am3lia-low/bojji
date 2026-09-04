@@ -44,7 +44,7 @@ scope: >
 
 not_in_scope:
   - text: Reporting suspected tax evasion by another person.
-    route_to: oos_other_agency
+    route_to: oos_redirect
   - text: A genuine IRAS notice the taxpayer disputes.
     route_to: assessment_and_amendment
 

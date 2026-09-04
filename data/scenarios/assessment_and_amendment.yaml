@@ -3,7 +3,7 @@
 # Situations only. The generator never sees `label`, `source_sops` or this file's
 # name -- see data/scenarios/README.md for why.
 #
-# TIE-BREAK (BUILD.md S9.7): anything DISPUTING THE FIGURES in an assessment
+# TIE-BREAK: anything DISPUTING THE FIGURES in an assessment
 # is this class, including an estimated NOA raised for late filing. `filing`
 # covers only how and when to submit. Scenarios here are written to sit
 # clearly on the disputing side of that line.

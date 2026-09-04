@@ -26,10 +26,9 @@ last_reviewed: 2026-09-01
 
 # SOP-FIL-001 - Handling filing enquiries
 
-> **SYNTHETIC DOCUMENT.** Authored for a technical assessment. This is not an
-> IRAS document and does not reflect IRAS internal material, templates or
-> practice. Every factual claim is a restatement traceable to the public
-> source cited beside it in section 2.
+> **SYNTHETIC DOCUMENT.** Written for this assessment from the public sources cited
+> in section 2. It is not an IRAS document or internal procedure. See
+> [data provenance](../SOURCES.md).
 
 ## 1. Scope
 
@@ -39,7 +38,7 @@ Taxpayer asks whether they must file, how to file, when filing is due, what the 
 - Whether this particular taxpayer has been selected for NFS, or whether their own return has been received. -> escalate (`account_specific`)
 - Disputing the figures in a Notice of Assessment, including an estimated NOA. -> escalate (`assessment_and_amendment`)
 - Requesting waiver of a composition amount or late-filing penalty. -> escalate (`hardship_or_waiver_request`)
-- Filing obligations for a sole proprietorship, partnership or company. -> escalate (`oos_business_tax`)
+- Filing obligations for a sole proprietorship, partnership or company. -> escalate (`oos_redirect`)
 
 ## 2. Key facts the officer may state
 
@@ -85,7 +84,7 @@ Taxpayer asks whether they must file, how to file, when filing is due, what the 
 4. **If** Disputing figures in a Notice of Assessment rather than asking how to file  
    -> Route to SOP-ASM-001 (`tie_break_objection_belongs_to_assessment`)
 5. **If** Filing obligations of a business, partnership or company  
-   -> Redirect (`oos_business_tax`)
+   -> Redirect (`oos_redirect`)
 6. **If** Otherwise  
    -> Answer from the key facts and direct to myTax Portal
 

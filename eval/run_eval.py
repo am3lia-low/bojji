@@ -23,6 +23,10 @@ drift from the system it describes -- but does not re-run the model.
 would be ~370 free-tier calls to produce text that only ~50 sampled drafts are
 judged on. The sample size is what the judge budget supports (``BUILD.md`` S6.3),
 and drafting availability is reported over the sample with its denominator stated.
+
+**Uncertainty is clustered by scenario.** Every reported interval resamples whole
+authored scenarios within true-class strata. Resampling individual wording variants
+would pretend that near-related emails are independent and understate uncertainty.
 """
 
 from __future__ import annotations
@@ -55,6 +59,10 @@ from eval.metrics.risk_coverage import (  # noqa: E402
     plot_risk_coverage,
     risk_coverage_report,
 )
+from eval.metrics.uncertainty import (  # noqa: E402
+    UncertaintyItem,
+    cluster_bootstrap_report,
+)
 from triage.models.calibration import TemperatureScaler  # noqa: E402
 from triage.nodes.calibrate import calibrate, rollup  # noqa: E402
 from triage.nodes.flags import detect_flags  # noqa: E402
@@ -75,7 +83,7 @@ class Row:
     """One test email carried through the pipeline, holding everything metrics need."""
 
     item: Labelled
-    scrubbed: str
+    scrub: ScrubResult
     predicted: str
     probabilities: dict[str, float]
     bucket: Bucket
@@ -84,6 +92,11 @@ class Row:
     calibrated_confidence: float
     flags: frozenset[Flag]
     true_bucket: Bucket
+
+    @property
+    def scrubbed(self) -> str:
+        """Compatibility view used by metrics that need only the redacted text."""
+        return self.scrub.text
 
 
 def sweep_multipliers(config: dict[str, Any]) -> list[float]:
@@ -130,7 +143,7 @@ def classify_split(
             score = calibrate(bucket, summed, scaler)
             out.append(Row(
                 item=item,
-                scrubbed=scrub.text,
+                scrub=scrub,
                 predicted=classification.label,
                 probabilities=dict(classification.probabilities),
                 bucket=bucket,
@@ -207,6 +220,12 @@ def main() -> int:
     parser.add_argument("--limit", type=int, default=None, help="truncate for a smoke run")
     parser.add_argument("--no-draft", action="store_true", help="skip drafting and the judge")
     parser.add_argument("--draft-sample", type=int, default=50, help="drafts to generate")
+    parser.add_argument(
+        "--bootstrap-resamples",
+        type=int,
+        default=2_000,
+        help="scenario-cluster bootstrap replicates for confidence intervals",
+    )
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--out", type=Path, default=RESULTS)
     args = parser.parse_args()
@@ -281,17 +300,48 @@ def main() -> int:
     # ---- escalation quality, at the operating point (multiplier 1.0) ------
     operating = route_at(rows, index, thresholds, 1.0, scaler.fitted)
     bucket_of = dict(index.bucket)
+    expected_escalations = [
+        expected_reason(
+            row.item.label, bucket_of,
+            computation_requested=row.item.computation_requested,
+            account_specific=row.item.account_specific,
+        )
+        for row, _ in operating
+    ]
     report_esc = escalation_report(
-        expected=[
-            expected_reason(
-                row.item.label, bucket_of,
-                computation_requested=row.item.computation_requested,
-                account_specific=row.item.account_specific,
-            )
-            for row, _ in operating
-        ],
+        expected=expected_escalations,
         actual=[decision.reason for _, decision in operating],
         automated=[decision.is_automated for _, decision in operating],
+    )
+
+    # ---- uncertainty, with the scenario as the independent unit ----------
+    report_uncertainty = cluster_bootstrap_report(
+        [
+            UncertaintyItem(
+                scenario_id=row.item.scenario_id,
+                true_class=row.item.label,
+                predicted_class=row.predicted,
+                true_bucket=row.true_bucket.value,
+                predicted_bucket=row.bucket.value,
+                route=decision.action.value,
+                automated=decision.is_automated,
+                correct_automation=(
+                    not decision.is_automated or row.predicted == row.item.label
+                ),
+                must_escalate=expected is not None,
+                must_escalate_caught=(
+                    expected is None or not decision.is_automated
+                ),
+            )
+            for (row, decision), expected in zip(
+                operating, expected_escalations, strict=True
+            )
+        ],
+        class_labels=tuple(classifier.labels),
+        bucket_labels=tuple(bucket.value for bucket in Bucket),
+        n_resamples=args.bootstrap_resamples,
+        confidence=0.95,
+        seed=args.seed,
     )
 
     # ---- flags ------------------------------------------------------------
@@ -356,6 +406,7 @@ def main() -> int:
             },
         },
         "thresholds": thresholds,
+        "threshold_selection": config.get("selection", {}),
         "thresholds_fitted": _thresholds_are_fitted(),
         "calibrated_numbers_reportable": scaler.fitted and _thresholds_are_fitted(),
         "headline": {
@@ -368,6 +419,7 @@ def main() -> int:
             "unsafe_automations": report_esc.unsafe_automations,
             "scrub_recall": round(report_scrub.recall, 4),
         },
+        "headline_intervals": report_uncertainty["intervals"],
         "elapsed_seconds": round(time.time() - started, 1),
     }
 
@@ -380,6 +432,7 @@ def main() -> int:
         "escalation.json": report_esc.as_dict(),
         "flags.json": report_flags,
         "scrub_recall.json": report_scrub.as_dict(),
+        "uncertainty.json": report_uncertainty,
         "drafting.json": report_draft,
     }
     for name, payload in written.items():
@@ -413,6 +466,20 @@ def main() -> int:
         print(f"  flag {name:24s}P/R  {stats['precision']:.3f} / {stats['recall']:.3f}")
     print(f"\n  scrub recall                {report_scrub.recall:.4f}"
           f"   ({report_scrub.overall_detected}/{report_scrub.overall_planted} planted values)")
+    print("\n  95% scenario-bootstrap intervals")
+    for name in (
+        "class_macro_f1",
+        "bucket_macro_f1",
+        "operating_coverage",
+        "operating_risk",
+        "auto_reply_coverage",
+        "auto_reply_risk",
+        "redirect_coverage",
+        "redirect_risk",
+        "must_escalate_recall",
+    ):
+        interval = report_uncertainty["intervals"][name]
+        print(f"    {name:26s}[{interval['lower']}, {interval['upper']}]")
     if not report_draft.get("skipped"):
         print(f"  drafting availability       {report_draft.get('availability', 0):.4f}"
               f"   ({report_draft.get('n_ok', 0)}/{report_draft.get('n_attempted', 0)})")

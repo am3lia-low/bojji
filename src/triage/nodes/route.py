@@ -33,9 +33,8 @@ an email in the wrong class, in the direction where that error is unsafe.
 
 **Thresholds are per bucket, not per class.** Three of five buckets escalate
 regardless of confidence, so only ``auto_answerable`` and ``out_of_scope`` have a
-threshold that bites. At 1,800 emails a bucket carries ~108 test examples against
-~45 for a class, and a threshold set on 45 is not defensible -- the binomial
-interval is wider than the effect (``sop_design.md`` S3).
+threshold that bites. The bucket is the level that determines the action and is
+therefore the level where an operator sets policy (``sop_design.md`` S3).
 """
 
 from __future__ import annotations

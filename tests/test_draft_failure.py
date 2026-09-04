@@ -87,6 +87,16 @@ class OKClient:
         return LLMResponse(text=self._text, model_name=self.model_name)
 
 
+class CapturingClient(OKClient):
+    def __init__(self, text: str) -> None:
+        super().__init__(text)
+        self.prompt = ""
+
+    def generate(self, prompt: str, *, temperature: float = 0.2) -> LLMResponse:
+        self.prompt = prompt
+        return super().generate(prompt, temperature=temperature)
+
+
 # --------------------------------------------------------------------------- #
 # The invariant
 # --------------------------------------------------------------------------- #
@@ -157,6 +167,25 @@ def test_fabricated_placeholder_fails_the_draft(auto_state, index):
     assert "fabricated" in " ".join(update["errors"])
 
 
+def test_raw_subject_never_bypasses_the_scrub_gate(auto_state, index):
+    """A citizen identifier in the subject must not be sent to the provider."""
+    raw_nric = "S0433218J"
+    state = auto_state.model_copy(update={
+        "email": auto_state.email.model_copy(update={"subject": f"My NRIC is {raw_nric}"}),
+        "scrub": ScrubRecord(
+            text="My NRIC is [NRIC_1]\n\nHow do I file?",
+            vault={"[NRIC_1]": raw_nric},
+            counts={"nric": 1},
+        ),
+    })
+    client = CapturingClient(f"Please file online.\nCITED: {state.sop_ids[0]}")
+
+    draft_node(state, index, client)
+
+    assert raw_nric not in client.prompt
+    assert "[NRIC_1]" in client.prompt
+
+
 def test_escalated_item_records_not_attempted(index):
     state = TriageState(
         email=Email(id="e-1", received_at=datetime(2026, 4, 1, tzinfo=UTC), body="Help"),
@@ -201,6 +230,7 @@ def test_parse_citations_without_a_line_returns_nothing_cited():
     [
         ("429 Too Many Requests", DraftFailure.RATE_LIMIT),
         ("RESOURCE_EXHAUSTED: quota", DraftFailure.RATE_LIMIT),
+        ("413: code=rate_limit_exceeded; tokens per minute", DraftFailure.RATE_LIMIT),
         ("Deadline exceeded", DraftFailure.TIMEOUT),
         ("connection timed out", DraftFailure.TIMEOUT),
         ("400 malformed request", DraftFailure.API_ERROR),
@@ -215,7 +245,7 @@ def test_prompt_includes_every_sop_in_the_group(index):
     sops = index.sops_for("tax_reliefs")
     assert len(sops) > 1, "expected tax_reliefs to pull a group"
 
-    prompt = render_prompt(sops, "Reliefs", "Can I claim for my child and my mother?")
+    prompt = render_prompt(sops, "Reliefs\n\nCan I claim for my child and my mother?")
     for sop in sops:
         assert sop.sop_id in prompt
 
@@ -292,5 +322,5 @@ def test_braces_in_the_email_body_are_inert(index, body: str) -> None:
     would turn a citizen's braces into a crash or an interpolation, and the change
     would look harmless in review.
     """
-    prompt = render_prompt(index.sops_for("filing"), "subject", body)
+    prompt = render_prompt(index.sops_for("filing"), f"subject\n\n{body}")
     assert body in prompt

@@ -1,6 +1,6 @@
 # SOP-PAY-001 — Handling GIRO enquiries
 #
-# Class: payment (auto_answerable). Worked example in sop_design.md S4.1.
+# Class: payment (auto_answerable).
 # Facts re-verified against the live page on 2026-09-01; the design draft's
 # channel timings and deduction rules were confirmed unchanged.
 
@@ -19,6 +19,7 @@ escalate_if:
   - account_specific
   - hardship_or_waiver_request
   - amount_computation_requested
+  - scam_report
 
 references:
   - id: giro

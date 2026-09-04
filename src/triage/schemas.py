@@ -237,10 +237,9 @@ class Classification(BaseModel):
 class BucketScore(BaseModel):
     """The distribution rolled up from the class set into 5 buckets.
 
-    Calibration and thresholds live at this level, not at class level: at 1,800
-    emails a bucket carries ~108 test examples against ~45 for a class, and a
-    threshold set on 45 is not defensible -- the binomial interval is wider than the
-    effect (``sop_design.md`` S3).
+    Calibration and thresholds live at this level, not at class level, because the
+    bucket determines the action. The 3,000-email corpus supplies 646 calibration
+    and 877 test examples, grouped by scenario (``sop_design.md`` S3).
     """
 
     model_config = ConfigDict(frozen=True, extra="forbid")
@@ -430,9 +429,11 @@ class TriageState(BaseModel):
         the demo writes its queues out.
 
         This method is the boundary. It replaces the email text with the scrubbed
-        form, empties the vault, and keeps the redaction *counts*, which is what
-        scrub-recall reporting actually needs. Anything persisted or displayed goes
-        through here; nothing else should serialise a :class:`TriageState`.
+        form, replaces any rehydrated values in a successful draft with their
+        original placeholders, empties the vault, and keeps the redaction *counts*,
+        which is what scrub-recall reporting actually needs. Anything persisted or
+        displayed goes through here; nothing else should serialise a
+        :class:`TriageState`.
 
         Falls back to redacting the body entirely if scrubbing has not run, rather
         than passing the original through -- a state that never reached the scrub
@@ -441,9 +442,28 @@ class TriageState(BaseModel):
         if self.scrub is None:
             safe_body = "[UNSCRUBBED - REDACTED]"
             safe_subject = "[UNSCRUBBED - REDACTED]"
+            safe_draft = (
+                None
+                if self.draft is None
+                else self.draft.model_copy(
+                    update={
+                        "text": (
+                            None
+                            if self.draft.text is None
+                            else "[UNSCRUBBED - REDACTED]"
+                        )
+                    }
+                )
+            )
         else:
             safe_body = self.scrub.text
             safe_subject = ""
+            safe_draft = self.draft
+            if safe_draft is not None and safe_draft.text is not None:
+                safe_text = safe_draft.text
+                for token, value in self.scrub.vault.items():
+                    safe_text = safe_text.replace(value, token)
+                safe_draft = safe_draft.model_copy(update={"text": safe_text})
 
         return self.model_copy(
             update={
@@ -455,6 +475,7 @@ class TriageState(BaseModel):
                     if self.scrub is None
                     else ScrubRecord(text=self.scrub.text, vault={}, counts=self.scrub.counts)
                 ),
+                "draft": safe_draft,
             }
         )
 

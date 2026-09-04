@@ -8,7 +8,7 @@
 # pages -- it appears on 6 of the 8 relief pages fetched for this corpus, and the
 # CPF and SRS pages are among the most emphatic because contributions there are
 # irreversible. It is deliberately NOT restated here: it belongs to SOP-REL-005,
-# which is HELD OUT (sop_design.md S5).
+# which is held out.
 #
 # This suppression is what makes the partial-answer holdout real. The cap is the
 # one relief fact that cannot be derived from any single relief's rules, because
@@ -30,6 +30,7 @@ auto_reply_permitted: true
 escalate_if:
   - account_specific
   - amount_computation_requested
+  - scam_report
 
 references:
   - id: cpf_relief
@@ -49,7 +50,7 @@ not_in_scope:
   - text: The taxpayer's own CPF contribution records or SRS account balance.
     route_to: account_specific
   - text: CPF scheme matters that are not tax relief — contribution rates, withdrawal rules, account balances.
-    route_to: oos_other_agency               # CPF Board, not IRAS
+    route_to: oos_redirect                    # CPF Board, not IRAS
   - text: Whether the total of all reliefs is limited.
     route_to: tax_reliefs                    # -> SOP-REL-005, HELD OUT
 
@@ -107,7 +108,7 @@ decision_steps:
     reason: account_specific
   - condition: Asking about CPF contribution rates, withdrawals or balances rather than tax relief
     action: Redirect to CPF Board
-    reason: oos_other_agency
+    reason: oos_redirect
   - condition: Asking whether total reliefs are capped
     action: Escalate
     reason: no_supporting_sop                # REL-005 is held out
@@ -148,5 +149,5 @@ do_not:
   - Do not answer CPF scheme questions that belong to the CPF Board.
 
 related:
-  - SOP-REL-005   # personal income tax relief cap — HELD OUT (sop_design.md S5)
+  - SOP-REL-005   # personal income tax relief cap — held out
   - SOP-RTE-002   # CPF Board and other agencies

@@ -1,15 +1,13 @@
 # SOP-RTE-002 — Redirect: other agencies and other tax types
 #
-# Class: oos_other_agency. Bucket: out_of_scope. Automated redirect counts toward
-# coverage (BUILD.md S5.6).
+# Class: oos_redirect. Bucket: out_of_scope. Automated redirects count toward coverage.
 #
 # This class absorbs two kinds of misdirection that look different to a citizen
 # but route identically:
 #   (a) another IRAS tax type — GST, property tax, stamp duty, tax clearance;
 #   (b) another agency entirely — CPF Board, MOM, ACRA.
 #
-# `oos_tax_clearance` was folded in here from an earlier draft (sop_design.md S9):
-# same redirect behaviour, and a separate class was not earning its keep.
+# Tax-clearance questions are included here because they use the same redirect action.
 #
 # The CPF boundary is the sharp one and the most common real confusion. IRAS
 # handles CPF *relief* (a tax question, SOP-REL-003). The CPF Board handles
@@ -23,7 +21,7 @@ version: "1.0"
 effective_date: 2026-01-01
 supersedes: null
 applies_to_ya: [2025, 2026]
-intents: [oos_other_agency]
+intents: [oos_redirect]
 indexed: true
 owner_queue: IIT-General          # INVENTED — not a real IRAS queue
 handling_target: same_day         # ILLUSTRATIVE — not a real IRAS SLA
@@ -50,7 +48,7 @@ not_in_scope:
   - text: Tax relief on CPF or SRS contributions, which is an individual income tax matter.
     route_to: tax_reliefs                     # -> SOP-REL-003
   - text: Business or corporate income tax.
-    route_to: oos_business_tax                # -> SOP-RTE-001
+    route_to: oos_redirect                    # handled by SOP-RTE-001
   - text: Reporting a suspected IRAS impersonation scam.
     route_to: scam_report                     # -> SOP-ESC-003
 

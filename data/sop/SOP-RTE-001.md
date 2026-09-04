@@ -22,10 +22,9 @@ last_reviewed: 2026-09-01
 
 # SOP-RTE-001 - Redirect: business and corporate income tax
 
-> **SYNTHETIC DOCUMENT.** Authored for a technical assessment. This is not an
-> IRAS document and does not reflect IRAS internal material, templates or
-> practice. Every factual claim is a restatement traceable to the public
-> source cited beside it in section 2.
+> **SYNTHETIC DOCUMENT.** Written for this assessment from the public sources cited
+> in section 2. It is not an IRAS document or internal procedure. See
+> [data provenance](../SOURCES.md).
 
 ## 1. Scope
 
@@ -33,7 +32,7 @@ Enquiry concerns the tax affairs of a business rather than an individual's emplo
 
 **Not in scope:**
 - An individual's own employment income, reliefs, assessment or payment. -> escalate (`filing / tax_reliefs / assessment_and_amendment / payment`)
-- GST, property tax, stamp duty, or another agency entirely. -> escalate (`oos_other_agency`)
+- GST, property tax, stamp duty, or another agency entirely. -> escalate (`oos_redirect`)
 
 ## 2. Key facts the officer may state
 

@@ -1,6 +1,6 @@
 # Runtime + build dependencies.
 #
-# Lower bounds, not exact pins: this is an application, and a grader on a
+# Version ranges, not exact pins: this is an application, and a grader on a
 # different Python patch release should not hit a resolver conflict. The versions
 # actually used in the reported run are recorded in eval/results/, which is what
 # reproducibility rests on.
@@ -20,7 +20,9 @@ pyyaml>=6.0              # SOP frontmatter, config
 # --- classifier --------------------------------------------------------------
 torch>=2.2               # CPU build; see note above
 transformers>=5.0        # MiniLM-L6 encoder + tokenizer
-numpy>=2.0
+# NumPy 2.5 requires Python 3.12+, while this project and its Docker image support
+# Python 3.11. The cap also keeps NumPy's type stubs parseable under that target.
+numpy>=2.0,<2.5
 
 # --- orchestration -----------------------------------------------------------
 langgraph>=1.0           # explicit nodes, shared state, traceable execution path
@@ -35,7 +37,7 @@ streamlit>=1.33          # two queues, reason chips, threshold slider
 
 # --- LLM providers -----------------------------------------------------------
 # Each has one role, and no model is scored on its own output (BUILD.md S6.4).
-google-generativeai>=0.8  # Gemini: drafting (runtime, free tier)
+google-genai>=1.0          # Gemini: maintained drafting SDK (runtime, free tier)
 groq>=0.11                # Groq: groundedness judge (eval only, free tier)
 openai>=3.0               # OpenAI: email generation (build time) + bonus judge
 
@@ -48,3 +50,4 @@ ipykernel>=6.29
 pytest>=8.0
 ruff>=0.4
 mypy>=2.0
+types-PyYAML>=6.0       # typed signatures for strict mypy checks of YAML config

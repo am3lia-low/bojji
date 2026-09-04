@@ -1,11 +1,11 @@
 # SOP-INC-001 — Rental income
 #
-# Class: rental_income. ***HELD OUT — indexed: false*** (sop_design.md S5).
+# Class: rental_income. Held out with `indexed: false`.
 #
 # WHOLE-CLASS HOLDOUT, distinct from REL-005. Because no INDEXED SOP declares
 # `intents: [rental_income]`, CLASS_TO_SOPS["rental_income"] resolves EMPTY, and
 # the router fires `no_supporting_sop` by derivation — it does not read a
-# hand-written bucket entry (BUILD.md S5.6). One source of truth: holding out a
+# hand-written bucket entry. One source of truth: holding out a
 # further class later needs no code change.
 #
 # This is what makes the unanswerable case genuine rather than simulated. The
@@ -47,7 +47,7 @@ not_in_scope:
   - text: Computing net rental income or tax for the taxpayer.
     route_to: amount_computation_requested
   - text: Property tax, which is a different tax type.
-    route_to: oos_other_agency
+    route_to: oos_redirect
 
 facts:
   - text: >
@@ -90,7 +90,7 @@ decision_steps:
     reason: amount_computation_requested
   - condition: Asking about property tax rather than income tax on rent
     action: Redirect
-    reason: oos_other_agency
+    reason: oos_redirect
   - condition: Otherwise
     action: State the treatment of rental income from the key facts
 

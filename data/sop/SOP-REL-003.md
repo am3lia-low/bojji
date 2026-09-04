@@ -23,10 +23,9 @@ last_reviewed: 2026-09-01
 
 # SOP-REL-003 - CPF and SRS reliefs
 
-> **SYNTHETIC DOCUMENT.** Authored for a technical assessment. This is not an
-> IRAS document and does not reflect IRAS internal material, templates or
-> practice. Every factual claim is a restatement traceable to the public
-> source cited beside it in section 2.
+> **SYNTHETIC DOCUMENT.** Written for this assessment from the public sources cited
+> in section 2. It is not an IRAS document or internal procedure. See
+> [data provenance](../SOURCES.md).
 
 ## 1. Scope
 
@@ -35,7 +34,7 @@ Taxpayer asks which CPF contributions qualify for relief, which do not, how SRS 
 **Not in scope:**
 - The amount of CPF or SRS relief this taxpayer will receive. -> escalate (`amount_computation_requested`)
 - The taxpayer's own CPF contribution records or SRS account balance. -> escalate (`account_specific`)
-- CPF scheme matters that are not tax relief — contribution rates, withdrawal rules, account balances. -> escalate (`oos_other_agency`)
+- CPF scheme matters that are not tax relief — contribution rates, withdrawal rules, account balances. -> escalate (`oos_redirect`)
 - Whether the total of all reliefs is limited. -> escalate (`tax_reliefs`)
 
 ## 2. Key facts the officer may state
@@ -70,7 +69,7 @@ Taxpayer asks which CPF contributions qualify for relief, which do not, how SRS 
 2. **If** Asking about their own contribution records or account balance  
    -> Escalate (`account_specific`)
 3. **If** Asking about CPF contribution rates, withdrawals or balances rather than tax relief  
-   -> Redirect to CPF Board (`oos_other_agency`)
+   -> Redirect to CPF Board (`oos_redirect`)
 4. **If** Asking whether total reliefs are capped  
    -> Escalate (`no_supporting_sop`)
 5. **If** Otherwise  

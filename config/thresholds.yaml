@@ -4,60 +4,69 @@
 # number here changes system behaviour without touching code, which is the point:
 # an operator should be able to argue with this file.
 #
-# THRESHOLDS ARE PER BUCKET, NOT PER CLASS. At 1,800 emails a bucket carries ~108
-# test examples against ~45 for a class, and a threshold set on 45 examples is not
-# defensible -- the binomial confidence interval is wider than the effect being
-# measured. Each number goes where its data supports it.
+# THRESHOLDS ARE PER BUCKET, NOT PER CLASS. The bucket determines the action, so it
+# is also the level at which an operator should set policy. The 646-email calibration
+# split supplies the development evidence; the 877-email test split is held back for
+# one independent report.
 #
 # Only two of the five thresholds actually bite. Three buckets escalate regardless
 # of confidence, so their value is recorded for completeness and never consulted.
 #
-# STATUS: FITTED. Chosen from the risk-coverage curve on the test split, against
-# the 10-class classifier (macro-F1 0.859, bucket accuracy 0.928) and the fitted
-# temperature in models/classifier/calibration.json.
+# STATUS: FITTED. Chosen on the calibration split against the 10-class classifier
+# and the fitted temperature in models/classifier/calibration.json. No test result
+# was read to set either value.
 #
 # The two thresholds that bite are set INDEPENDENTLY, because the two buckets do
-# not behave alike. Measured on the 877-email test split:
+# not behave alike. Measured on the 646-email calibration split:
 #
 #     threshold   auto_answerable            out_of_scope
 #                 automated  risk            automated  risk
-#       0.40      290/435    0.097            84/111    0.131
-#       0.50      286/435    0.094            62/111    0.016
-#       0.60      262/435    0.099            40/111    0.025
-#       0.70      237/435    0.097            20/111    0.000
+#       0.55          222    0.419                31    0.161
+#       0.58          n/a      n/a                23    0.000
+#       0.90           64    0.109                 0      n/a
+#       0.93           34    0.088                 0      n/a
+#       0.94           21    0.000                 0      n/a
 #
-# auto_answerable is FLAT in risk from 0.40 to 0.70 -- raising it buys no safety
-# and costs coverage, so the lowest value on the flat is the efficient choice.
-# out_of_scope drops 0.131 -> 0.016 between 0.40 and 0.50, an eightfold reduction
-# for 22 items, so the knee is real and the threshold belongs above it.
-#
-# Overall at these values: coverage 0.397, risk 0.080, AURC 0.058.
+# For substantive answers, 0.93 is the first value on the declared 0.01 grid to
+# meet the <=10% development-risk target. For redirects, the harm is asymmetric,
+# so 0.58 is the first value with zero observed development errors. On the untouched
+# test split these frozen values yield 11.6% coverage at 1.0% risk.
+
+selection:
+  split: calibration
+  n: 646
+  grid_min: 0.01
+  grid_max: 0.99
+  grid_step: 0.01
+  test_consulted: false
+  criteria:
+    auto_answerable: "first cutoff with empirical risk <= 0.10"
+    out_of_scope: "first cutoff with zero observed errors"
 
 buckets:
   auto_answerable:
-    threshold: 0.5
+    threshold: 0.93
     bites: true
     justification: >
       The only bucket where the agent asserts substantive tax content to a citizen,
       so this is the threshold that governs the coverage/error trade-off and the one
-      the risk-coverage curve is swept over. Set at the bottom of the flat region:
-      risk holds near 0.095 from 0.40 through 0.70, so raising the cutoff removes
-      coverage without removing error. The errors it would need to catch are
-      confident misclassifications, which a confidence threshold cannot see -- that
-      is what the flags and the always-escalate buckets are for.
+      the risk-coverage curve is swept over. Selected on the calibration split, on
+      a predeclared 0.01 grid, as the first cutoff meeting the <=10% empirical-risk
+      target: 34 items were automated, with 3 errors (8.8%). The small denominator
+      is reported rather than hidden; a real deployment would need substantially
+      more labelled mail before widening coverage.
 
   out_of_scope:
-    threshold: 0.65
+    threshold: 0.58
     bites: true
     justification: >
       Redirects auto-reply, so a low-confidence redirect sends a citizen to the
       wrong agency -- a visible, citizen-facing failure rather than an internal one.
-      Set ABOVE auto_answerable rather than equal to it, which the measurement
-      supports: risk falls 0.131 -> 0.016 between 0.40 and 0.50 and reaches 0.000 by
-      0.70. 0.65 sits past the knee while keeping roughly a third of the bucket
-      automated. The asymmetry is deliberate -- a wrong redirect is harder for a
-      citizen to recover from than a wrong-but-grounded answer, because it sends
-      them to an organisation that cannot help and has no record of them.
+      Selected independently on the calibration split as the first 0.01-grid value
+      with zero observed redirect errors: 23 items were automated. The asymmetry is
+      deliberate -- a wrong redirect is harder for a citizen to recover from than a
+      wrong-but-grounded answer, because it sends them to an organisation that cannot
+      help and has no record of them.
 
   requires_account_lookup:
     threshold: 1.0

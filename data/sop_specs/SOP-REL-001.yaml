@@ -1,12 +1,12 @@
 # SOP-REL-001 — Qualifying Child Relief and Child Relief (Disability)
 #
 # Class: tax_reliefs (auto_answerable). One of FOUR indexed SOPs in this class,
-# so within-group selection by the drafter is measurable here (sop_design.md S6).
+# so within-group selection by the drafter is measurable here.
 #
 # COMPUTATION BOUNDARY: QCR interacts with WMCR through an ordering rule and a
 # per-child cap (REL-004), and the total is then subject to the $80,000 personal
 # relief cap (REL-005, HELD OUT). Stating eligibility is safe; arithmetic is not.
-# This is the failure mode the whole design exists to prevent — sop_design.md S11.
+# This is the failure mode the whole design exists to prevent.
 
 sop_id: SOP-REL-001
 title: Qualifying Child Relief and Child Relief (Disability)
@@ -22,6 +22,7 @@ auto_reply_permitted: true
 escalate_if:
   - account_specific
   - amount_computation_requested
+  - scam_report
 
 references:
   - id: qcr
@@ -137,5 +138,5 @@ do_not:
 
 related:
   - SOP-REL-004   # WMCR and PTR — the ordering rule and the $50,000 per-child cap
-  - SOP-REL-005   # personal income tax relief cap — HELD OUT (sop_design.md S5)
+  - SOP-REL-005   # personal income tax relief cap — held out
   - SOP-ASM-001   # amending a relief claim after the tax bill

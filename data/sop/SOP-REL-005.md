@@ -22,14 +22,12 @@ last_reviewed: 2026-09-01
 
 # SOP-REL-005 - Personal income tax relief cap
 
-> **SYNTHETIC DOCUMENT.** Authored for a technical assessment. This is not an
-> IRAS document and does not reflect IRAS internal material, templates or
-> practice. Every factual claim is a restatement traceable to the public
-> source cited beside it in section 2.
+> **SYNTHETIC DOCUMENT.** Written for this assessment from the public sources cited
+> in section 2. It is not an IRAS document or internal procedure. See
+> [data provenance](../SOURCES.md).
 
-> **HELD OUT OF THE INDEX.** This procedure is authored but excluded from
-> the runtime lookup, so the classes it serves resolve to no SOP. See
-> `sop_design.md` S5.
+> **NOT INDEXED.** This SOP is excluded from runtime retrieval. See the
+> [SOP schema and corpus design](../sop_specs/README.md).
 
 ## 1. Scope
 

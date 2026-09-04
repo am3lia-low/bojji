@@ -28,7 +28,7 @@ the judge SCORES DRAFTS, so neither is ever scored on its own output. Groq wrote
 none of the text it sees in either role.
 
 Usage:
-    python scripts/generate_emails.py                 # full run, ~1,800 emails
+    python scripts/generate_emails.py                 # full run, 3,000 emails
     python scripts/generate_emails.py --limit 12      # smoke test
     python scripts/generate_emails.py --dry-run       # print prompts, call nothing
 """
@@ -45,7 +45,7 @@ import time
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Final
+from typing import Any, Final, TextIO
 
 import yaml
 
@@ -81,9 +81,10 @@ SEED: Final[int] = 42
 #: requirement -- that applies to the runtime. The larger model sustains a persona
 #: across variants, varies its openings, writes Singlish that reads as natural
 #: rather than parodic, and is markedly better at NOT drifting into administrative
-#: vocabulary that would leak the label. Roughly $15 for 1,800 emails against $1;
-#: a formulaic corpus would teach the classifier the template instead of the
-#: problem, which no amount of downstream care recovers.
+#: vocabulary that would leak the label. The few tens of dollars for 3,000 emails
+#: is a build-time cost; using a cheaper but formulaic corpus would teach the
+#: classifier the template instead of the problem, which no amount of downstream
+#: care recovers.
 MODEL: Final[str] = os.environ.get("OPENAI_GENERATION_MODEL", "gpt-4o")
 
 #: Seasonal windows. `received_at` drives the seasonality axis, so an evaluation
@@ -346,7 +347,7 @@ def main() -> int:
 
         client = OpenAI()
 
-    # Resume support. A full run is ~1,800 API calls over roughly 80 minutes, so a
+    # Resume support. A full run is 3,000 API calls over roughly two hours, so a
     # rate limit or a dropped connection near the end would otherwise discard every
     # completed email. Rows are appended as they arrive and already-generated ids
     # are skipped on restart, which makes the run restartable rather than
@@ -357,11 +358,12 @@ def main() -> int:
     if args.resume and args.out.exists():
         for line in args.out.read_text(encoding="utf-8").splitlines():
             if line.strip():
-                row = json.loads(line)
-                rows.append(row)
-                done.add(str(row["id"]))
+                existing_row = json.loads(line)
+                rows.append(existing_row)
+                done.add(str(existing_row["id"]))
         print(f"resuming: {len(done)} emails already generated")
 
+    handle: TextIO | None
     if args.dry_run:
         handle = None
     else:
@@ -427,6 +429,7 @@ def main() -> int:
             }
             rows.append(row)
             # Flush per email: a run interrupted at 1,700 keeps its 1,700.
+            assert handle is not None
             handle.write(json.dumps(row, ensure_ascii=False) + "\n")
             handle.flush()
 
