@@ -51,9 +51,8 @@ retried manually. The app never sends an email.
 | Data thinking (15%) | [Data provenance, licensing, privacy, and coverage](data/SOURCES.md) |
 | Communication (10%) | This README, explicit limitations, and committed evaluation artifacts |
 
-The required deployment discussion, development narrative, and coding-agent
-disclosure are below. Replace the demo-video placeholder with the 3–5-minute URL
-before submission.
+The required deployment discussion, development narrative, coding-agent disclosure,
+and demo-video link are included in this repository.
 
 ## Quick start
 

@@ -28,6 +28,13 @@ ref material/
 AI assistant logs/
 docs/
 
+# Demo recordings are linked from the README and are not needed by Streamlit.
+# Keeping them out of the build context avoids transferring large media files on
+# every Docker build without removing them from the repository.
+*.mp4
+*.mov
+*.webm
+
 # The training notebook and the eval PNGs are documentation, not runtime inputs.
 # models/*.ipynb is excluded; models/classifier and models/all-MiniLM-L6-v2 are NOT
 # -- the weights must ship in the image.
